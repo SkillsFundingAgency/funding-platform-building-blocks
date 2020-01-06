@@ -17,11 +17,11 @@
 
     ```json
     "variables": {
-            "deploymentUrlBase": "https://raw.githubusercontent.com/SkillsFundingAgency/das-platform-building-blocks/master/templates/"
+            "deploymentUrlBase": "https://raw.githubusercontent.com/SkillsFundingAgency/funding-platform-building-blocks/master/templates/"
     }
     ```
 
-3. Select the Azure Resource template you wish to use, (eg. https://raw.githubusercontent.com/SkillsFundingAgency/das-platform-building-blocks/master/templates/app-service.json) by setting the concatenation of the deploymentUrlBase variable and the file name as the uri of the templateLink property as follows:
+3. Select the Azure Resource template you wish to use, (eg. https://raw.githubusercontent.com/SkillsFundingAgency/funding-platform-building-blocks/master/templates/app-service.json) by setting the concatenation of the deploymentUrlBase variable and the file name as the uri of the templateLink property as follows:
 
     ```json
     {
