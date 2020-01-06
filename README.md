@@ -88,8 +88,8 @@ Reduce the number of top-level parameters needed by setting the Azure resource n
     ```json
     "variables": {
         ...
-        "resourceNamePrefix": "[toLower(concat('das-', parameters('resourceEnvironmentName'),'-', parameters('serviceName')))]",
-        "storageAccountName": "[toLower(concat('das', parameters('resourceEnvironmentName'), parameters('serviceName'), 'str'))]",
+        "resourceNamePrefix": "[toLower(concat('funding-', parameters('resourceEnvironmentName'),'-', parameters('serviceName')))]",
+        "storageAccountName": "[toLower(concat('funding', parameters('resourceEnvironmentName'), parameters('serviceName'), 'str'))]",
         "appServiceName": "[concat(variables('resourceNamePrefix'), '-as')]",
         ...
     }
