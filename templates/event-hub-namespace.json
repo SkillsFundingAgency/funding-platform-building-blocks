@@ -1,0 +1,54 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "eventHubNamespaceName": {
+      "type": "string"
+    },
+    "eventHubTier": {
+      "type": "string",
+      "allowedValues": [
+        "Basic",
+        "Standard"
+      ]
+    },
+    "eventHubCapacity": {
+      "type": "int",
+      "defaultValue": 1,
+      "minValue": 1,
+      "maxValue": 20
+    },
+    "isAutoInflateEnabled": {
+      "type": "bool",
+      "defaultValue": false
+    },
+    "maximumThroughputUnits": {
+      "type": "int",
+      "defaultValue": 0,
+      "minValue": 0,
+      "maxValue": 20,
+      "metadata": {
+        "description": "Upper limit for Auto Inflate scaling"
+      }
+    }
+  },
+  "variables": {},
+  "resources": [
+    {
+      "name": "[parameters('eventHubNamespaceName')]",
+      "type": "Microsoft.EventHub/namespaces",
+      "apiVersion": "2017-04-01",
+      "location": "[resourceGroup().location]",
+      "sku": {
+        "name": "[parameters('eventHubTier')]",
+        "tier": "[parameters('eventHubTier')]",
+        "capacity": "[parameters('eventHubCapacity')]"
+      },
+      "properties": {
+        "isAutoInflateEnabled": "[parameters('isAutoInflateEnabled')]",
+        "maximumThroughputUnits": "[parameters('maximumThroughputUnits')]"
+      }
+    }
+  ],
+  "outputs": {}
+}

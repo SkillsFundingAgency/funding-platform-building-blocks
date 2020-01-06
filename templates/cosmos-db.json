@@ -1,0 +1,79 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "cosmosDbName": {
+      "type": "string"
+    },
+    "cosmosDbType": {
+      "type": "string",
+      "allowedValues": [
+        "GlobalDocumentDB",
+        "MongoDB"
+      ]
+    },
+    "defaultConsistencyLevel": {
+      "type": "string",
+      "allowedValues": [
+        "Eventual",
+        "Session",
+        "BoundedStaleness",
+        "Strong",
+        "ConsistentPrefix"
+      ]
+    },
+    "enableVirtualNetworkFilter": {
+      "type": "bool",
+      "defaultValue": false
+    },
+    "subnetResourceIdList": {
+      "type": "array",
+      "defaultValue": []
+    },
+    "ipRangeFilter": {
+      "type": "string",
+      "defaultValue": ""
+    }
+  },
+  "variables": {
+    "copy": [
+      {
+        "name": "virtualNetworkRulesCopy",
+        "count": "[if(greater(length(parameters('subnetResourceIdList')), 0), length(parameters('subnetResourceIdList')), 1)]",
+        "input": {
+          "id": "[if(greater(length(parameters('subnetResourceIdList')), 0), parameters('subnetResourceIdList')[copyIndex('virtualNetworkRulesCopy')], json('null'))]"
+        }
+      }
+    ],
+    "virtualNetworkRulesEmpty": [],
+    "virtualNetworkRules": "[if(greater(length(parameters('subnetResourceIdList')), 0), variables('virtualNetworkRulesCopy'), variables('virtualNetworkRulesEmpty'))]"
+  },
+  "resources": [
+    {
+      "name": "[parameters('cosmosDbName')]",
+      "type": "Microsoft.DocumentDB/databaseAccounts",
+      "apiVersion": "2015-04-08",
+      "location": "[resourceGroup().location]",
+      "kind": "[parameters('cosmosDbType')]",
+      "properties": {
+        "consistencyPolicy": {
+          "defaultConsistencyLevel": "[parameters('defaultConsistencyLevel')]"
+        },
+        "databaseAccountOfferType": "Standard",
+        "ipRangeFilter": "[parameters('ipRangeFilter')]",
+        "isVirtualNetworkFilterEnabled": "[if(greater(length(variables('virtualNetworkRules')), 0), bool('true'), bool('false'))]",
+        "virtualNetworkRules": "[variables('virtualNetworkRules')]"
+      }
+    }
+  ],
+  "outputs": {
+    "PrimaryMasterKey": {
+      "type": "string",
+      "value": "[listKeys(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('cosmosDbName')), '2015-04-08').primaryMasterKey]"
+    },
+    "PrimaryReadonlyMasterKey": {
+      "type": "string",
+      "value": "[listKeys(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('cosmosDbName')), '2015-04-08').primaryReadonlyMasterKey]"
+    }
+  }
+}
