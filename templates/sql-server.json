@@ -1,0 +1,183 @@
+{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "sqlServerName": {
+      "type": "string",
+      "metadata": {
+        "description": "Name of the Azure SQL Server  instance"
+      }
+    },
+    "sqlServerLocation": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "allowedValues": [
+        "westeurope",
+        "northeurope"
+      ]
+    },
+    "sqlServerAdminUserName": {
+      "type": "string",
+      "metadata": {
+        "description": "The Azure SQL Server Administrator (SA) username "
+      }
+    },
+    "sqlServerAdminPassword": {
+      "type": "securestring",
+      "metadata": {
+        "description": "The Azure SQL Server Administrator (SA) password"
+      }
+    },
+    "sqlServerActiveDirectoryAdminLogin": {
+      "type": "string",
+      "metadata": {
+        "description": "The active directory admin that will be assigned to the SQL server"
+      }
+    },
+    "sqlServerActiveDirectoryAdminObjectId": {
+      "type": "string",
+      "metadata": {
+        "description": "The object id of the active directory admin that will be assigned to the SQL server"
+      }
+    },
+    "threatDetectionEmailAddress": {
+      "type": "string",
+      "metadata": {
+        "description": "The email address that threat alerts will be sent to"
+      }
+    },
+    "sqlStorageAccountName": {
+      "type": "string",
+      "metadata": {
+        "description": "Name of the SQL logs storage account for the environment"
+      }
+    },
+    "logAnalyticsWorkspaceName": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "The name of the OMS workspace that will collect audit events"
+      }
+    },
+    "logAnalyticsWorkspaceResourceGroupName": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "The name of the OMS workspace resource group that will collect audit events"
+      }
+    },
+    "logAnalyticsWorkspaceSubscriptionId": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "The id of the OMS workspace subscription that will collect audit events"
+      }
+    }
+  },
+  "variables": {
+    "auditPolicyName": "[concat(parameters('sqlServerName'), '-DefaultAuditPolicy')]",
+    "securityAlertPolicyName": "[concat(parameters('sqlServerName'), '-DefaultSecurityAlert')]",
+    "diagnosticSettingName": "SQLSecurityAuditEvents_3d229c42-c7e7-4c97-9a99-ec0d0d8b86c1"
+  },
+  "resources": [
+    {
+      "name": "[parameters('sqlServerName')]",
+      "type": "Microsoft.Sql/servers",
+      "apiVersion": "2015-05-01-preview",
+      "location": "[parameters('sqlServerLocation')]",
+      "properties": {
+        "administratorLogin": "[parameters('sqlServerAdminUserName')]",
+        "administratorLoginPassword": "[parameters('sqlServerAdminPassword')]"
+      },
+      "resources": [
+        {
+          "type": "databases",
+          "apiVersion": "2017-10-01-preview",
+          "location": "[parameters('sqlServerLocation')]",
+          "name": "master",
+          "properties": {},
+          "dependsOn": [
+            "[parameters('sqlServerName')]"
+          ]
+        },
+        {
+          "condition": "[greater(length(parameters('logAnalyticsWorkspaceName')), 0)]",
+          "type": "databases/providers/diagnosticSettings",
+          "name": "[concat('master/microsoft.insights/',variables('diagnosticSettingName'))]",
+          "apiVersion": "2017-05-01-preview",
+          "properties": {
+            "name": "[variables('diagnosticSettingName')]",
+            "workspaceId": "[resourceId(parameters('logAnalyticsWorkspaceSubscriptionId'), parameters('logAnalyticsWorkspaceResourceGroupName'), 'Microsoft.OperationalInsights/workspaces', parameters('logAnalyticsWorkspaceName'))]",
+            "logs": [
+              {
+                "category": "SQLSecurityAuditEvents",
+                "enabled": true,
+                "retentionPolicy": {
+                  "days": 0,
+                  "enabled": false
+                }
+              }
+            ]
+          },
+          "dependsOn": [
+            "[concat('Microsoft.Sql/servers/', parameters('sqlServerName'), '/databases/master')]",
+            "[concat('Microsoft.Sql/servers/', parameters('sqlServerName'))]"
+          ]
+        },
+        {
+          "apiVersion": "2017-03-01-preview",
+          "type": "auditingSettings",
+          "name": "[variables('AuditPolicyName')]",
+          "dependsOn": [
+            "[concat('Microsoft.Sql/servers/', parameters('sqlServerName'))]"
+          ],
+          "properties": {
+            "state": "Enabled",
+            "storageEndpoint": "[concat('https://', parameters('sqlStorageAccountName'), '.blob.core.windows.net/')]",
+            "storageAccountAccessKey": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('sqlStorageAccountName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value]",
+            "retentionDays": 90,
+            "auditActionsAndGroups": [
+              "BATCH_COMPLETED_GROUP",
+              "SUCCESSFUL_DATABASE_AUTHENTICATION_GROUP",
+              "FAILED_DATABASE_AUTHENTICATION_GROUP"
+            ],
+            "isAzureMonitorTargetEnabled": true
+          }
+        },
+        {
+          "apiVersion": "2017-03-01-preview",
+          "type": "securityAlertPolicies",
+          "name": "[variables('SecurityAlertPolicyName')]",
+          "dependsOn": [
+            "[concat('Microsoft.Sql/servers/', parameters('sqlServerName'))]",
+            "[concat('Microsoft.Sql/servers/', parameters('sqlServerName'), '/auditingSettings/', variables('AuditPolicyName'))]"
+          ],
+          "properties": {
+            "state": "Enabled",
+            "emailAddresses": [
+              "[parameters('threatDetectionEmailAddress')]"
+            ],
+            "emailAccountAdmins": false,
+            "retentionDays": 90
+          }
+        },
+        {
+          "type": "administrators",
+          "name": "activeDirectory",
+          "apiVersion": "2014-04-01-preview",
+          "location": "[parameters('sqlServerLocation')]",
+          "properties": {
+            "administratorType": "ActiveDirectory",
+            "login": "[parameters('sqlServerActiveDirectoryAdminLogin')]",
+            "sid": "[parameters('sqlServerActiveDirectoryAdminObjectId')]",
+            "tenantId": "[subscription().tenantId]"
+          },
+          "dependsOn": [
+            "[concat('Microsoft.Sql/servers/', parameters('sqlServerName'))]"
+          ]
+        }
+      ]
+    }
+  ],
+  "outputs": {}
+}
