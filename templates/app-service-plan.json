@@ -33,7 +33,7 @@
       "type": "int"
     },
     "appServicePlanKind": {
-        "defaultValue": "linux",
+        "defaultValue": "windows",
         "allowedValues": [
             "linux",
             "windows"
