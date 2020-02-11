@@ -32,6 +32,22 @@
     "aspInstances": {
       "type": "int"
     },
+    "appServicePlanKind": {
+        "defaultValue": "linux",
+        "allowedValues": [
+            "linux",
+            "windows"
+        ],
+        "type": "String"
+    },
+    "aseAppServicePlanKind": {
+        "defaultValue": "ASEv2",
+        "allowedValues": [
+            "ASEv2",
+            "ASEv1"
+        ],
+        "type": "String"
+    },
     "nonASETier": {
       "type": "string",
       "allowedValues": [
@@ -80,6 +96,7 @@
       "apiVersion": "2016-09-01",
       "name": "[parameters('appServicePlanName')]",
       "location": "[parameters('aspLocation')]",
+      "kind": "[if(variables('DeployToASE'), parameters('aseAppServicePlanKind'), parameters('appServicePlanKind'))]",
       "properties": "[if(variables('DeployToASE'), variables('ASPResourceProperties').WithASE, variables('ASPResourceProperties').WithoutASE)]",
       "sku": "[if(variables('DeployToASE'), variables('defaultAppServicePlanSKUs').Isolated, variables('defaultAppServicePlanSKUs').NonASE)]"
     }
