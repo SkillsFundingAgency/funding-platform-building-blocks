@@ -231,6 +231,10 @@
       "type": "string",
       "value": "[reference(parameters('appServiceName'), variables('appServiceApiVersion'), 'Full').identity.principalId]"
     },
+    "managedServiceIdentity": {
+      "type": "object",
+      "value": "[reference(parameters('appServiceName'), variables('appServiceApiVersion'), 'Full').identity]"
+    },    
     "stagingManagedServiceIdentityId": {
       "condition": "[parameters('deployStagingSlot')]",
       "type": "string",
