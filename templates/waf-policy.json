@@ -10,7 +10,6 @@
             "type": "String"
         },
         "fileUploadLimitInMb": {
-            "defaultValue": 100,
             "type": "Int"
         },
         "firewallCustomRules": {
@@ -32,8 +31,10 @@
             "type": "Bool"
         },
         "maxRequestBodySizeInKb": {
-            "defaultValue": 128,
             "type": "Int"
+        },
+        "ruleSetVersion": {
+            "type": "String"
         },
         "wafManagedRulesExclusions": {
             "defaultValue": [
@@ -52,19 +53,10 @@
     "variables": {
         "disabledRuleGroups": {
             "fe": [
-                {
-                    "ruleGroupName": "REQUEST-920-PROTOCOL-ENFORCEMENT",
-                    "rules": [
-                        {
-                            "ruleId": "920420"
-                        }
-                    ]
-                }
             ],
             "be": [
             ]
         },
-        "ruleSetVersion": "3.1"
     },
     "resources": [
         {
@@ -86,7 +78,7 @@
                     "managedRuleSets": [
                         {
                             "ruleSetType": "OWASP",
-                            "ruleSetVersion": "[variables('ruleSetVersion')]",
+                            "ruleSetVersion": "[parameters('ruleSetVersion')]",
                             "ruleGroupOverrides": "[variables('disabledRuleGroups')[parameters('end')]]"
                         }
                     ]
