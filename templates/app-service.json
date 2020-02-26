@@ -96,13 +96,6 @@
         "description": "Resource ID of the subnet used for vNet integration"
       }
     },
-    "authSettings": {
-      "type": "object",
-      "defaultValue": {},
-      "metadata":{
-        "description": "Authentication settings for the app service"
-      }
-    },
     "ftpsState": {
       "type": "string",
       "defaultValue": "Disabled",
@@ -207,16 +200,6 @@
         "subnetResourceId": "[parameters('subnetResourceId')]",
         "swiftSupported": true
       },
-      "dependsOn": [
-        "[resourceId('Microsoft.Web/sites', parameters('appServiceName'))]"
-      ]
-    },
-    {
-      "type": "Microsoft.Web/sites/config",
-      "name":"[concat(parameters('appServiceName'), '/authsettings')]",
-      "apiVersion":"2018-11-01",
-      "condition": "[not(empty(parameters('authSettings')))]",
-      "properties": "[parameters('authSettings')]",
       "dependsOn": [
         "[resourceId('Microsoft.Web/sites', parameters('appServiceName'))]"
       ]
