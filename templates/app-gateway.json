@@ -1,0 +1,316 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "applicationGatewayName": {
+            "type": "String"
+        },
+        "autoscalemaxCapacity": {
+            "defaultValue": 2,
+            "type": "Int"
+        },
+        "backendAddressPools": {
+            "type": "Array"
+        },
+        "backendHttpSettingsCollection": {
+            "type": "Array"
+        },
+        "firewallPolicyName": {
+            "type": "String"
+        },
+        "httpListeners": {
+            "type": "Array"
+        },
+        "logRetentionDays": {
+            "defaultValue": 30,
+            "type": "Int"
+        },
+        "logAnalyticsWorkspaceResourceGroupName": {
+            "type": "String"
+        },
+        "logAnalyticsWorkspaceName": {
+            "type": "String"
+        },
+        "probes": {
+            "defaultValue": "Standard",
+            "type": "Array"
+        },
+        "publicIpAddressName": {
+            "type": "String"
+        },
+        "redirectConfigs": {
+            "type": "Array"
+        },
+        "requestRoutingRules": {
+            "type": "Array"
+        },
+        "sharedVirtualNetworkResourceGroupName": {
+            "type": "String"
+        },
+        "staticPrivateIp": {
+            "type": "String"
+        },
+        "sslCertificates": {
+            "type": "Array"
+        },
+        "sslPolicyName": {
+            "defaultValue": "AppGwSslPolicy20170401SMinusTLS_RSA",
+            "allowedValues": [
+                "AppGwSslPolicy20150501",
+                "AppGwSslPolicy20170401",
+                "AppGwSslPolicy20170401S",
+                "AppGwSslPolicy20170401SMinusTLS_RSA"
+            ],
+            "type": "String"
+        },
+        "subnetName": {
+            "type": "String"
+        },
+        "urlPathMaps": {
+            "type": "Array"
+        },
+        "userAssignedIdentityName": {
+            "type": "String"
+        },
+        "UseStaticPrivateIP": {
+            "allowedValues": [
+                "True",
+                "False"
+            ],
+            "type": "String"
+        },
+        "virtualNetworkName": {
+            "type": "String"
+        }
+    },
+    "variables": {
+        "workspaceId": "[resourceId(parameters('logAnalyticsWorkspaceResourceGroupName'), 'Microsoft.OperationalInsights/workspaces', parameters('logAnalyticsWorkspaceName'))]",
+        "subnetId": "[resourceId(parameters('sharedVirtualNetworkResourceGroupName'),'Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), parameters('subnetName'))]",
+        "frontendIPConfigurationProperties": {
+            "WithStaticPrivateIP": [
+                {
+                    "name": "appGwPublicFrontendIp",
+                    "properties": {
+                        "privateIPAllocationMethod": "Dynamic",
+                        "publicIPAddress": {
+                            "id": "[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIpAddressName'))]"
+                        }
+                    }
+                },
+                {
+                    "name": "appGwPrivateFrontendIp",
+                    "properties": {
+                        "privateIPAddress": "[parameters('staticPrivateIp')]",
+                        "privateIPAllocationMethod": "Static",
+                        "subnet": {
+                            "id": "[variables('subnetId')]"
+                        }
+                    }
+                }
+            ],
+            "WithoutStaticPrivateIP": [
+                {
+                    "name": "appGwPublicFrontendIp",
+                    "properties": {
+                        "privateIPAllocationMethod": "Dynamic",
+                        "publicIPAddress": {
+                            "id": "[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIpAddressName'))]"
+                        }
+                    }
+                }
+            ]
+        },
+        "AppGwSslPolicy20150501": {
+            "policyType": "Predefined",
+            "policyName": "AppGwSslPolicy20150501"
+        },
+        "AppGwSslPolicy20170401": {
+            "policyType": "Predefined",
+            "policyName": "AppGwSslPolicy20170401"
+        },
+        "AppGwSslPolicy20170401S": {
+            "policyType": "Predefined",
+            "policyName": "AppGwSslPolicy20170401S"
+        },
+        "AppGwSslPolicy20170401SMinusTLS_RSA": {
+            "policyType": "Custom",
+            "minProtocolVersion": "TLSv1_2",
+            "cipherSuites": [
+                "TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256",
+                "TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384",
+                "TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA",
+                "TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA",
+                "TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256",
+                "TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA384",
+                "TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384",
+                "TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256",
+                "TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA",
+                "TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA",
+                "TLS_RSA_WITH_AES_256_CBC_SHA256"
+            ]
+        }
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Network/applicationGateways",
+            "apiVersion": "2019-09-01",
+            "name": "[parameters('applicationGatewayName')]",
+            "location": "[resourceGroup().location]",
+            "dependsOn": [
+            ],
+            "identity": {
+                "type": "UserAssigned",
+                "userAssignedIdentities": {
+                    "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities/', parameters('userAssignedIdentityName'))]": {
+                    }
+                }
+            },
+            "properties": {
+                "sku": {
+                    "name": "WAF_v2",
+                    "tier": "WAF_v2"
+                },
+                "sslPolicy": "[variables(parameters('sslPolicyName'))]",
+                "gatewayIPConfigurations": [
+                    {
+                        "name": "appGatewayIpConfig",
+                        "properties": {
+                            "subnet": {
+                                "id": "[variables('subnetId')]"
+                            }
+                        }
+                    }
+                ],
+                "sslCertificates": "[parameters('sslCertificates')]",
+                "trustedRootCertificates": [
+                ],
+                "frontendIPConfigurations": "[if(equals(parameters('UseStaticPrivateIP'),'True'), variables('frontendIPConfigurationProperties').WithStaticPrivateIP, variables('frontendIPConfigurationProperties').WithoutStaticPrivateIP)]",
+                "frontendPorts": [
+                    {
+                        "name": "port_443",
+                        "properties": {
+                            "port": 443
+                        }
+                    },
+                    {
+                        "name": "port_80",
+                        "properties": {
+                            "port": 80
+                        }
+                    }
+                ],
+                "backendAddressPools": "[parameters('backendAddressPools')]",
+                "backendHttpSettingsCollection": "[parameters('backendHttpSettingsCollection')]",
+                "httpListeners": "[parameters('httpListeners')]",
+                "urlPathMaps": "[parameters('urlPathMaps')]",
+                "requestRoutingRules": "[parameters('requestRoutingRules')]",
+                "probes": "[parameters('probes')]",
+                "rewriteRuleSets": [
+                    {
+                        "name": "DefaultHeaderRules",
+                        "properties": {
+                            "rewriteRules": [
+                                {
+                                    "ruleSequence": 100,
+                                    "conditions": [
+                                    ],
+                                    "name": "AddHSTSHeader",
+                                    "actionSet": {
+                                        "requestHeaderConfigurations": [
+                                        ],
+                                        "responseHeaderConfigurations": [
+                                            {
+                                                "headerName": "Strict-Transport-Security",
+                                                "headerValue": "max-age=31536000"
+                                            }
+                                        ]
+                                    }
+                                },
+                                {
+                                    "ruleSequence": 101,
+                                    "conditions": [
+                                    ],
+                                    "name": "RemoveServerInfoHeaders",
+                                    "actionSet": {
+                                        "requestHeaderConfigurations": [
+                                        ],
+                                        "responseHeaderConfigurations": [
+                                            {
+                                                "headerName": "Server"
+                                            },
+                                            {
+                                                "headerName": "x-powered-by"
+                                            },
+                                            {
+                                                "headerName": "x-aspnet-version"
+                                            }
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                ],
+                "redirectConfigurations": "[parameters('redirectConfigs')]",
+                "enableHttp2": true,
+                "autoscaleConfiguration": {
+                    "minCapacity": 0,
+                    "maxCapacity": "[parameters('autoscalemaxCapacity')]"
+                },
+                "firewallPolicy": {
+                    "id": "[resourceId('Microsoft.Network/ApplicationGatewayWebApplicationFirewallPolicies', parameters('firewallPolicyName'))]"
+                }
+            },
+            "resources": [
+                {
+                    "type": "providers/diagnosticSettings",
+                    "apiVersion": "2015-07-01",
+                    "name": "Microsoft.Insights/service",
+                    "location": "[resourceGroup().location]",
+                    "dependsOn": [
+                        "[resourceId('Microsoft.Network/applicationGateways', parameters('applicationGatewayName'))]"
+                    ],
+                    "properties": {
+                        "workspaceId": "[variables('workspaceId')]",
+                        "logs": [
+                            {
+                                "category": "ApplicationGatewayAccessLog",
+                                "enabled": true,
+                                "retentionPolicy": {
+                                    "enabled": true,
+                                    "days": "[parameters('LogRetentionDays')]"
+                                }
+                            },
+                            {
+                                "category": "ApplicationGatewayPerformanceLog",
+                                "enabled": true,
+                                "retentionPolicy": {
+                                    "enabled": true,
+                                    "days": "[parameters('LogRetentionDays')]"
+                                }
+                            },
+                            {
+                                "category": "ApplicationGatewayFirewallLog",
+                                "enabled": true,
+                                "retentionPolicy": {
+                                    "enabled": true,
+                                    "days": "[parameters('LogRetentionDays')]"
+                                }
+                            }
+                        ],
+                        "metrics": [
+                            {
+                                "timeGrain": "PT1M",
+                                "enabled": true,
+                                "retentionPolicy": {
+                                    "enabled": true,
+                                    "days": "[parameters('LogRetentionDays')]"
+                                }
+                            }
+                        ]
+                    }
+                }
+            ]
+        }
+    ]
+}
