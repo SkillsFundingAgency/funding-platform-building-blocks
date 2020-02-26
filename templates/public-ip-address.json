@@ -29,6 +29,27 @@
       "metadata": {
         "description": "The public IP address allocation method"
       }
+    },
+    "DNSLabel": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional domain name label for the ip address"
+      }
+    }
+  },
+  "variables": {
+    "shouldIncludeDNSLabel": "[greater(length(parameters('DNSLabel')),0)]",
+    "properties": {
+      "withDNSLabel": {
+        "publicIPAllocationMethod": "[parameters('publicIPAllocationMethod')]",
+        "dnsSettings": {
+          "domainNameLabel": "[parameters('DNSLabel')]"
+        }
+      },
+      "withoutDNSLabel": {
+        "publicIPAllocationMethod": "[parameters('publicIPAllocationMethod')]"
+        }      
     }
   },
   "resources": [
@@ -40,15 +61,17 @@
       "sku": {
         "name": "[parameters('sku')]"
       },
-      "properties": {
-        "publicIPAllocationMethod": "[parameters('publicIPAllocationMethod')]"
-      }
+      "properties": "[if(variables('shouldIncludeDNSLabel'), variables('properties').withDNSLabel, variables('properties').withoutDNSLabel)]"      
     }
   ],
   "outputs": {
     "PublicIPAddress": {
       "type": "string",
       "value": "[reference(resourceId('Microsoft.Network/publicIPAddresses',parameters('publicIPAddressName')),providers('Microsoft.Network', 'publicIPAddresses').apiVersions[0]).ipAddress]"
+    },
+    "FQDN": {
+      "type": "string",
+      "value": "[reference(resourceId('Microsoft.Network/publicIPAddresses',parameters('publicIPAddressName')),providers('Microsoft.Network', 'publicIPAddresses').apiVersions[0]).FQDN]"
     }
   }
 }
