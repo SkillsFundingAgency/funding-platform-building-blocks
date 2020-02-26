@@ -1,0 +1,97 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "end": {
+            "allowedValues": [
+                "fe",
+                "be"
+            ],
+            "type": "String"
+        },
+        "fileUploadLimitInMb": {
+            "defaultValue": 100,
+            "type": "Int"
+        },
+        "firewallCustomRules": {
+            "type": "Array"
+        },
+        "firewallMode": {
+            "defaultValue": "Detection",
+            "allowedValues": [
+                "Detection",
+                "Prevention"
+            ],
+            "type": "String"
+        },
+        "firewallPolicyName": {
+            "type": "String"
+        },
+        "requestBodyCheck": {
+            "defaultValue": true,
+            "type": "Bool"
+        },
+        "maxRequestBodySizeInKb": {
+            "defaultValue": 128,
+            "type": "Int"
+        },
+        "wafManagedRulesExclusions": {
+            "defaultValue": [
+            ],
+            "type": "array"
+        },
+        "wafState": {
+            "defaultValue": "Enabled",
+            "allowedValues": [
+                "Enabled",
+                "Disabled"
+            ],
+            "type": "String"
+        }
+    },
+    "variables": {
+        "disabledRuleGroups": {
+            "fe": [
+                {
+                    "ruleGroupName": "REQUEST-920-PROTOCOL-ENFORCEMENT",
+                    "rules": [
+                        {
+                            "ruleId": "920420"
+                        }
+                    ]
+                }
+            ],
+            "be": [
+            ]
+        },
+        "ruleSetVersion": "3.1"
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Network/ApplicationGatewayWebApplicationFirewallPolicies",
+            "apiVersion": "2019-09-01",
+            "name": "[parameters('firewallPolicyName')]",
+            "location": "[resourceGroup().location]",
+            "properties": {
+                "policySettings": {
+                    "state": "[parameters('wafState')]",
+                    "mode": "[parameters('firewallMode')]",
+                    "requestBodyCheck": "[parameters('requestBodyCheck')]",
+                    "maxRequestBodySizeInKb": "[parameters('maxRequestBodySizeInKb')]",
+                    "fileUploadLimitInMb": "[parameters('fileUploadLimitInMb')]"
+                },
+                "customRules": "[parameters('firewallCustomRules')]",
+                "managedRules": {
+                    "exclusions": "[parameters('wafManagedRulesExclusions')]",
+                    "managedRuleSets": [
+                        {
+                            "ruleSetType": "OWASP",
+                            "ruleSetVersion": "[variables('ruleSetVersion')]",
+                            "ruleGroupOverrides": "[variables('disabledRuleGroups')[parameters('end')]]"
+                        }
+                    ]
+                }
+            }
+        }
+    ]
+}
