@@ -95,6 +95,15 @@
       "metadata": {
         "description": "Resource ID of the subnet used for vNet integration"
       }
+    },
+    "ftpsState": {
+      "type": "string",
+      "defaultValue": "Disabled",
+      "allowedValues": [
+        "AllAllowed",
+        "FtpsOnly",
+        "Disabled"
+      ]
     }
   },
   "variables": {
@@ -122,7 +131,8 @@
           "appSettings": "[parameters('appServiceAppSettings')]",
           "connectionStrings": "[parameters('appServiceConnectionStrings')]",
           "virtualApplications": "[parameters('appServiceVirtualApplications')]",
-          "ipSecurityRestrictions": "[parameters('ipSecurityRestrictions')]"
+          "ipSecurityRestrictions": "[parameters('ipSecurityRestrictions')]",
+          "ftpsState": "[parameters('ftpsState')]"
         },
         "httpsOnly": true
       },
@@ -204,6 +214,10 @@
       "type": "string",
       "value": "[reference(parameters('appServiceName'), variables('appServiceApiVersion'), 'Full').identity.principalId]"
     },
+    "managedServiceIdentity": {
+      "type": "object",
+      "value": "[reference(parameters('appServiceName'), variables('appServiceApiVersion'), 'Full').identity]"
+    },    
     "stagingManagedServiceIdentityId": {
       "condition": "[parameters('deployStagingSlot')]",
       "type": "string",
