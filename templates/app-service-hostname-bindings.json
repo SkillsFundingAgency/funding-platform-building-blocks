@@ -1,0 +1,30 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "appServiceName": {
+      "type": "string"
+    },
+    "customHostName": {
+      "type": "string"
+    },
+    "certificateThumbprint": {
+      "type": "string",
+      "metadata": {
+        "description": "This can be passed into the template via the reference function: [reference(resourceId(parameters('certificateResourceGroup'), 'Microsoft.Web/certificates', parameters('certificateName')), '2016-03-01').Thumbprint]"
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Web/sites/hostnameBindings",
+      "name": "[concat(parameters('appServiceName'), '/', parameters('customHostname'))]",
+      "apiVersion": "2018-11-01",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "sslState": "SniEnabled",
+        "thumbprint": "[parameters('certificateThumbprint')]"
+      }
+    }
+  ]
+}
