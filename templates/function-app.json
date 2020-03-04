@@ -85,9 +85,13 @@
       "type": "string",
       "value": "[reference(parameters('functionAppName'), variables('functionAppApiVersion'), 'Full').identity.principalId]"
     },
-     "possibleOutboundIpAddresses": {
-       "type": "array",
-       "value": "[split(reference(parameters('functionAppName')).possibleOutboundIpAddresses, ',')]"
+    "possibleOutboundIpAddresses": {
+      "type": "array",
+      "value": "[split(reference(parameters('functionAppName')).possibleOutboundIpAddresses, ',')]"
+    },
+    "possibleOutboundIpAddressesAsString": {
+      "type": "string",
+      "value": "[reference(parameters('functionAppName')).possibleOutboundIpAddresses]"
     }
   }
 }

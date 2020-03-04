@@ -1,0 +1,51 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the resource group to create"
+      }
+    },
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "The location in which to create the resource group"
+      }
+    },
+    "tags": {
+      "type": "object",
+      "metadata": {
+        "description": "The tags applied to the resource group"
+      }
+    }  
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Resources/Deployments",
+      "name": "[parameters('resourceGroupName')]",
+      "apiVersion": "2019-05-01",
+      "location": "[parameters('location')]",
+      "properties": {
+        "mode": "incremental", 
+        "template": 
+        {
+          "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [
+            {
+              "type": "Microsoft.Resources/resourceGroups",
+              "apiVersion": "2018-05-01",
+              "name": "[parameters('resourceGroupName')]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "properties": {
+              }
+            }
+          ]
+        }  
+      }
+    }
+  ]
+}
