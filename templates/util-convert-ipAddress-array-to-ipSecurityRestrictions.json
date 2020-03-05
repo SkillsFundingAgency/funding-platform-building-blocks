@@ -1,0 +1,42 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "ipAddressArray": {
+      "type": "array",
+      "metadata": {
+        "description": "A string array of ip addresses to build into a ipSecurityRestrictions array"
+      }
+    },
+    "ruleNamePrefix": {
+      "type": "string",
+      "maxLength": 26,
+      "metadata": {
+        "description": "Prefix to use in the name of the rules"
+      }
+    }
+  },
+  "variables": {
+    "outputArray": {
+      "copy": [
+        {
+          "name": "items",
+          "count": "[length(parameters('ipAddressArray'))]",
+          "input": {
+            "ipAddress": "[concat(parameters('ipAddressArray')[copyIndex('items')], '/32')]",
+            "action": "Allow",
+            "name": "[concat(parameters('ruleNamePrefix'), copyIndex('items', 1))]",
+            "priority": "[add(100, mul(copyIndex('items'), 10))]"
+          }
+        }
+      ]
+    }
+  },
+  "resources": [],
+  "outputs": {
+    "ipSecurityRestrictions": {
+      "value": "[variables('outputArray').items]",
+      "type": "array"
+    }
+  }
+}
