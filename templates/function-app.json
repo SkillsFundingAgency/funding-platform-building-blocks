@@ -30,6 +30,13 @@
         "description": "This can be passed into the template via the reference function: [reference(resourceId(parameters('certificateResourceGroup'), 'Microsoft.Web/certificates', parameters('certificateName')), '2016-03-01').Thumbprint]"
       }
     },
+    "subnetResourceId": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Resource ID of the subnet used for vNet integration"
+      }
+    },
     "ipSecurityRestrictions": {
       "type": "array",
       "defaultValue": [],
@@ -74,6 +81,20 @@
       "properties": {
         "sslState": "SniEnabled",
         "thumbprint": "[parameters('certificateThumbprint')]"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/sites', parameters('functionAppName'))]"
+      ]
+    },
+    {
+      "type": "Microsoft.Web/sites/config",
+      "condition": "[greater(length(parameters('subnetResourceId')), 0)]",
+      "name": "[concat(parameters('functionAppName'), '/virtualNetwork')]",
+      "apiVersion": "2018-11-01",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "subnetResourceId": "[parameters('subnetResourceId')]",
+        "swiftSupported": true
       },
       "dependsOn": [
         "[resourceId('Microsoft.Web/sites', parameters('functionAppName'))]"
