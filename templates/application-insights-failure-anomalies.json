@@ -1,0 +1,59 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "appInsightsName": {
+            "type": "string",
+            "metadata": {
+                "description": "The name of the app insights instance."
+            }
+        },
+        "resourceGroup": {
+            "type": "string",
+            "defaultValue": "[resourceGroup().name]",
+            "metadata": {
+                "description": "The name of the resource group that contains the app insights instance."
+            }
+        },
+        "actionGroupResourceId": {
+            "type": "string",
+            "metadata": {
+                "description": "The resource id of the action group that will be associated with this rule."
+            }
+        },
+        "severity": {
+            "type": "string",
+            "defaultValue": "2",
+            "allowedValues": [
+                "1",
+                "2",
+                "3"
+            ]
+        }
+    },
+    "resources": [
+        {
+            "type": "microsoft.alertsmanagement/smartdetectoralertrules",
+            "apiVersion": "2019-03-01",
+            "name": "[concat('Failure Anomalies - ', parameters('appInsightsName'))]",
+            "location": "global",
+            "properties": {
+                "description": "Failure Anomalies notifies you of an unusual rise in the rate of failed HTTP requests or dependency calls.",
+                "state": "Enabled",
+                "severity": "[parameters('severity')]",
+                "frequency": "PT1M",
+                "detector": {
+                    "id": "FailureAnomaliesDetector"
+                },
+                "scope": [
+                    "[resourceId(parameters('resourceGroup'), 'Microsoft.Insights/components', parameters('appInsightsName'))]"
+                ],
+                "actionGroups": {
+                    "groupIds": [
+                        "[parameters('actionGroupResourceId')]"
+                    ]
+                }
+            }
+        }
+    ]
+}
