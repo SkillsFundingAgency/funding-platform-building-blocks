@@ -1,0 +1,47 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "accountName": {
+      "type": "string"
+    },
+    "databaseName": {
+      "type": "string"
+    },
+    "containerName": {
+      "type": "string"
+    },
+    "partitionKeyPaths": {
+      "type": "array",
+      "defaultValue": [
+      ]
+    },
+    "partitionKeyKind": {
+      "type": "string",
+      "defaultValue": "Hash",
+      "allowedValues": [
+        "Hash",
+        "Range"
+      ]
+    }
+  },
+  "variables": {
+    "partitionKeySettings": {
+      "paths": "[parameters('partitionKeyPaths')]",
+      "kind": "[parameters('partitionKeyKind')]"
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers",
+      "name": "[concat(parameters('accountName'), '/', parameters('databaseName'), '/', parameters('containerName'))]",
+      "apiVersion": "2020-03-01",
+      "properties": {
+        "resource": {
+          "id": "[parameters('containerName')]",
+          "partitionKey": "[if(greater(length(parameters('partitionKeyPaths')), 0), variables('partitionKeySettings'), json('null'))]"
+        }
+      }
+    }
+  ]
+}
