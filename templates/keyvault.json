@@ -23,6 +23,34 @@
     "enableSoftDelete": {
       "type": "bool",
       "defaultValue": false
+    },
+    "settingName": {
+      "type": "String",
+      "defaultvalue": "keyVaultDiagSettings",
+      "metadata": {
+        "description": "The name of the diagnostic setting"
+      }
+    },
+    "workspaceId": {
+      "type": "String",
+      "defaultValue": "",
+      "metadata": {
+        "description": "ResourceID of the Log Analytics workspace in which resource logs should be saved."
+      }
+    },
+    "auditEventSetting": {
+      "type": "bool",
+      "defaultvalue": false,
+      "metadata": {
+        "description": "Audit Event diagnostic setting"
+      }
+    },
+    "allMetricsSetting": {
+      "type": "bool",
+      "defaultvalue": false,
+      "metadata": {
+        "description": "All Metrics diagnostic setting"
+      }
     }
   },
   "variables": {},
@@ -42,6 +70,31 @@
           "name": "Standard",
           "family": "A"
         }
+      }
+    },
+    {
+      "type": "Microsoft.KeyVault/vaults/providers/diagnosticSettings",
+      "condition": "[greater(length(parameters('workspaceId')), 0)]",
+      "apiVersion": "2017-05-01-preview",
+      "name": "[concat(parameters('keyVaultName'),'/microsoft.insights/', parameters('settingName'))]",
+      "dependsOn": [
+        "[parameters('keyVaultName')]"
+      ],
+      "properties": {
+        "name": "[parameters('settingName')]",
+        "workspaceId": "[parameters('workspaceId')]",
+        "logs": [
+          {
+            "category": "AuditEvent",
+            "enabled": "[parameters('auditEventSetting')]"
+          }
+        ],
+        "metrics": [
+          {
+            "category": "AllMetrics",
+            "enabled": "[parameters('allMetricsSetting')]"
+          }
+        ]
       }
     }
   ],
