@@ -31,12 +31,14 @@
         }
     },
     "variables": {
-        "webhookConfiguration": {
-            "name": "[parameters('webhookReceiverName')]",
-            "serviceUri": "[parameters('webhookServiceUri')]",
-            "useCommonAlertSchema": true
-        },
-        "webhookReciever": "[if(greater(length(parameters('webhookReceiverName')),0), variables('webhookConfiguration'), json('null'))]"
+        "webhookConfiguration": [
+            {
+                "name": "[parameters('webhookReceiverName')]",
+                "serviceUri": "[parameters('webhookServiceUri')]",
+                "useCommonAlertSchema": true
+            }
+        ],
+        "webhookReciever": "[if(greater(length(parameters('webhookReceiverName')),0), variables('webhookConfiguration'), json('[]'))]"
     },
     "resources": [
         {
@@ -51,9 +53,7 @@
                 ],
                 "emailReceivers": [
                 ],
-                "webhookReceivers": [
-                    "[variables('webhookReciever')]"
-                ]
+                "webhookReceivers": "[variables('webhookReciever')]"
             }
         }
     ],
