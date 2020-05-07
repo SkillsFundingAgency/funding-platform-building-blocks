@@ -79,6 +79,7 @@
         },
         "logAnalyticsWorkspaceName": {
             "type": "string",
+            "defaultValue": "",
             "metadata": {
                 "description": "The name of the log analytics workspace that will be used for monitoring"
             }
