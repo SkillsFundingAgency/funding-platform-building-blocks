@@ -124,7 +124,8 @@
                         "vmSize": "[parameters('agentVMSize')]",
                         "osType": "Linux",
                         "vnetSubnetID": "[variables('vnetSubnetID')]",
-                        "type": "VirtualMachineScaleSets"
+                        "type": "VirtualMachineScaleSets",
+                        "mode": "System"
                     }
                 ],
                 "addonProfiles": "[if(equals(parameters('logAnalyticsWorkspaceName'), ''), variables('addOnObject').noAddons, variables('addOnObject').omsAddon)]",
