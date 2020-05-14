@@ -12,9 +12,88 @@
     "appServiceLogRetentionMb": {
       "type": "string",
       "defaultValue": "30"
+    },
+    "applogToFs": {
+      "type": "string",
+      "defaultValue": "Off",
+      "allowedValues": [
+        "Off",
+        "Warning",
+        "Error",
+        "Information",
+        "Verbose"
+      ],
+      "metadata": {
+        "description": "Log Application Logs to Filesystem, default is Off"
+      }
+    },
+    "applogToBlob": {
+      "type": "string",
+      "defaultValue": "Off",
+      "allowedValues": [
+        "Off",
+        "Warning",
+        "Error",
+        "Information",
+        "Verbose"
+      ],
+      "metadata": {
+        "description": "Log Application Logs to Filesystem, default is Off"
+      }
+    },
+    "weblogToFs": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Log HTTP Logs to Filesystem, default is False"
+      }
+    },
+    "weblogToBlob": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Log HTTP Logs to Blob, default is False"
+      }
+    },
+    "failedRequestTracing": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Turn on failedRequestTracing, default is True"
+      }
+    },
+    "detailedErrorMessages": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Turn on detailedErrorMessages, default is True"
+      }
+    },
+    "sharedLogStorageAccount": {
+      "defaultValue": "",
+      "type": "string",
+      "metadata": {
+        "description": "Name of the Shared Storage Account for application and web server logging for this resource"
+      }
     }
   },
   "variables": {
+    "applicationLogBlobName": "[concat(parameters('appServiceResourceName'),'-application-logs')]",
+    "httpLogBlobName": "[concat(parameters('appServiceResourceName'),'-webserver-logs')]",
+    "serviceSasApplicationProperties": {
+      "canonicalizedResource": "[concat('/blob/', parameters('sharedLogStorageAccount'), '/', variables('applicationLogBlobName'))]",
+      "signedVersion ": "2018-03-28",
+      "signedResource": "c",
+      "signedPermission": "rwdl",
+      "signedExpiry": "2045-01-01T00:00:00Z"
+    },
+    "serviceSasWebServerProperties": {
+      "canonicalizedResource": "[concat('/blob/', parameters('sharedLogStorageAccount'), '/', variables('httpLogBlobName'))]",
+      "signedVersion ": "2018-03-28",
+      "signedResource": "c",
+      "signedPermission": "rwdl",
+      "signedExpiry": "2045-01-01T00:00:00Z"
+    }
   },
   "resources": [
     {
@@ -26,34 +105,35 @@
       "properties": {
         "applicationLogs": {
           "fileSystem": {
-            "level": "Off"
-          },
-          "azureTableStorage": {
-            "level": "Off",
-            "sasUrl": null
+            "level": "[parameters('applogToFs')]"
           },
           "azureBlobStorage": {
-            "level": "verbose",
-            "retentionInDays": "[parameters('appServiceLogRetentionDays')]"
+            "level": "[parameters('applogToBlob')]",
+            "retentionInDays": "[parameters('appServiceLogRetentionDays')]",
+            "sasUrl": "[concat('https://', parameters('sharedLogStorageAccount'), '.blob.core.windows.net/', variables('applicationLogBlobName'), '?', listServiceSas(concat('Microsoft.Storage/storageAccounts/', parameters('sharedLogStorageAccount')), '2018-07-01', variables('serviceSasApplicationProperties')).serviceSasToken)]"
           }
         },
         "httpLogs": {
           "fileSystem": {
             "retentionInMb": "[parameters('appServiceLogRetentionMb')]",
             "retentionInDays": "[parameters('appServiceLogRetentionDays')]",
-            "enabled": true
+            "enabled": "[parameters('weblogToFs')]"
+          },
+          "azureBlobStorage": {
+            "enabled": "[parameters('weblogToBlob')]",
+            "retentionInDays": "[parameters('appServiceLogRetentionDays')]",
+            "sasUrl": "[concat('https://', parameters('sharedLogStorageAccount'), '.blob.core.windows.net/', variables('httpLogBlobName'), '?', listServiceSas(concat('Microsoft.Storage/storageAccounts/', parameters('sharedLogStorageAccount')), '2018-07-01', variables('serviceSasWebServerProperties')).serviceSasToken)]"
           }
         },
         "failedRequestsTracing": {
-          "enabled": true
+          "enabled": "[parameters('failedRequestTracing')]"
         },
         "detailedErrorMessages": {
-          "enabled": true
+          "enabled": "[parameters('detailedErrorMessages')]"
         }
       }
     }
   ],
   "outputs": {
-
   }
 }
