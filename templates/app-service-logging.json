@@ -78,17 +78,17 @@
     }
   },
   "variables": {
-    "ApplicationLogBlobName": "[concat(parameters('appServiceResourceName'),'-application-logs')]",
-    "HttpLogBlobName": "[concat(parameters('appServiceResourceName'),'-webserver-logs')]",
+    "applicationLogBlobName": "[concat(parameters('appServiceResourceName'),'-application-logs')]",
+    "httpLogBlobName": "[concat(parameters('appServiceResourceName'),'-webserver-logs')]",
     "serviceSasApplicationProperties": {
-      "canonicalizedResource": "[concat('/blob/', parameters('sharedLogStorageAccount'), '/', variables('ApplicationLogBlobName'))]",
+      "canonicalizedResource": "[concat('/blob/', parameters('sharedLogStorageAccount'), '/', variables('applicationLogBlobName'))]",
       "signedVersion ": "2018-03-28",
       "signedResource": "c",
       "signedPermission": "rwdl",
       "signedExpiry": "2045-01-01T00:00:00Z"
     },
     "serviceSasWebServerProperties": {
-      "canonicalizedResource": "[concat('/blob/', parameters('sharedLogStorageAccount'), '/', variables('HttpLogBlobName'))]",
+      "canonicalizedResource": "[concat('/blob/', parameters('sharedLogStorageAccount'), '/', variables('httpLogBlobName'))]",
       "signedVersion ": "2018-03-28",
       "signedResource": "c",
       "signedPermission": "rwdl",
@@ -110,7 +110,7 @@
           "azureBlobStorage": {
             "level": "[parameters('applogToBlob')]",
             "retentionInDays": "[parameters('appServiceLogRetentionDays')]",
-            "sasUrl": "[concat('https://', parameters('sharedLogStorageAccount'), '.blob.core.windows.net/', variables('ApplicationLogBlobName'), '?', listServiceSas(concat('Microsoft.Storage/storageAccounts/', parameters('sharedLogStorageAccount')), '2018-07-01', variables('serviceSasApplicationProperties')).serviceSasToken)]"
+            "sasUrl": "[concat('https://', parameters('sharedLogStorageAccount'), '.blob.core.windows.net/', variables('applicationLogBlobName'), '?', listServiceSas(concat('Microsoft.Storage/storageAccounts/', parameters('sharedLogStorageAccount')), '2018-07-01', variables('serviceSasApplicationProperties')).serviceSasToken)]"
           }
         },
         "httpLogs": {
@@ -122,7 +122,7 @@
           "azureBlobStorage": {
             "enabled": "[parameters('weblogToBlob')]",
             "retentionInDays": "[parameters('appServiceLogRetentionDays')]",
-            "sasUrl": "[concat('https://', parameters('sharedLogStorageAccount'), '.blob.core.windows.net/', variables('HttpLogBlobName'), '?', listServiceSas(concat('Microsoft.Storage/storageAccounts/', parameters('sharedLogStorageAccount')), '2018-07-01', variables('serviceSasWebServerProperties')).serviceSasToken)]"
+            "sasUrl": "[concat('https://', parameters('sharedLogStorageAccount'), '.blob.core.windows.net/', variables('httpLogBlobName'), '?', listServiceSas(concat('Microsoft.Storage/storageAccounts/', parameters('sharedLogStorageAccount')), '2018-07-01', variables('serviceSasWebServerProperties')).serviceSasToken)]"
           }
         },
         "failedRequestsTracing": {
