@@ -43,5 +43,11 @@
                 }
             }
         }
-    ]
+    ],
+    "outputs": {
+        "workspaceId": {
+            "type": "string",
+            "value": "[reference(parameters('logAnalyticsName').customerId)]"
+        }
+    }
 }
