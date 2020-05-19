@@ -47,7 +47,7 @@
     "outputs": {
         "workspaceId": {
             "type": "string",
-            "value": "[reference(parameters('logAnalyticsName').customerId)]"
+            "value": "[reference(parameters('logAnalyticsName')).customerId]"
         }
     }
 }
