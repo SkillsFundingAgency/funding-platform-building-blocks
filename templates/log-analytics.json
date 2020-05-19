@@ -6,18 +6,26 @@
             "type": "String"
         },
         "logAnalyticsLocation": {
-        "type": "string",
-        "allowedValues": [
-            "North Europe",
-            "West Europe"
-        ],
-        "defaultValue": "West Europe"
+            "type": "string",
+            "allowedValues": [
+                "North Europe",
+                "West Europe"
+            ],
+            "defaultValue": "West Europe"
         },
         "logAnalyticsSku": {
-            "type": "String"
+            "type": "String",
+            "defaultValue": "pergb2018",
+            "metadata": {
+                "description": "Pricing Tier for Log Analytics"
+            }
         },
         "logAnalyticsSearchVersion": {
-            "type": "Int"
+            "type": "Int",
+            "defaultValue": 1,
+            "metadata": {
+                "description": "Current SearchVersion for Log Analytics (1)"
+            }
         }
     },
     "resources": [
