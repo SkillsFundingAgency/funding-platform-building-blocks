@@ -47,7 +47,7 @@
     "outputs": {
         "workspaceId": {
             "type": "string",
-            "value": "[reference(parameters('logAnalyticsName')).customerId]"
+            "value": "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('logAnalyticsName'))]"
         }
     }
 }
