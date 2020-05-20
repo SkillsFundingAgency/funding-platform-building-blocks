@@ -1,0 +1,32 @@
+﻿{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "appConfigName": {
+            "type": "string"
+        },
+        "appConfigSku": {
+            "type": "string",
+            "defaultValue": "Free",
+            "allowedValues": [
+                "Free",
+                "Standard"
+            ]
+        }
+    },
+    "resources": [
+        {
+            "name": "[parameters('appConfigName')]",
+            "type": "Microsoft.AppConfiguration/configurationStores",
+            "apiVersion": "2019-10-01",
+            "location": "[resourceGroup().location]",
+            "tags": {
+            },
+            "sku": {
+                "name": "[parameters('appConfigSku')]"
+            }
+        }
+    ],
+    "outputs": {
+    }
+}

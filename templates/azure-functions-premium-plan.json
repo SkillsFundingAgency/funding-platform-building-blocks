@@ -1,0 +1,57 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "hostingPlanName": {
+      "type": "string"
+    },
+    "hostingPlanLocation": {
+      "type": "string",
+      "allowedValues": [
+        "North Europe",
+        "West Europe"
+      ],
+      "defaultValue": "West Europe"
+    },
+    "hostingPlanSize": {
+      "type": "int",
+      "defaultValue": 1,
+      "minValue": 1,
+      "maxValue": 3,
+      "metadata": {
+        "description": "The hosting plan SKU name"
+      }
+    },
+    "hostingPlanWorkerCount": {
+      "type": "int",
+      "defaultValue": 1,
+      "metadata": {
+        "description": "The initial number of instances given to the hosting plan"
+      }
+    },
+    "hostingPlanMaxWorkerCount": {
+      "type": "int",
+      "defaultValue": 1,
+      "metadata": {
+        "description": "The  number of burstable instances the plan can scale out to"
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Web/serverfarms",
+      "apiVersion": "2016-09-01",
+      "name": "[parameters('hostingPlanName')]",
+      "location": "[parameters('hostingPlanLocation')]",
+      "sku": {
+        "name": "[concat('EP', string(parameters('hostingPlanSize')))]",
+        "tier": "ElasticPremium"
+      },
+      "properties": {
+        "name": "[parameters('hostingPlanName')]",
+        "numberOfWorkers": "[parameters('hostingPlanWorkerCount')]",
+        "maximumElasticWorkerCount": "[parameters('hostingPlanMaxWorkerCount')]"
+      }
+    }
+  ]
+}
