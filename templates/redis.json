@@ -20,21 +20,34 @@
     "enableNonSslPort": {
       "type": "bool",
       "defaultValue": false
+    },
+    "minimumTlsVersion": {
+      "type": "int",
+      "defaultValue": 1.2
+    },
+    "redisConfiguration": {
+      "type": "object",
+      "defaultValue": {},
+      "metadata": {
+        "description": "An object containing redis configuration options. See https://docs.microsoft.com/en-us/azure/templates/microsoft.cache/2019-07-01/redis for more info"
+      }
     }
   },
   "resources": [
     {
-      "apiVersion": "2018-03-01",
+      "apiVersion": "2019-07-01",
       "name": "[parameters('redisCacheName')]",
       "type": "Microsoft.Cache/Redis",
       "location": "[resourceGroup().location]",
       "properties": {
         "enableNonSslPort": "[parameters('enableNonSslPort')]",
+        "minimumTlsVersion": "[parameters('minimumTlsVersion')]",
         "sku": {
           "capacity": "[parameters('redisCacheCapacity')]",
           "family": "[parameters('redisCacheFamily')]",
           "name": "[parameters('redisCacheSKU')]"
-        }
+        },
+        "redisConfiguration": "[parameters('redisConfiguration')]"
       }
     }
   ],

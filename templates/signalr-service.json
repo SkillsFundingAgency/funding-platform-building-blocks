@@ -1,0 +1,59 @@
+﻿{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+      "serviceName": {
+        "type": "string",
+        "metadata": {
+          "description": "Name of SignalR Resource"
+        }
+      },
+      "serviceCapacity": {
+        "type": "int",
+        "defaultValue": 1,
+        "allowedValues": [
+          1,2,5,10,20,50,100
+        ],
+        "metadata": {
+          "description": "Number of instances for the SignalR Service. On the free SKU, you are only allowed 1. The other options are for the standard sku only."
+        }
+      },
+      "serviceTier": {
+        "type": "string",
+        "allowedValues": [
+          "Free",
+          "Standard"
+        ],
+        "defaultValue": "Free",
+        "metadata": {
+          "description": "SignalR Service Tier"
+        }
+      },
+      "serviceAllowedOrigins": {
+        "type": "string",
+        "defaultValue": "*",
+        "metadata": {
+          "description": "A comma-delimited list of allowed origins for CORS. Defaults to '*'"
+        }
+      }
+    },
+    "resources": [
+        {
+          "name": "[parameters('serviceName')]",
+          "apiVersion": "2018-10-01",
+          "location": "[resourceGroup().location]",
+          "type": "Microsoft.SignalRService/SignalR",
+          "sku": {
+            "name": "[concat(parameters('serviceTier'), '_1')]",
+            "tier": "[parameters('serviceTier')]",
+            "capacity": "[parameters('serviceCapacity')]"
+          }, 
+          "properties": {
+            "cors": {
+              "allowedOrigins": "[split(parameters('serviceAllowedOrigins'), ',')]"
+            }
+          }
+      }
+    ],
+    "outputs": {}
+}
