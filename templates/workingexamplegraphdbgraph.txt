@@ -1,0 +1,150 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "databaseAccounts_vmp_mike_cos2_name": {
+            "defaultValue": "vmp-mike-cos2",
+            "type": "String"
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "type": "Microsoft.DocumentDB/databaseAccounts",
+            "apiVersion": "2020-03-01",
+            "name": "[parameters('databaseAccounts_vmp_mike_cos2_name')]",
+            "location": "West Europe",
+            "tags": {
+                "defaultExperience": "Gremlin (graph)",
+                "hidden-cosmos-mmspecial": "",
+                "CosmosAccountType": "Non-Production"
+            },
+            "kind": "GlobalDocumentDB",
+            "properties": {
+                "publicNetworkAccess": "Enabled",
+                "enableAutomaticFailover": false,
+                "enableMultipleWriteLocations": false,
+                "isVirtualNetworkFilterEnabled": false,
+                "virtualNetworkRules": [],
+                "disableKeyBasedMetadataWriteAccess": false,
+                "databaseAccountOfferType": "Standard",
+                "consistencyPolicy": {
+                    "defaultConsistencyLevel": "Session",
+                    "maxIntervalInSeconds": 5,
+                    "maxStalenessPrefix": 100
+                },
+                "locations": [
+                    {
+                        "locationName": "West Europe",
+                        "provisioningState": "Succeeded",
+                        "failoverPriority": 0,
+                        "isZoneRedundant": false
+                    }
+                ],
+                "capabilities": [
+                    {
+                        "name": "EnableGremlin"
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.DocumentDB/databaseAccounts/gremlinDatabases",
+            "apiVersion": "2020-03-01",
+            "name": "[concat(parameters('databaseAccounts_vmp_mike_cos2_name'), '/myDatabaseId')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccounts_vmp_mike_cos2_name'))]"
+            ],
+            "properties": {
+                "resource": {
+                    "id": "myDatabaseId"
+                },
+                "options": {}
+            }
+        },
+        {
+            "type": "Microsoft.DocumentDB/databaseAccounts/gremlinDatabases",
+            "apiVersion": "2020-03-01",
+            "name": "[concat(parameters('databaseAccounts_vmp_mike_cos2_name'), '/myDatabaseidDatabase')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccounts_vmp_mike_cos2_name'))]"
+            ],
+            "properties": {
+                "resource": {
+                    "id": "myDatabaseidDatabase"
+                },
+                "options": {}
+            }
+        },
+        {
+            "type": "Microsoft.DocumentDB/databaseAccounts/gremlinDatabases/graphs",
+            "apiVersion": "2020-03-01",
+            "name": "[concat(parameters('databaseAccounts_vmp_mike_cos2_name'), '/myDatabaseId/myGraphId')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DocumentDB/databaseAccounts/gremlinDatabases', parameters('databaseAccounts_vmp_mike_cos2_name'), 'myDatabaseId')]",
+                "[resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccounts_vmp_mike_cos2_name'))]"
+            ],
+            "properties": {
+                "resource": {
+                    "id": "myGraphId",
+                    "indexingPolicy": {
+                        "indexingMode": "consistent",
+                        "automatic": true,
+                        "includedPaths": [
+                            {
+                                "path": "/*"
+                            }
+                        ],
+                        "excludedPaths": [
+                            {
+                                "path": "/\"_etag\"/?"
+                            }
+                        ]
+                    },
+                    "partitionKey": {
+                        "paths": [
+                            "/myPartitionkey"
+                        ],
+                        "kind": "Hash"
+                    },
+                    "uniqueKeyPolicy": {
+                        "uniqueKeys": []
+                    },
+                    "conflictResolutionPolicy": {
+                        "mode": "LastWriterWins",
+                        "conflictResolutionPath": "/_ts"
+                    }
+                },
+                "options": {}
+            }
+        },
+        {
+            "type": "Microsoft.DocumentDB/databaseAccounts/gremlinDatabases/throughputSettings",
+            "apiVersion": "2020-03-01",
+            "name": "[concat(parameters('databaseAccounts_vmp_mike_cos2_name'), '/myDatabaseId/default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DocumentDB/databaseAccounts/gremlinDatabases', parameters('databaseAccounts_vmp_mike_cos2_name'), 'myDatabaseId')]",
+                "[resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccounts_vmp_mike_cos2_name'))]"
+            ],
+            "properties": {
+                "resource": {
+                    "throughput": 400
+                }
+            }
+        },
+        {
+            "type": "Microsoft.DocumentDB/databaseAccounts/gremlinDatabases/throughputSettings",
+            "apiVersion": "2020-03-01",
+            "name": "[concat(parameters('databaseAccounts_vmp_mike_cos2_name'), '/myDatabaseidDatabase/default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DocumentDB/databaseAccounts/gremlinDatabases', parameters('databaseAccounts_vmp_mike_cos2_name'), 'myDatabaseidDatabase')]",
+                "[resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccounts_vmp_mike_cos2_name'))]"
+            ],
+            "properties": {
+                "resource": {
+                    "throughput": 400
+                }
+            }
+        }
+    ]
+}

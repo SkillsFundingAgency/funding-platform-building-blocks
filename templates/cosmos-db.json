@@ -9,8 +9,7 @@
       "type": "string",
       "allowedValues": [
         "GlobalDocumentDB",
-        "MongoDB",
-        "Gremlin"
+        "MongoDB"
       ]
     },
     "defaultConsistencyLevel": {
@@ -29,11 +28,16 @@
     },
     "subnetResourceIdList": {
       "type": "array",
-      "defaultValue": []
+      "defaultValue": [
+      ]
     },
     "ipRangeFilter": {
       "type": "string",
       "defaultValue": ""
+    },
+    "useGraph": {
+      "type": "string",
+      "defaultValue": "No"
     }
   },
   "variables": {
@@ -46,11 +50,20 @@
         }
       }
     ],
-    "virtualNetworkRulesEmpty": [],
-    "virtualNetworkRules": "[if(greater(length(parameters('subnetResourceIdList')), 0), variables('virtualNetworkRulesCopy'), variables('virtualNetworkRulesEmpty'))]"
+    "virtualNetworkRulesEmpty": [
+    ],
+    "virtualNetworkRules": "[if(greater(length(parameters('subnetResourceIdList')), 0), variables('virtualNetworkRulesCopy'), variables('virtualNetworkRulesEmpty'))]",
+    "useGremlin": [
+        {
+            "name": "EnableGremlin"
+        }
+    ],
+    "cosmosdbcapabilities": "[if(and(equals(parameters('cosmosDBType'),'GlobalDocumentDB'),equals(parameters('Usegraph'),'Yes')), variables('useGremlin'), json('[]'))]"
+
   },
   "resources": [
     {
+
       "name": "[parameters('cosmosDbName')]",
       "type": "Microsoft.DocumentDB/databaseAccounts",
       "apiVersion": "2015-04-08",
@@ -63,7 +76,8 @@
         "databaseAccountOfferType": "Standard",
         "ipRangeFilter": "[parameters('ipRangeFilter')]",
         "isVirtualNetworkFilterEnabled": "[if(greater(length(variables('virtualNetworkRules')), 0), bool('true'), bool('false'))]",
-        "virtualNetworkRules": "[variables('virtualNetworkRules')]"
+        "virtualNetworkRules": "[variables('virtualNetworkRules')]",
+        "capabilities": "[variables('cosmosdbcapabilities')]"
       }
     }
   ],
