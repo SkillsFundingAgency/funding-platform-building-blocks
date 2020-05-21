@@ -9,7 +9,8 @@
       "type": "string",
       "allowedValues": [
         "GlobalDocumentDB",
-        "MongoDB"
+        "MongoDB",
+        "Gremlin"
       ]
     },
     "defaultConsistencyLevel": {
