@@ -1,14 +1,21 @@
 {
-  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
     "cosmosDbName": {
-      "type": "string"
+      "type": "String",
+      "metadata": {
+        "description": "Cosmos DB database account name"
+      }
     },
-    "cosmosDbType": {
+    "cosmosDBType": {
       "type": "string",
+      "metadata": {
+        "description": "Choose the type of database account - GlobalDocumentDB, Graph, MongoDB"
+      },
       "allowedValues": [
         "GlobalDocumentDB",
+        "Graph",
         "MongoDB"
       ]
     },
@@ -20,24 +27,25 @@
         "BoundedStaleness",
         "Strong",
         "ConsistentPrefix"
-      ]
-    },
-    "enableVirtualNetworkFilter": {
-      "type": "bool",
-      "defaultValue": false
+      ],
+      "metadata": {
+        "description": "The default consistency level and configuration settings of the Cosmos DB account"
+      }
     },
     "subnetResourceIdList": {
       "type": "array",
       "defaultValue": [
-      ]
+      ],
+      "metadata": {
+        "description": ""
+      }
     },
     "ipRangeFilter": {
       "type": "string",
-      "defaultValue": ""
-    },
-    "useGraph": {
-      "type": "string",
-      "defaultValue": "No"
+      "defaultValue": "",
+      "metadata": {
+        "description": "Allowed list of client IPs for a given database account"
+      }
     }
   },
   "variables": {
@@ -53,32 +61,88 @@
     "virtualNetworkRulesEmpty": [
     ],
     "virtualNetworkRules": "[if(greater(length(parameters('subnetResourceIdList')), 0), variables('virtualNetworkRulesCopy'), variables('virtualNetworkRulesEmpty'))]",
-    "useGremlin": [
-        {
+    "cosmosAPIType": {
+      "Graph": {
+        "databaseAccountOfferType": "Standard",
+        "locations": [
+          {
+            "locationName": "[resourceGroup().location]"
+          }
+        ],
+        "isVirtualNetworkFilterEnabled": "[if(greater(length(variables('virtualNetworkRules')), 0), bool('true'), bool('false'))]",
+        "virtualNetworkRules": "[variables('virtualNetworkRules')]",
+        "ipRangeFilter": "[parameters('ipRangeFilter')]",
+        "dependsOn": [
+        ],
+        "capabilities": [
+          {
             "name": "EnableGremlin"
+          }
+        ],
+        "enableFreeTier": true,
+        "consistencyPolicy": {
+          "defaultConsistencyLevel": "[parameters('defaultConsistencyLevel')]"
         }
-    ],
-    "cosmosdbcapabilities": "[if(and(equals(parameters('cosmosDBType'),'GlobalDocumentDB'),equals(parameters('Usegraph'),'Yes')), variables('useGremlin'), json('[]'))]"
-
+      },
+      "GlobalDocumentDB": {
+        "databaseAccountOfferType": "Standard",
+        "locations": [
+          {
+            "locationName": "[resourceGroup().location]"
+          }
+        ],
+        "isVirtualNetworkFilterEnabled": "[if(greater(length(variables('virtualNetworkRules')), 0), bool('true'), bool('false'))]",
+        "virtualNetworkRules": "[variables('virtualNetworkRules')]",
+        "ipRangeFilter": "[parameters('ipRangeFilter')]",
+        "dependsOn": [
+        ],
+        "capabilities": [
+        ],
+        "enableFreeTier": true,
+        "consistencyPolicy": {
+          "defaultConsistencyLevel": "[parameters('defaultConsistencyLevel')]"
+        }
+      },
+      "MongoDB": {
+        "databaseAccountOfferType": "Standard",
+        "locations": [
+          {
+            "locationName": "[resourceGroup().location]"
+          }
+        ],
+        "isVirtualNetworkFilterEnabled": "[if(greater(length(variables('virtualNetworkRules')), 0), bool('true'), bool('false'))]",
+        "virtualNetworkRules": "[variables('virtualNetworkRules')]",
+        "ipRangeFilter": "[parameters('ipRangeFilter')]",
+        "dependsOn": [
+        ],
+        "capabilities": [
+        ],
+        "enableFreeTier": true,
+        "consistencyPolicy": {
+          "defaultConsistencyLevel": "[parameters('defaultConsistencyLevel')]"
+        }
+      }
+    },
+    "cosmosAccountKind": {
+      "GlobalDocumentDB": {
+        "kind": "GlobalDocumentDB"
+      },
+      "Graph": {
+        "kind": "GlobalDocumentDB"
+      },
+      "MongoDB": {
+        "kind": "MongoDB"
+      }
+    }
   },
   "resources": [
     {
-
       "name": "[parameters('cosmosDbName')]",
-      "type": "Microsoft.DocumentDB/databaseAccounts",
-      "apiVersion": "2015-04-08",
+      "type": "Microsoft.DocumentDb/databaseAccounts",
+      "apiVersion": "2019-12-12",
       "location": "[resourceGroup().location]",
-      "kind": "[parameters('cosmosDbType')]",
-      "properties": {
-        "consistencyPolicy": {
-          "defaultConsistencyLevel": "[parameters('defaultConsistencyLevel')]"
-        },
-        "databaseAccountOfferType": "Standard",
-        "ipRangeFilter": "[parameters('ipRangeFilter')]",
-        "isVirtualNetworkFilterEnabled": "[if(greater(length(variables('virtualNetworkRules')), 0), bool('true'), bool('false'))]",
-        "virtualNetworkRules": "[variables('virtualNetworkRules')]",
-        "capabilities": "[variables('cosmosdbcapabilities')]"
-      }
+      "kind": "[variables('cosmosAccountKind')[parameters('cosmosDBType')].kind]",
+      "properties": "[variables('cosmosAPIType')[parameters('cosmosDBType')]]"
     }
   ],
   "outputs": {
