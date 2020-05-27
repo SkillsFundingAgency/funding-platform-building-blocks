@@ -1,5 +1,5 @@
 {
-  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
     "firewallRuleNamePrefix": {
@@ -33,7 +33,7 @@
   "variables": {},
   "resources": [
     {
-      "name": "[concat(parameters('serverName'), '/', parameters('firewallRuleNamePrefix'), parameters('ipAddresses')[copyIndex()])]",
+      "name": "[concat(parameters('serverName'), '/', parameters('firewallRuleNamePrefix'), if(greater(length(parameters('ipAddresses')), 0), parameters('ipAddresses')[copyIndex()], 'placeholder'))]",
       "condition": "[greater(length(parameters('ipAddresses')), 0)]",
       "type": "Microsoft.Sql/servers/firewallRules",
       "apiVersion": "2015-05-01-preview",
@@ -48,7 +48,7 @@
       }
     },
     {
-      "name": "[concat(parameters('serverName'), '/', last(split(parameters('subnetResourceIdList')[copyIndex()], '/')))]",
+      "name": "[concat(parameters('serverName'), '/', if(greater(length(parameters('subnetResourceIdList')), 0), last(split(parameters('subnetResourceIdList')[copyIndex()], '/')), 'placeholder'))]",
       "condition": "[greater(length(parameters('subnetResourceIdList')), 0)]",
       "type": "Microsoft.Sql/servers/virtualNetworkRules",
       "apiVersion": "2015-05-01-preview",
