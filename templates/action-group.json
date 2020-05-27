@@ -28,6 +28,18 @@
             "metadata": {
                 "description": "Webhook receiver service URI."
             }
+        },
+        "actionName": {
+            "type": "string",
+            "defaultValue": ""
+        },
+        "emailAddress": {
+            "type": "string",
+            "defaultValue": ""
+        },
+        "emailReceiversStatus": {
+            "type": "string",
+            "defaultValue": "enabled"
         }
     },
     "variables": {
@@ -52,6 +64,12 @@
                 "smsReceivers": [
                 ],
                 "emailReceivers": [
+                    {
+                        "name": "[parameters('actionName')]",
+                        "emailAddress": "[parameters('emailAddress')]",
+                        "status": "[parameters('emailReceiversStatus')]",
+                        "useCommonAlertSchema": false
+                    }
                 ],
                 "webhookReceivers": "[variables('webhookReciever')]"
             }
