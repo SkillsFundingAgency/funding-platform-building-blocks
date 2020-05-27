@@ -8,65 +8,75 @@
         "webTestURL": {
             "type": "string"
         },
-        "bcWebTestURL": {
-            "type": "string"
-        },
         "actionGroupName": {
             "type": "string"
         },
-        "enableAlert": {
+        "enableTest": {
             "type": "bool",
             "defaultValue": true
         },
-        "testName1": {
+        "testName": {
             "type": "string"
         },
-        "testName2": {
+        "pingTestDescription": {
             "type": "string"
         },
-        "pingTestDescription1": {
+        "alertDescription": {
             "type": "string"
         },
-        "pingTestDescription2": {
-            "type": "string"
-        },
-        "alertDescription1": {
-            "type": "string"
-        },
-        "alertDescription2": {
-            "type": "string"
-        },
-        "ocpAPimKey": {
-            "type": "securestring"
+        "subscriptionkey": {
+            "type": "securestring",
+            "defaultValue": ""
         },
         "headerName": {
-            "type": "string"
+            "type": "string",
+            "defaultValue": ""
+        },
+        "webTestKind": {
+            "type": "string",
+            "allowedValues": [
+                "ping",
+                "multistep"
+            ]
+        },
+        "webTestType": {
+            "type": "string",
+            "allowedValues": [
+                "pingtest",
+                "multiStepTest"
+            ]
         }
     },
     "variables": {
-        "pingTestName1": "[concat('PingTest-', toLower(parameters('testName1')))]",
-        "pingAlertRuleName1": "[concat('PingAlert-', toLower(parameters('testName1')))]",
-        "pingTestName2": "[concat('PingTest-', toLower(parameters('testName2')))]",
-        "pingAlertRuleName2": "[concat('PingAlert-', toLower(parameters('testName2')))]"
+        "pingtestName": "[concat('PingTest-', toLower(parameters('testName')))]",
+        "pingAlertRuleName": "[concat('PingAlert-', toLower(parameters('testName')))]",
+        "webTestType": {
+            "pingtest": {
+                "WebTest": "[concat('<WebTest         Name=\"', variables('pingtestName'), '\"         Enabled=\"True\"         CssProjectStructure=\"\"         CssIteration=\"\"         Timeout=\"120\"         WorkItemIds=\"\"         xmlns=\"http://microsoft.com/schemas/VisualStudio/TeamTest/2010\"         Description=\"\"         CredentialUserName=\"\"         CredentialPassword=\"\"         PreAuthenticate=\"True\"         Proxy=\"default\"         StopOnError=\"False\"         RecordedResultFile=\"\"         ResultsLocale=\"\">        <Items>        <Request         Method=\"GET\"         Version=\"1.1\"         Url=\"', parameters('webTestURL'), '\"         ThinkTime=\"0\"         Timeout=\"120\"         ParseDependentRequests=\"False\"         FollowRedirects=\"True\"         RecordResult=\"True\"         Cache=\"False\"         ResponseTimeGoal=\"0\"         Encoding=\"utf-8\"         ExpectedHttpStatusCode=\"200\"         ExpectedResponseUrl=\"\"         ReportingName=\"\"         IgnoreHttpStatusCode=\"False\" />        </Items>        </WebTest>')]"
+            },
+            "multiStepTest": {
+                "WebTest": "[concat('<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<TestCase Name=\"', variables('pingtestName'), '\" Id=\"\" Owner=\"\" Description=\"\" Priority=\"0\" Enabled=\"True\" CssProjectStructure=\"\" CssIteration=\"\" DeploymentItemsEditable=\"\" CredentialUserName=\"\" CredentialPassword=\"\" PreAuthenticate=\"True\" Proxy=\"\" RequestCallbackClass=\"\" TestCaseCallbackClass=\"\">\r\n  <Items>\r\n    <Request Method=\"GET\" Version=\"1.1\" Url=\"', parameters('webTestURL'), '\" ThinkTime=\"0\" Timeout=\"60\" ParseDependentRequests=\"True\" FollowRedirects=\"True\" RecordResult=\"True\" Cache=\"False\" ResponseTimeGoal=\"0\" Encoding=\"utf-8\">\r\n      <Headers>\r\n        <Header Name=\"', parameters('headerName'), '\" Value=\"', parameters('subscriptionkey'), '\" />\r\n      </Headers>\r\n      <QueryStringParameters>\r\n        <QueryStringParameter Name=\"api-version\" Value=\"2019-06-01\" UrlEncode=\"True\" UseToGroupResults=\"False\" />\r\n      </QueryStringParameters>\r\n    </Request>\r\n  </Items>\r\n</TestCase>')]"
+            }
+        }
 
     },
     "resources": [
         {
             "type": "Microsoft.Insights/webtests",
             "apiVersion": "2014-04-01",
-            "name": "[variables('pingTestName1')]",
+            "name": "[variables('pingtestName')]",
             "location": "[resourceGroup().location]",
             "tags": {
                 "[concat('hidden-link:', resourceId('Microsoft.Insights/components', parameters('appInsightName')))]": "Resource"
             },
             "properties": {
-                "SyntheticMonitorId": "[variables('pingTestName1')]",
-                "Name": "[variables('pingTestName1')]",
-                "Description": "[parameters('pingTestDescription1')]",
-                "Enabled": true,
+                "SyntheticMonitorId": "[variables('pingtestName')]",
+                "Name": "[variables('pingtestName')]",
+                "Description": "[parameters('pingTestDescription')]",
+                "Enabled": "[parameters('enableTest')]",
                 "Frequency": 300,
                 "Timeout": 120,
-                "Kind": "ping",
+                "Kind": "[parameters('webTestKind')]",
                 "RetryEnabled": true,
                 "Locations": [
                     {
@@ -86,29 +96,29 @@
                     }
                 ],
                 "Configuration": {
-                    "WebTest": "[concat('<WebTest         Name=\"', variables('pingTestName1'), '\"         Enabled=\"True\"         CssProjectStructure=\"\"         CssIteration=\"\"         Timeout=\"120\"         WorkItemIds=\"\"         xmlns=\"http://microsoft.com/schemas/VisualStudio/TeamTest/2010\"         Description=\"\"         CredentialUserName=\"\"         CredentialPassword=\"\"         PreAuthenticate=\"True\"         Proxy=\"default\"         StopOnError=\"False\"         RecordedResultFile=\"\"         ResultsLocale=\"\">        <Items>        <Request         Method=\"GET\"         Version=\"1.1\"         Url=\"', parameters('webTestURL'), '\"         ThinkTime=\"0\"         Timeout=\"120\"         ParseDependentRequests=\"False\"         FollowRedirects=\"True\"         RecordResult=\"True\"         Cache=\"False\"         ResponseTimeGoal=\"0\"         Encoding=\"utf-8\"         ExpectedHttpStatusCode=\"200\"         ExpectedResponseUrl=\"\"         ReportingName=\"\"         IgnoreHttpStatusCode=\"False\" />        </Items>        </WebTest>')]"
+                    "WebTest": "[variables('webTestType')[parameters('webTestType')].WebTest]"
                 },
                 "provisioningState": "Succeeded"
             }
         },
         {
-            "name": "[variables('pingAlertRuleName1')]",
+            "name": "[variables('pingAlertRuleName')]",
             "type": "Microsoft.Insights/metricAlerts",
             "apiVersion": "2018-03-01",
             "location": "global",
             "dependsOn": [
-                "[resourceId('Microsoft.Insights/webtests', variables('pingTestName1'))]"
+                "[resourceId('Microsoft.Insights/webtests', variables('pingtestName'))]"
             ],
             "tags": {
                 "[concat('hidden-link:', resourceId('Microsoft.Insights/components', parameters('appInsightName')))]": "Resource",
-                "[concat('hidden-link:', resourceId('Microsoft.Insights/webtests', variables('pingTestName1')))]": "Resource"
+                "[concat('hidden-link:', resourceId('Microsoft.Insights/webtests', variables('pingtestName')))]": "Resource"
             },
             "properties": {
-                "description": "[parameters('alertDescription1')]",
+                "description": "[parameters('alertDescription')]",
                 "severity": 1,
-                "enabled": "[parameters('enableAlert')]",
+                "enabled": "[parameters('enableTest')]",
                 "scopes": [
-                    "[resourceId('Microsoft.Insights/webtests',variables('pingTestName1'))]",
+                    "[resourceId('Microsoft.Insights/webtests',variables('pingtestName'))]",
                     "[resourceId('Microsoft.Insights/components',parameters('appInsightName'))]"
                 ],
                 "evaluationFrequency": "PT1M",
@@ -116,83 +126,7 @@
                 "templateType": 0,
                 "criteria": {
                     "odata.type": "Microsoft.Azure.Monitor.WebtestLocationAvailabilityCriteria",
-                    "webTestId": "[resourceId('Microsoft.Insights/webtests', variables('pingTestName1'))]",
-                    "componentId": "[resourceId('Microsoft.Insights/components', parameters('appInsightName'))]",
-                    "failedLocationCount": 1
-                },
-                "actions": [
-                    {
-                        "actionGroupId": "[resourceId('Microsoft.Insights/actionGroups', parameters('actionGroupName'))]"
-                    }
-                ]
-            }
-        },
-        {
-            "type": "Microsoft.Insights/webtests",
-            "apiVersion": "2014-04-01",
-            "name": "[variables('pingTestName2')]",
-            "location": "[resourceGroup().location]",
-            "tags": {
-                "[concat('hidden-link:', resourceId('Microsoft.Insights/components', parameters('appInsightName')))]": "Resource"
-            },
-            "properties": {
-                "SyntheticMonitorId": "[variables('pingTestName2')]",
-                "Name": "[variables('pingTestName2')]",
-                "Description": "[parameters('pingTestDescription2')]",
-                "Enabled": true,
-                "Frequency": 300,
-                "Timeout": 120,
-                "Kind": "multistep",
-                "RetryEnabled": true,
-                "Locations": [
-                    {
-                        "Id": "us-ca-sjc-azr"
-                    },
-                    {
-                        "Id": "us-tx-sn1-azr"
-                    },
-                    {
-                        "Id": "us-il-ch1-azr"
-                    },
-                    {
-                        "Id": "us-va-ash-azr"
-                    },
-                    {
-                        "Id": "us-fl-mia-edge"
-                    }
-                ],
-                "Configuration": {
-                    "WebTest": "[concat('<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<TestCase Name=\"FiddlerGeneratedWebTest\" Id=\"\" Owner=\"\" Description=\"\" Priority=\"0\" Enabled=\"True\" CssProjectStructure=\"\" CssIteration=\"\" DeploymentItemsEditable=\"\" CredentialUserName=\"\" CredentialPassword=\"\" PreAuthenticate=\"True\" Proxy=\"\" RequestCallbackClass=\"\" TestCaseCallbackClass=\"\">\r\n  <Items>\r\n    <Request Method=\"GET\" Version=\"1.1\" Url=\"', parameters('bcWebTestURL'), '\" ThinkTime=\"0\" Timeout=\"60\" ParseDependentRequests=\"True\" FollowRedirects=\"True\" RecordResult=\"True\" Cache=\"False\" ResponseTimeGoal=\"0\" Encoding=\"utf-8\">\r\n      <Headers>\r\n        <Header Name=\"', parameters('headerName'), '\" Value=\"', parameters('ocpAPimKey'), '\" />\r\n      </Headers>\r\n      <QueryStringParameters>\r\n        <QueryStringParameter Name=\"api-version\" Value=\"2019-06-01\" UrlEncode=\"True\" UseToGroupResults=\"False\" />\r\n      </QueryStringParameters>\r\n    </Request>\r\n  </Items>\r\n</TestCase>')]"
-                },
-                "provisioningState": "Succeeded"
-            }
-        },
-        {
-            "name": "[variables('pingAlertRuleName2')]",
-            "type": "Microsoft.Insights/metricAlerts",
-            "apiVersion": "2018-03-01",
-            "location": "global",
-            "dependsOn": [
-                "[resourceId('Microsoft.Insights/webtests', variables('pingTestName2'))]"
-            ],
-            "tags": {
-                "[concat('hidden-link:', resourceId('Microsoft.Insights/components', parameters('appInsightName')))]": "Resource",
-                "[concat('hidden-link:', resourceId('Microsoft.Insights/webtests', variables('pingTestName2')))]": "Resource"
-            },
-            "properties": {
-                "description": "[parameters('alertDescription2')]",
-                "severity": 1,
-                "enabled": "[parameters('enableAlert')]",
-                "scopes": [
-                    "[resourceId('Microsoft.Insights/webtests',variables('pingTestName2'))]",
-                    "[resourceId('Microsoft.Insights/components',parameters('appInsightName'))]"
-                ],
-                "evaluationFrequency": "PT1M",
-                "windowSize": "PT5M",
-                "templateType": 0,
-                "criteria": {
-                    "odata.type": "Microsoft.Azure.Monitor.WebtestLocationAvailabilityCriteria",
-                    "webTestId": "[resourceId('Microsoft.Insights/webtests', variables('pingTestName2'))]",
+                    "webTestId": "[resourceId('Microsoft.Insights/webtests', variables('pingtestName'))]",
                     "componentId": "[resourceId('Microsoft.Insights/components', parameters('appInsightName'))]",
                     "failedLocationCount": 1
                 },
