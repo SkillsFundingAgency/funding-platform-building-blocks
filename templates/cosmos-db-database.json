@@ -12,8 +12,7 @@
       "type": "string",
       "allowedValues": [
         "GlobalDocumentDB",
-        "MongoDB",
-        "Gremlin"
+        "MongoDB"
       ]
     }
   },
@@ -41,18 +40,6 @@
           "id": "[parameters('cosmosDatabase')]"
         }
       }
-    },
-    {
-        "type": "Microsoft.DocumentDB/databaseAccounts/gremlinDatabases",
-        "apiVersion": "2020-03-01",
-        "name": "[concat(parameters('cosmosDbAccountName'), '/', parameters('cosmosDatabase'))]",
-        "dependsOn": [],
-        "properties": {
-            "resource": {
-                "id": "[parameters('cosmosDatabase')]"
-            },
-            "options": {}
-        }
     }
   ],
   "outputs": {
