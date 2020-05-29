@@ -1,0 +1,139 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "containerInstanceName": {
+            "type": "string",
+            "metadata": {
+                "description": "The name of the Azure Container Instances resource. This will be its identifier in Azure and can be different from the image name."
+            }
+        },
+        "containerName": {
+            "type": "string",
+            "metadata": {
+                "description": "The name or role of the container to identify individual containers in multi-container setup."
+            }
+        },
+        "imageName": {
+            "type": "string",
+            "metadata": {
+                "description": "Container image reference this could be the URI or Docker Hub tag of the public or private image. For Docker Hub images, the full URI isn't required, only the image name and tag (for example: microsoft/iis:nanoserver)"
+            }
+        },
+        "command": {
+            "type": "array",
+            "defaultValue": [
+            ],
+            "metadata": {
+                "description": "The commands to execute within the container instance in exec form. - string"
+            }
+        },
+        "osType": {
+            "type": "string",
+            "defaultValue": "Linux",
+            "allowedValues": [
+                "Linux",
+                "Windows"
+            ],
+            "metadata": {
+                "description": "Windows or Linux container instance"
+            }
+        },
+        "numberCpuCores": {
+            "defaultValue": "1",
+            "type": "string",
+            "metadata": {
+                "description": "The number of CPU cores to allocate to the container. Must be an integer."
+            }
+        },
+        "memory": {
+            "defaultValue": "1.5",
+            "type": "string",
+            "metadata": {
+                "description": "The amount of memory to allocate to the container in gigabytes."
+            }
+        },
+        "restartPolicy": {
+            "type": "string",
+            "defaultValue": "Always",
+            "allowedValues": [
+                "OnFailure",
+                "Always",
+                "Never"
+            ],
+            "metadata": {
+                "description": "The behavior of Azure runtime if container has stopped."
+            }
+        },
+        "environmentVariables": {
+            "type": "array",
+            "defaultValue": [
+            ],
+            "metadata": {
+                "description": "List of environment variables in an array format. Provide a name and value field for each variable and name and securevalue for hidden attributes i.e. secrets and password "
+            }
+        },
+        "ports": {
+            "type":"array",
+            "defaultValue": [],
+            "metadata": {
+                "description": "One or more ports to expose from the container"
+            }
+        },
+        "networkProfileName": {
+            "type": "string",
+            "defaultValue": "",
+            "metadata": {
+                "description": "The name of the network profile that will attach to the container instance"
+            }
+        },
+        "networkResourceGroup": {
+            "type": "string",
+            "defaultValue": "[resourceGroup().name]",
+            "metadata": {
+                "description": "Name of the resource group if different from the container instance"
+            }
+        }
+    },
+    "variables": {
+        "networkProfile": {
+            "Id": "[if(greater(length(parameters('networkProfileName')) ,0), resourceId(parameters('networkResourceGroup'),'Microsoft.Network/networkProfiles', parameters('networkProfileName')), 'placeholder')]"
+        }
+    },
+    "resources": [
+        {
+            "name": "[parameters('containerInstanceName')]",
+            "type": "Microsoft.ContainerInstance/containerGroups",
+            "apiVersion": "2018-10-01",
+            "location": "[resourceGroup().location]",
+            "properties": {
+                "containers": [
+                    {
+                        "name": "[parameters('containerName')]",
+                        "properties": {
+                            "image": "[parameters('imageName')]",
+                            "resources": {
+                                "requests": {
+                                    "cpu": "[int(parameters('numberCpuCores'))]",
+                                    "memoryInGB": "[float(parameters('memory'))]"
+                                }
+                            },
+                            "environmentVariables": "[parameters('environmentVariables')]",
+                            "command": "[parameters('command')]",
+                            "ports": "[if(greater(parameters('ports'),0), parameters('ports'), json('[]'))]"
+                        }
+                    }
+                ],
+                "restartPolicy": "[parameters('restartPolicy')]",
+                "osType": "[parameters('osType')]",
+                "networkProfile": "[if(greater(length(parameters('networkProfileName')) ,0), variables('networkProfile'), json('null'))]"
+            }
+        }
+    ],
+    "outputs": {
+        "containerIPv4Address": {
+            "type": "string",
+            "value": "[if(greater(length(parameters('networkProfileName')) ,0), reference(resourceId('Microsoft.ContainerInstance/containerGroups/', parameters('containerInstanceName'))).ipAddress.ip, '')]"
+        }
+    }
+}
