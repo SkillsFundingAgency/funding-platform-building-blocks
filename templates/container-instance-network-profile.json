@@ -23,6 +23,13 @@
                 "description": "The name of the ip config for the interface"
             }
         },
+        "vnetResourceGroupName":{
+            "type": "string",
+            "defaultValue": "[resourceGroup().name]",
+            "metadata": {
+                "description": "The name of the vNet that the container instance will connect to"
+            }
+        },
         "vnetName": {
             "type": "string",
             "metadata": {
@@ -52,7 +59,7 @@
                                     "name": "[parameters('interfaceIpConfig')]",
                                     "properties": {
                                         "subnet": {
-                                            "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('vnetName'), parameters('subnetName'))]"
+                                            "id": "[resourceId(parameters('vnetResourceGroupName'), parameters('vnetName'), parameters('subnetName'))]"
                                         }
                                     }
                                 }
