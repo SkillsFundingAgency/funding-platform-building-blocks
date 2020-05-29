@@ -70,6 +70,7 @@
       "value": "[reference(resourceId('Microsoft.Network/publicIPAddresses',parameters('publicIPAddressName')),providers('Microsoft.Network', 'publicIPAddresses').apiVersions[0]).ipAddress]"
     },
     "FQDN": {
+      "condition": "[variables('shouldIncludeDNSLabel')]",
       "type": "string",
       "value": "[reference(resourceId('Microsoft.Network/publicIPAddresses',parameters('publicIPAddressName')),providers('Microsoft.Network', 'publicIPAddresses').apiVersions[0]).dnsSettings.FQDN]"
     }
