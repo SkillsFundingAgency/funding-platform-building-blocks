@@ -26,7 +26,7 @@
             "type": "string",
             "defaultValue": "",
             "metadata": {
-                "description": "Webhook receiver service URI."
+                "description": "Webhook receiver service URI"
             }
         },
         "actionName": {
