@@ -59,7 +59,7 @@
                                     "name": "[parameters('interfaceIpConfig')]",
                                     "properties": {
                                         "subnet": {
-                                            "id": "[resourceId(parameters('vnetResourceGroupName'), parameters('vnetName'), parameters('subnetName'))]"
+                                            "id": "[resourceId(parameters('vnetResourceGroupName'),'Microsoft.Network/virtualNetworks/subnets', parameters('vnetName'), parameters('subnetName'))]"
                                         }
                                     }
                                 }
