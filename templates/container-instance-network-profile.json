@@ -1,0 +1,72 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "networkProfileName": {
+            "type": "string",
+            "defaultValue": "aci-networkProfile",
+            "metadata": {
+                "description": "The name of the network profile"
+            }
+        },
+        "interfaceConfigName": {
+            "type": "string",
+            "defaultValue": "eth0",
+            "metadata": {
+                "description": "The name of the interface config"
+            }
+        },
+        "interfaceIpConfig": {
+            "type": "string",
+            "defaultValue": "ipConfig1",
+            "metadata": {
+                "description": "The name of the ip config for the interface"
+            }
+        },
+        "vnetName": {
+            "type": "string",
+            "metadata": {
+                "description": "The name of the vNet that the container instance will connect to"
+            }
+        },
+        "subnetName": {
+            "type": "string",
+            "metadata": {
+                "description": "The name of the subnet that the container instance will connect to"
+            }
+        },
+        "resourceTags": {
+            "type": "object",
+            "defaultValue": {
+            }
+        }
+    },
+    "resources": [
+        {
+            "name": "[parameters('networkProfileName')]",
+            "type": "Microsoft.Network/networkProfiles",
+            "apiVersion": "2018-07-01",
+            "location": "[resourceGroup().location]",
+            "tags": "[parameters('resourceTags')]",
+            "properties": {
+                "containerNetworkInterfaceConfigurations": [
+                    {
+                        "name": "[parameters('interfaceConfigName')]",
+                        "properties": {
+                            "ipConfigurations": [
+                                {
+                                    "name": "[parameters('interfaceIpConfig')]",
+                                    "properties": {
+                                        "subnet": {
+                                            "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('vnetName'), parameters('subnetName'))]"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}
