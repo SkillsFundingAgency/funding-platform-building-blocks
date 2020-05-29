@@ -120,7 +120,7 @@
                             },
                             "environmentVariables": "[parameters('environmentVariables')]",
                             "command": "[parameters('command')]",
-                            "ports": "[if(greater(parameters('ports'),0), parameters('ports'), json('[]'))]"
+                            "ports": "[if(greater(length(parameters('ports')),0), parameters('ports'), json('[]'))]"
                         }
                     }
                 ],
