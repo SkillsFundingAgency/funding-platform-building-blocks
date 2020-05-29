@@ -29,7 +29,7 @@
                 "description": "Webhook receiver service URI."
             }
         },
-        "actionName": {
+        "emailActionName": {
             "type": "string",
             "defaultValue": ""
         },
@@ -50,7 +50,16 @@
                 "useCommonAlertSchema": true
             }
         ],
-        "webhookReciever": "[if(greater(length(parameters('webhookReceiverName')),0), variables('webhookConfiguration'), json('[]'))]"
+        "emailConfiguration": [
+            {
+                "name": "[parameters('emailActionName')]",
+                "emailAddress": "[parameters('emailAddress')]",
+                "status": "[parameters('emailReceiversStatus')]",
+                "useCommonAlertSchema": false
+            }
+        ],
+        "webhookReciever": "[if(greater(length(parameters('webhookReceiverName')),0), variables('webhookConfiguration'), json('[]'))]",
+        "emailReceiver": "[if(greater(length(parameters('emailActionName')),0), variables('emailConfiguration'), json('[]'))]"
     },
     "resources": [
         {
@@ -63,14 +72,7 @@
                 "enabled": true,
                 "smsReceivers": [
                 ],
-                "emailReceivers": [
-                    {
-                        "name": "[parameters('actionName')]",
-                        "emailAddress": "[parameters('emailAddress')]",
-                        "status": "[parameters('emailReceiversStatus')]",
-                        "useCommonAlertSchema": false
-                    }
-                ],
+                "emailReceivers": "[variables('emailReceiver')]",
                 "webhookReceivers": "[variables('webhookReciever')]"
             }
         }
