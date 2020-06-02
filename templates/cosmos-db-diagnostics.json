@@ -35,9 +35,6 @@
       "type": "Microsoft.CosmosDb/databaseAccounts/providers/diagnosticSettings",
       "apiVersion": "2017-05-01-preview",
       "name": "[concat(parameters('cosmosDbName'),'/microsoft.insights/', parameters('cosmosDbDiagSettingName'))]",
-      "dependsOn": [
-        "[resourceId('Microsoft.CosmosDb/databaseAccounts', parameters('cosmosDbName'))]"
-      ],
       "properties": {
         "name": "[parameters('cosmosDbDiagSettingName')]",
         "workspaceId": "[parameters('logAnalyticsWorkspaceId')]",
