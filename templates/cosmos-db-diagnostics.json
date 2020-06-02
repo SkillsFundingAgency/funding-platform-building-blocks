@@ -1,0 +1,77 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "cosmosDbName": {
+      "type": "string"
+    },
+    "cosmosDbDiagSettingName": {
+      "type": "string"
+    },
+    "eventHubName": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": { 
+        "description": "Optional. Name of the event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category." 
+      }
+    },
+    "eventHubAuthRuleId": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Resource ID of the event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to."
+      }
+    },
+    "logAnalyticsWorkspaceId": {
+      "type": "string",
+      "metadata": {
+        "description": "Resource ID of the log analytics account that resource logs are sent to"
+      }
+    }
+  },
+  "resources": [
+    {
+      "condition": "[greater(length(parameters('logAnalyticsWorkspaceId')), 0)]",
+      "type": "Microsoft.CosmosDb/databaseAccounts/providers/diagnosticSettings",
+      "apiVersion": "2017-05-01-preview",
+      "name": "[concat(parameters('cosmosDbName'),'/microsoft.insights/', parameters('cosmosDbDiagSettingName'))]",
+      "dependsOn": [
+        "[parameters('cosmosDbName')]"
+      ],
+      "properties": {
+        "name": "[parameters('cosmosDbDiagSettingName')]",
+        "workspaceId": "[parameters('logAnalyticsWorkspaceId')]",
+        "eventHubAuthorizationRuleId": "[parameters('eventHubAuthRuleId')]",
+        "eventHubName": "[parameters('eventHubName')]",
+        "logs": [
+          {
+            "category": "DataPlaneRequests",
+            "enabled": true,
+            "retentionPolicy": {
+              "days": 0,
+              "enabled": false
+            }
+          },
+          {
+            "category": "QueryRuntimeStatistics",
+            "enabled": true,
+            "retentionPolicy": {
+              "days": 0,
+              "enabled": false
+            }
+          }
+        ],
+        "metrics": [
+          {
+            "category": "Requests",
+            "enabled": true,
+            "retentionPolicy": {
+              "enabled": false,
+              "days": 0
+            }
+          }
+        ]
+      }
+    }
+  ]
+}
