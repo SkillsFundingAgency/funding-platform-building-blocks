@@ -22,8 +22,8 @@
       "defaultValue": false
     },
     "minimumTlsVersion": {
-      "type": "int",
-      "defaultValue": 1.2
+      "type": "string",
+      "defaultValue": "1.2"
     },
     "redisConfiguration": {
       "type": "object",
