@@ -1,0 +1,30 @@
+﻿{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "eventHubNamespaceName": {
+            "type": "string"
+        },
+        "authorisationRuleName": {
+            "type": "string"
+        },
+        "authorisationRulePerms": {
+            "type": "array",
+            "metadata": {
+                "description": "A list of permissions to assign to the authorisation rule"
+            }
+        }
+    },
+    "variables": {
+    },
+    "resources": [
+        {
+            "type": "Microsoft.EventHub/Namespaces/AuthorizationRules",
+            "apiVersion": "2017-04-01",
+            "name": "[concat(parameters('eventHubNamespaceName'), '/', parameters('authorisationRuleName'))]",
+            "properties": {
+                "rights": "[parameters('authorisationRulePerms')]"
+            }
+        }
+    ]
+}
