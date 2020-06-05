@@ -54,6 +54,13 @@
           "metadata": { 
             "description": "Dead letter messages when a SQL filter cannot be processed"
           }
+        },
+        "defaultMessageTimeToLive": {
+         "type": "string",
+          "defaultValue": "P14D",
+          "metadata": {
+            "description": "Default time to live for messages. Defaults to 14 days"
+          }
         }
     },
     "variables": {
@@ -68,6 +75,7 @@
               "lockDuration": "[parameters('lockDuration')]",
               "deadLetteringOnMessageExpiration": "[parameters('deadLetteringOnMessageExpiration')]",
               "deadLetteringOnFilterEvaluationExceptions": "[parameters('deadLetteringOnFilterEvaluationExceptions')]",
+              "defaultMessageTimeToLive": "[parameters('defaultMessageTimeToLive')]",
               "maxDeliveryCount": "[parameters('maxDeliveryCount')]"
             }
         },
