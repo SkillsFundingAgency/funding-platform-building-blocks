@@ -1,0 +1,99 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2018-05-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "serviceBusNamespaceName": {
+            "type": "string",
+            "metadata": {
+                "description": "Name of an existing Service Bus namespace to add the topic to"
+            }
+        },
+        "queueName": {
+            "type": "string",
+            "metadata": {
+                "description": "Queue name to add to Service Bus"
+            }
+        },
+        "MessageLockDuration": {
+            "type": "string",
+            "defaultValue": "PT1M",
+            "metadata": {
+                "description": "Lock duration in seconds. (as ISO8601 timespan)"
+            }
+        },
+        "DefaultMessageTimeToLive": {
+            "type": "string",
+            "defaultValue": "P14D",
+            "metadata": {
+                "description": "The default ISO8601-based timespan for messages to live on the queue for."
+            }
+        },
+        "MaxSizeInMegabytes": {
+            "type": "int",
+            "defaultValue": 1024,
+            "metadata": {
+                "description": "The maximum size of the queue in MB."
+            }
+        },
+        "EnableDuplicateDetection": {
+            "type": "bool",
+            "defaultValue": false,
+            "metadata": {
+                "description": "A value indicating if this queue requires duplicate detection."
+            }
+        },
+        "DuplicateDetectionTimeWindow": {
+            "type": "string",
+            "defaultValue": "PT10M",
+            "metadata": {
+                "description": "The default ISO8601-based timespan to detect duplicate messages over"
+            }
+        },
+        "EnableSessions": {
+            "type": "bool",
+            "defaultValue": false,
+            "metadata": {
+                "description": "A value that indicates if the queue supports sessions."
+            }
+        },
+        "EnableDeadLettering": {
+            "type": "bool",
+            "defaultValue": true,
+            "metadata": {
+                "description": "When true,  messages are sent to a dead letter queue when they expire."
+            }
+        },
+        "MaxDeliveryCount": {
+            "type": "int",
+            "defaultValue": 10,
+            "metadata": {
+                "description": "The maximum number of times a message is delivered before it is expired"
+            }
+        },
+        "EnablePartitioning": {
+            "type": "bool",
+            "defaultValue": false,
+            "metadata": {
+                "description": "Enable the partitioning of the message amougst multiple brokers"
+            }
+        }
+    },
+    "resources": [
+        {
+            "name": "[concat(parameters('serviceBusNamespaceName'), '/', parameters('queueName'))]",
+            "type": "Microsoft.ServiceBus/namespaces/queues",
+            "apiVersion": "2017-04-01",
+            "properties": {
+                "lockDuration": "[parameters('MessageLockDuration')]",
+                "maxSizeInMegabytes": "[parameters('MaxSizeInMegabytes')]",
+                "defaultMessageTimeToLive": "[parameters('DefaultMessageTimeToLive')]",
+                "requiresDuplicateDetection": "[parameters('EnableDuplicateDetection')]",
+                "duplicateDetectionHistoryTimeWindow": "[parameters('DuplicateDetectionTimeWindow')]",
+                "requiresSession":  "[parameters('EnableSessions')]",
+                "deadLetteringOnMessageExpiration": "[parameters('EnableDeadLettering')]",
+                "maxDeliveryCount": "[parameters('MaxDeliveryCount')]",
+                "enablePartitioning": "[parameters('EnablePartitioning')]"
+            }
+        }
+    ]
+}

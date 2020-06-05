@@ -37,6 +37,9 @@
         }
       }
     },
+    "variables": {
+      "signalRSkuName": "[concat(parameters('serviceTier'), '_', take(parameters('serviceTier'), 1), '1')]"
+    },
     "resources": [
         {
           "name": "[parameters('serviceName')]",
@@ -44,7 +47,7 @@
           "location": "[resourceGroup().location]",
           "type": "Microsoft.SignalRService/SignalR",
           "sku": {
-            "name": "[concat(parameters('serviceTier'), '_1')]",
+            "name": "[variables('signalRSkuName')]",
             "tier": "[parameters('serviceTier')]",
             "capacity": "[parameters('serviceCapacity')]"
           }, 
