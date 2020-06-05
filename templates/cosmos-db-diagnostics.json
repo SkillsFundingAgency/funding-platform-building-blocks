@@ -32,7 +32,7 @@
   "resources": [
     {
       "condition": "[greater(length(parameters('logAnalyticsWorkspaceId')), 0)]",
-      "type": "Microsoft.CosmosDb/databaseAccounts/providers/diagnosticSettings",
+      "type": "Microsoft.DocumentDb/databaseAccounts/providers/diagnosticSettings",
       "apiVersion": "2017-05-01-preview",
       "name": "[concat(parameters('cosmosDbName'),'/microsoft.insights/', parameters('cosmosDbDiagSettingName'))]",
       "properties": {
