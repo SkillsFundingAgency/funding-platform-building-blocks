@@ -29,10 +29,6 @@
           "description": "SignalR Service Tier"
         }
       },
-      "serviceSize": {
-        "type": "string",
-        "defaultValue": "DS2"
-      },
       "serviceAllowedOrigins": {
         "type": "string",
         "defaultValue": "*",
@@ -48,9 +44,8 @@
           "location": "[resourceGroup().location]",
           "type": "Microsoft.SignalRService/SignalR",
           "sku": {
-            "name": "[concat(parameters('serviceTier'), '_', parameters('serviceSize'))]",
+            "name": "[parameters('serviceTier')]",
             "tier": "[parameters('serviceTier')]",
-            "size": "[parameters('serviceSize')]",
             "capacity": "[parameters('serviceCapacity')]"
           }, 
           "properties": {
