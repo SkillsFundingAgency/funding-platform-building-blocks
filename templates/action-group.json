@@ -70,10 +70,13 @@
             "properties": {
                 "groupShortName": "[parameters('actionGroupShortName')]",
                 "enabled": true,
-                "smsReceivers": [
-                ],
-                "emailReceivers": "[variables('emailReceiver')]",
-                "webhookReceivers": "[variables('webhookReciever')]"
+                "webhookReceivers": [
+                    {
+                        "name": "[parameters('webhookReceiverName')]",
+                        "serviceUri": "[parameters('webhookServiceUri')]",
+                        "useCommonAlertSchema": true
+                    }
+                ]
             }
         }
     ],
