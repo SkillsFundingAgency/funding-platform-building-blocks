@@ -57,7 +57,17 @@
             ],
             "properties": {
                 "name": "[parameters('settingName')]",
-                "workspaceId": "[parameters('sharedWorkspaceID')]",
+
+                "metrics": [
+                    {
+                        "category": "AllMetrics",
+                        "enabled": "[parameters('enableAllMetrics')]",
+                        "retentionPolicy": {
+                            "enabled": "[parameters('enableRetentionPolicy')]",
+                            "days": "[parameters('setRetentionPolicyDays')]"
+                        }
+                    }
+                ],
                 "logs": [
                     {
                         "category": "FunctionAppLogs",
@@ -68,16 +78,7 @@
                         }
                     }
                 ],
-                "metrics": [
-                    {
-                        "category": "AllMetrics",
-                        "enabled": "[parameters('enableAllMetrics')]",
-                        "retentionPolicy": {
-                            "enabled": "[parameters('enableRetentionPolicy')]",
-                            "days": "[parameters('setRetentionPolicyDays')]"
-                        }
-                    }
-                ]
+                "workspaceId": "[parameters('sharedWorkspaceID')]"
             }
         }
     ],
