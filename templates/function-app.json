@@ -53,6 +53,42 @@
         "FtpsOnly",
         "Disabled"
       ]
+    },
+    "settingName": {
+      "type": "String",
+      "defaultvalue": "AppServiceDiagSettings",
+      "metadata": {
+        "description": "The name of the diagnostic setting"
+      }
+    },
+    "workspaceId": {
+      "type": "String",
+      "defaultValue": "",
+      "metadata": {
+        "description": "ResourceID of the Log Analytics workspace in which resource logs should be saved."
+      }
+    },
+    "functionAppLogs": {
+      "type": "bool",
+      "defaultvalue": false,
+      "metadata": {
+        "description": "Function App Log diagnostic setting"
+      }
+    },
+    "allMetricsSetting": {
+      "type": "bool",
+      "defaultvalue": false,
+      "metadata": {
+        "description": "All Metrics diagnostic setting"
+      }
+    },
+    "retentionPolicyEnabled": {
+      "type": "bool",
+      "defaultValue": false
+    },
+    "retentionPolicyDays": {
+      "type": "string",
+      "defaultValue": "30"
     }
   },
   "variables": {
@@ -110,6 +146,39 @@
       "dependsOn": [
         "[resourceId('Microsoft.Web/sites', parameters('functionAppName'))]"
       ]
+    },
+    {
+      "type": "Microsoft.Web/sites/providers/diagnosticSettings",
+      "condition": "[greater(length(parameters('workspaceId')), 0)]",
+      "apiVersion": "2017-05-01-preview",
+      "name": "[concat(parameters('functionAppName'),'/microsoft.insights/', parameters('settingName'))]",
+      "dependsOn": [
+        "[parameters('functionAppName')]"
+      ],
+      "properties": {
+        "name": "[parameters('settingName')]",
+        "workspaceId": "[parameters('workspaceId')]",
+        "logs": [
+          {
+            "category": "FunctionAppLogs",
+            "enabled": "[parameters('functionAppLogs')]",
+            "retentionPolicy": {
+              "enabled": "[parameters('retentionPolicyEnabled')]",
+              "days": "[parameters('retentionPolicyDays')]"
+            }
+          }
+        ],
+        "metrics": [
+          {
+            "category": "AllMetrics",
+            "enabled": "[parameters('allMetricsSetting')]",
+            "retentionPolicy": {
+              "enabled": "[parameters('retentionPolicyEnabled')]",
+              "days": "[parameters('retentionPolicyDays')]"
+            }
+          }
+        ]
+      }
     }
   ],
   "outputs": {
