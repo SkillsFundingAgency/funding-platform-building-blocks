@@ -132,7 +132,7 @@
       },
       "elasticPool": {
         "sku": {
-          "name": "ElasticPool"
+          "name": "[parameters('databaseSkuName')]"
         },
         "properties": {
           "elasticPoolId": "[parameters('elasticPoolId')]",
