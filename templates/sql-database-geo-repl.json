@@ -12,6 +12,19 @@
       "type": "string",
       "defaultValue": ""
     },
+        "databaseTier": {
+      "type": "string",
+      "defaultValue": "",
+      "allowedValues": [
+        "",
+        "Basic",
+        "Standard",
+        "Premium",
+        "GeneralPurpose",
+        "BusinessCritical",
+        "Hyperscale"
+      ]
+    },
     "databaseSizeBytes": {
       "type": "string",
       "defaultValue": ""
@@ -108,7 +121,10 @@
       "type": "Microsoft.Sql/servers/databases",
       "apiVersion": "2017-10-01-preview",
       "location": "[parameters('replicaLocation')]",
-      "sku": "[parameters('databaseSkuName')]",
+      "sku": {
+        "Name": "[parameters('databaseSkuName')]",
+        "tier": "[parameters('databaseTier')]"
+        },
       "properties": {
           "maxSizeBytes": "[parameters('databaseSizeBytes')]",
           "minCapacity": "[parameters('serverlessMinCapacity')]",
