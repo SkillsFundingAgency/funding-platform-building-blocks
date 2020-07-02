@@ -78,7 +78,7 @@
     "replicaLocation": {
       "type": "String",
       "metadata": {
-        "description": "The location of the replica database"
+        "description": "The location of the replica database."
       }
     },
     "createMode": {
