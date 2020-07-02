@@ -8,14 +8,6 @@
     "sqlServerName": {
       "type": "string"
     },
-    "elasticPoolName": {
-      "type": "string",
-      "defaultValue": ""
-    },
-    "elasticPoolId": {
-      "type": "string",
-      "defaultValue": ""
-    },
     "databaseSkuName": {
       "type": "string",
       "defaultValue": ""
@@ -23,19 +15,6 @@
     "databaseSizeBytes": {
       "type": "string",
       "defaultValue": ""
-    },
-    "databaseTier": {
-      "type": "string",
-      "defaultValue": "",
-      "allowedValues": [
-        "",
-        "Basic",
-        "Standard",
-        "Premium",
-        "GeneralPurpose",
-        "BusinessCritical",
-        "Hyperscale"
-      ]
     },
     "serverlessMinCapacity": {
       "type": "string",
@@ -111,36 +90,6 @@
   },
   "variables": {
     "sharedWorkspaceID": "[resourceId(parameters('logAnalyticsResourceGroup'),'Microsoft.OperationalInsights/workspaces', parameters('logAnalyticsWorkspaceName'))]",
-    "deployToElasticPool": "[greater(length(parameters('elasticPoolName')), 0)]",
-    "databaseSettings": {
-      "nonElasticPool": {
-        "sku": {
-          "name": "[parameters('databaseSkuName')]",
-          "tier": "[parameters('databaseTier')]"
-        },
-        "properties": {
-          "maxSizeBytes": "[parameters('databaseSizeBytes')]",
-          "minCapacity": "[parameters('serverlessMinCapacity')]",
-          "autoPauseDelay": "[parameters('serverlessAutoPauseDelay')]",
-          "createMode": "[parameters('createMode')]",
-          "sourceDatabaseId": "[parameters('sourceDatabaseId')]",
-          "zoneRedundant": "[parameters('zoneRedundant')]",
-          "licenseType": "[parameters('licenseType')]",
-          "readScale": "[parameters('readScaleOut')]",
-          "readReplicaCount": "[parameters('numberOfReplicas')]"
-        }
-      },
-      "elasticPool": {
-        "sku": {
-          "name": "[parameters('databaseSkuName')]"
-        },
-        "properties": {
-          "elasticPoolId": "[parameters('elasticPoolId')]",
-          "sourceDatabaseId": "[parameters('sourceDatabaseId')]",
-          "createMode": "[parameters('createMode')]"
-        }
-      }
-    },
     "diagnosticsSettings": [
       "QueryStoreRuntimeStatistics",
       "QueryStoreWaitStatistics",
@@ -159,8 +108,18 @@
       "type": "Microsoft.Sql/servers/databases",
       "apiVersion": "2017-10-01-preview",
       "location": "[parameters('replicaLocation')]",
-      "sku": "[if(variables('deployToElasticPool'), variables('databaseSettings').elasticPool.sku, variables('databaseSettings').nonElasticPool.sku)]",
-      "properties": "[if(variables('deployToElasticPool'), variables('databaseSettings').elasticPool.properties, variables('databaseSettings').nonElasticPool.properties)]",
+      "sku": "[parameters('databaseSkuName')]",
+      "properties": {
+          "maxSizeBytes": "[parameters('databaseSizeBytes')]",
+          "minCapacity": "[parameters('serverlessMinCapacity')]",
+          "autoPauseDelay": "[parameters('serverlessAutoPauseDelay')]",
+          "createMode": "[parameters('createMode')]",
+          "sourceDatabaseId": "[parameters('sourceDatabaseId')]",
+          "zoneRedundant": "[parameters('zoneRedundant')]",
+          "licenseType": "[parameters('licenseType')]",
+          "readScale": "[parameters('readScaleOut')]",
+          "readReplicaCount": "[parameters('numberOfReplicas')]"
+      },
       "resources": [
       ]
     },
