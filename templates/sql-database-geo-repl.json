@@ -1,0 +1,207 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "databaseName": {
+      "type": "string"
+    },
+    "replicaSqlServerName": {
+      "type": "string",
+      "metadata": {
+        "description": "Name of the Replica SQL Server"
+      }
+    },
+    "databaseSkuName": {
+      "type": "string",
+      "defaultValue": ""
+    },
+    "databaseTier": {
+      "type": "string",
+      "defaultValue": "",
+      "allowedValues": [
+        "",
+        "Basic",
+        "Standard",
+        "Premium",
+        "GeneralPurpose",
+        "BusinessCritical",
+        "Hyperscale"
+      ]
+    },
+    "databaseSizeBytes": {
+      "type": "string",
+      "defaultValue": ""
+    },
+    "serverlessMinCapacity": {
+      "type": "string",
+      "defaultValue": ""
+    },
+    "serverlessAutoPauseDelay": {
+      "type": "string",
+      "defaultValue": "-1"
+    },
+    "dataMaskingExemptPrincipals": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Semi-colon separated list of database principals who are exempt from the following data masking rules"
+      }
+    },
+    "dataMaskingRules": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Object array where object is of type DataMaskingRuleProperties: https://docs.microsoft.com/en-us/azure/templates/microsoft.sql/servers/databases/datamaskingpolicies/rules#DataMaskingRuleProperties"
+      }
+    },
+    "diagnosticsRetentionDays": {
+      "type": "int",
+      "defaultValue": 0,
+      "minValue": 0,
+      "maxValue": 365,
+      "metadata": {
+        "descrtiption": "The number of days that diagnostic logs will be stored for. Default value is forever, max is 1 year."
+      }
+    },
+    "logAnalyticsResourceGroup": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group of the Log Analytics Workspace for the Replica database."
+      }
+    },
+    "logAnalyticsWorkspaceName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the Log Analytics Workspace for the Replica database."
+      }
+    },
+    "replicaLocation": {
+      "type": "String",
+      "metadata": {
+        "description": "The location of the replica database"
+      }
+    },
+    "createMode": {
+      "type": "String"
+    },
+    "sourceDatabaseId": {
+      "type": "String",
+      "metadata": {
+        "description": "The ResourceID of the primary database"
+      }
+    },
+    "zoneRedundant": {
+      "defaultValue": false,
+      "type": "Bool"
+    },
+    "licenseType": {
+      "defaultValue": "",
+      "type": "String"
+    },
+    "readScaleOut": {
+      "defaultValue": "Disabled",
+      "type": "String"
+    },
+    "numberOfReplicas": {
+      "defaultValue": 0,
+      "type": "Int"
+    }
+  },
+  "variables": {
+    "sharedWorkspaceID": "[resourceId(parameters('logAnalyticsResourceGroup'),'Microsoft.OperationalInsights/workspaces', parameters('logAnalyticsWorkspaceName'))]",
+    "diagnosticsSettings": [
+      "QueryStoreRuntimeStatistics",
+      "QueryStoreWaitStatistics",
+      "Errors",
+      "DatabaseWaitStatistics",
+      "Timeouts",
+      "Blocks",
+      "SQLInsights",
+      "AutomaticTuning",
+      "Deadlocks"
+    ]
+  },
+  "resources": [
+    {
+      "name": "[concat(parameters('replicaSqlServerName'), '/', parameters('databaseName'))]",
+      "type": "Microsoft.Sql/servers/databases",
+      "apiVersion": "2017-10-01-preview",
+      "location": "[parameters('replicaLocation')]",
+      "sku": {
+        "Name": "[parameters('databaseSkuName')]",
+        "tier": "[parameters('databaseTier')]"
+      },
+      "properties": {
+        "maxSizeBytes": "[parameters('databaseSizeBytes')]",
+        "minCapacity": "[parameters('serverlessMinCapacity')]",
+        "autoPauseDelay": "[parameters('serverlessAutoPauseDelay')]",
+        "createMode": "[parameters('createMode')]",
+        "sourceDatabaseId": "[parameters('sourceDatabaseId')]",
+        "zoneRedundant": "[parameters('zoneRedundant')]",
+        "licenseType": "[parameters('licenseType')]",
+        "readScale": "[parameters('readScaleOut')]",
+        "readReplicaCount": "[parameters('numberOfReplicas')]"
+      },
+      "resources": [
+      ]
+    },
+    {
+      "type": "Microsoft.Sql/servers/databases/providers/diagnosticSettings",
+      "name": "[concat(parameters('replicaSqlServerName'), '/', parameters('databaseName'), '/Microsoft.Insights/service')]",
+      "condition": "[greater(length(parameters('logAnalyticsWorkspaceName')), 0)]",
+      "apiVersion": "2017-05-01-preview",
+      "properties": {
+        "workspaceId": "[variables('sharedWorkspaceID')]",
+        "copy": [
+          {
+            "name": "logs",
+            "count": "[length(variables('diagnosticsSettings'))]",
+            "input": {
+              "category": "[variables('diagnosticsSettings')[copyIndex('logs')]]",
+              "enabled": true,
+              "retentionPolicy": {
+                "days": "[parameters('diagnosticsRetentionDays')]",
+                "enabled": true
+              }
+            }
+          }
+        ],
+        "metrics": [
+          {
+            "timeGrain": "AllMetrics",
+            "enabled": true,
+            "retentionPolicy": {
+              "enabled": true,
+              "days": "[parameters('diagnosticsRetentionDays')]"
+            }
+          }
+        ]
+      },
+      "dependsOn": [
+        "[parameters('databaseName')]"
+      ]
+    },
+    {
+      "name": "[concat(parameters('replicaSqlServerName'), '/', parameters('databaseName'), '/Default')]",
+      "condition": "[greater(length(parameters('dataMaskingRules')), 0)]",
+      "type": "Microsoft.Sql/servers/databases/dataMaskingPolicies",
+      "apiVersion": "2014-04-01",
+      "properties": {
+        "dataMaskingState": "Enabled",
+        "exemptPrincipals": "[parameters('dataMaskingExemptPrincipals')]"
+      }
+    },
+    {
+      "name": "[concat(parameters('replicaSqlServerName'), '/', parameters('databaseName'), '/Default/', if(greater(length(parameters('dataMaskingRules')), 0), concat(parameters('dataMaskingRules')[copyIndex()].schemaName, parameters('dataMaskingRules')[copyIndex()].tableName, parameters('dataMaskingRules')[copyIndex()].columnName),'placeholder'))]",
+      "condition": "[greater(length(parameters('dataMaskingRules')), 0)]",
+      "type": "Microsoft.Sql/servers/databases/dataMaskingPolicies/rules",
+      "apiVersion": "2014-04-01",
+      "properties": "[parameters('dataMaskingRules')[copyIndex()]]",
+      "copy": {
+        "name": "dataMaskingRuleCopy",
+        "count": "[if(greater(length(parameters('dataMaskingRules')), 0), length(parameters('dataMaskingRules')), 1)]"
+      }
+    }
+  ],
+  "outputs": {}
+}
