@@ -12,6 +12,10 @@
       "type": "string",
       "defaultValue": ""
     },
+    "elasticPoolId": {
+      "type": "string",
+      "defaultValue": ""
+    },
     "databaseSkuName": {
       "type": "string",
       "defaultValue": ""
@@ -131,7 +135,9 @@
           "name": "ElasticPool"
         },
         "properties": {
-          "elasticPoolId": "[concat('/subscriptions/', subscription().subscriptionId, '/resourceGroups/', resourceGroup().name, '/providers/Microsoft.Sql/servers/', parameters('sqlServerName'), '/elasticPools/', parameters('elasticPoolName'))]"
+          "elasticPoolId": "[parameters('elasticPoolId')]",
+          "sourceDatabaseId": "[parameters('sourceDatabaseId')]",
+          "createMode": "[parameters('createMode')]"
         }
       }
     },
