@@ -64,13 +64,6 @@
         "descrtiption": "The number of days that diagnostic logs will be stored for. Default value is forever, max is 1 year."
       }
     },
-    "logAnalyticsSubscriptionId": {
-      "type": "string",
-      "defaultValue": "[subscription().subscriptionId]",
-      "metadata": {
-        "description": "The id of the subscription for the Log Analytics Workspace. This defaults to the current subscription."
-      }
-    },
     "logAnalyticsResourceGroup": {
       "type": "string",
       "metadata": {
@@ -83,8 +76,11 @@
         "description": "The name of the Log Analytics Workspace."
       }
     },
-    "location": {
-      "type": "String"
+    "replicaLocation": {
+      "type": "String",
+      "metadata": {
+        "description": "The location of the replica database"
+      }
     },
     "createMode": {
       "type": "String"
@@ -110,6 +106,7 @@
     }
   },
   "variables": {
+    "sharedWorkspaceID": "[resourceId(parameters('logAnalyticsResourceGroup'),'Microsoft.OperationalInsights/workspaces', parameters('logAnalyticsWorkspaceName'))]",
     "deployToElasticPool": "[greater(length(parameters('elasticPoolName')), 0)]",
     "databaseSettings": {
       "nonElasticPool": {
@@ -155,7 +152,7 @@
       "name": "[concat(parameters('sqlServerName'), '/', parameters('databaseName'))]",
       "type": "Microsoft.Sql/servers/databases",
       "apiVersion": "2017-10-01-preview",
-      "location": "[parameters('location')]",
+      "location": "[parameters('replicaLocation')]",
       "sku": "[if(variables('deployToElasticPool'), variables('databaseSettings').elasticPool.sku, variables('databaseSettings').nonElasticPool.sku)]",
       "properties": "[if(variables('deployToElasticPool'), variables('databaseSettings').elasticPool.properties, variables('databaseSettings').nonElasticPool.properties)]",
       "resources": [
@@ -178,7 +175,7 @@
       "condition": "[greater(length(parameters('logAnalyticsWorkspaceName')), 0)]",
       "apiVersion": "2017-05-01-preview",
       "properties": {
-        "workspaceId": "[resourceId(parameters('logAnalyticsSubscriptionId'), parameters('logAnalyticsResourceGroup'), 'Microsoft.OperationalInsights/Workspaces',parameters('logAnalyticsWorkspaceName'))]",
+        "workspaceId": "[variables('sharedWorkspaceID')]",
         "copy": [
           {
             "name": "logs",
