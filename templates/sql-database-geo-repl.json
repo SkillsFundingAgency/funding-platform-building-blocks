@@ -69,7 +69,7 @@
         "description": "The resource group of the Log Analytics Workspace for the Replica database."
       }
     },
-        "logAnalyticsSubscriptionId": {
+    "logAnalyticsSubscriptionId": {
       "type": "string",
       "defaultValue": "[subscription().subscriptionId]",
       "metadata": {
