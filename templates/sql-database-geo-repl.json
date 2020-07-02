@@ -69,6 +69,13 @@
         "description": "The resource group of the Log Analytics Workspace for the Replica database."
       }
     },
+        "logAnalyticsSubscriptionId": {
+      "type": "string",
+      "defaultValue": "[subscription().subscriptionId]",
+      "metadata": {
+        "description": "The id of the subscription for the Log Analytics Workspace. This defaults to the current subscription."
+      }
+    },
     "logAnalyticsWorkspaceName": {
       "type": "string",
       "metadata": {
@@ -108,7 +115,6 @@
     }
   },
   "variables": {
-    "sharedWorkspaceID": "[resourceId(parameters('logAnalyticsResourceGroup'),'Microsoft.OperationalInsights/workspaces', parameters('logAnalyticsWorkspaceName'))]",
     "diagnosticsSettings": [
       "QueryStoreRuntimeStatistics",
       "QueryStoreWaitStatistics",
@@ -151,7 +157,7 @@
       "condition": "[greater(length(parameters('logAnalyticsWorkspaceName')), 0)]",
       "apiVersion": "2017-05-01-preview",
       "properties": {
-        "workspaceId": "[variables('sharedWorkspaceID')]",
+        "workspaceId": "[resourceId(parameters('logAnalyticsSubscriptionId'), parameters('logAnalyticsResourceGroup'), 'Microsoft.OperationalInsights/Workspaces',parameters('logAnalyticsWorkspaceName'))]",
         "copy": [
           {
             "name": "logs",
