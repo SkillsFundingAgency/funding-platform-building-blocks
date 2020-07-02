@@ -156,17 +156,6 @@
       "sku": "[if(variables('deployToElasticPool'), variables('databaseSettings').elasticPool.sku, variables('databaseSettings').nonElasticPool.sku)]",
       "properties": "[if(variables('deployToElasticPool'), variables('databaseSettings').elasticPool.properties, variables('databaseSettings').nonElasticPool.properties)]",
       "resources": [
-        {
-          "name": "current",
-          "type": "transparentDataEncryption",
-          "apiVersion": "2014-04-01",
-          "properties": {
-            "status": "Enabled"
-          },
-          "dependsOn": [
-            "[parameters('databaseName')]"
-          ]
-        }
       ]
     },
     {
