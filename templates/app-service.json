@@ -214,7 +214,7 @@
             "serverFarmId": "[variables('appServicePlanId')]",
             "clientAffinityEnabled": false,
             "siteConfig": {
-              "alwaysOn": true,
+              "alwaysOn": false,
               "appSettings": "[if(variables('useAppServiceSlotAppSettings'), parameters('appServiceSlotAppSettings'), parameters('appServiceAppSettings'))]",
               "connectionStrings": "[if(variables('useAppServiceSlotConnectionStrings'), parameters('appServiceSlotConnectionStrings'), parameters('appServiceConnectionStrings'))]",
               "virtualApplications": "[parameters('appServiceVirtualApplications')]",
