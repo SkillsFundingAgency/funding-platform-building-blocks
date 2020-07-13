@@ -214,10 +214,12 @@
             "serverFarmId": "[variables('appServicePlanId')]",
             "clientAffinityEnabled": false,
             "siteConfig": {
+              "alwaysOn": false,
               "appSettings": "[if(variables('useAppServiceSlotAppSettings'), parameters('appServiceSlotAppSettings'), parameters('appServiceAppSettings'))]",
               "connectionStrings": "[if(variables('useAppServiceSlotConnectionStrings'), parameters('appServiceSlotConnectionStrings'), parameters('appServiceConnectionStrings'))]",
               "virtualApplications": "[parameters('appServiceVirtualApplications')]",
-              "ipSecurityRestrictions": "[parameters('ipSecurityRestrictions')]"
+              "ipSecurityRestrictions": "[parameters('ipSecurityRestrictions')]",
+              "ftpsState": "[parameters('ftpsState')]"
             },
             "httpsOnly": true
           },
