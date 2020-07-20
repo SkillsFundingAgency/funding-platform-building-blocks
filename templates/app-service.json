@@ -86,7 +86,8 @@
       "allowedValues": [
         "web",
         "app",
-        "api"
+        "api",
+        "functionapp"
       ]
     },
     "subnetResourceId": {
