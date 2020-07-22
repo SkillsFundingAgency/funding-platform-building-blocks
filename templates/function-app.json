@@ -58,7 +58,21 @@
   "variables": {
     "useCustomHostname": "[greater(length(parameters('customHostname')), 0)]",
     "appServicePlanId": "[resourceId(parameters('appServicePlanResourceGroup'), 'Microsoft.Web/serverfarms', parameters('appServicePlanName'))]",
-    "functionAppApiVersion": "2019-08-01"
+    "functionAppApiVersion": "2019-08-01",
+    "alwaysOnEnabledConfigOption": {
+      "alwaysOn": true,
+      "appSettings": "[parameters('functionAppAppSettings')]",
+      "connectionStrings": "[parameters('functionAppConnectionStrings')]",
+      "ipSecurityRestrictions": "[parameters('ipSecurityRestrictions')]",
+      "ftpsState": "[parameters('ftpsState')]"
+    },
+    "alwaysOnDisabledConfigOption": {
+      "alwaysOn": false,
+      "appSettings": "[parameters('functionAppAppSettings')]",
+      "connectionStrings": "[parameters('functionAppConnectionStrings')]",
+      "ipSecurityRestrictions": "[parameters('ipSecurityRestrictions')]",
+      "ftpsState": "[parameters('ftpsState')]"
+    }
   },
   "resources": [
     {
@@ -73,13 +87,7 @@
       "properties": {
         "serverFarmId": "[variables('appServicePlanId')]",
         "clientAffinityEnabled": false,
-        "siteConfig": {
-          "alwaysOn": "[if(equals(reference(resourceId(parameters('appServicePlanResourceGroup'),'Microsoft.Web/serverFarms',parameters('appServicePlanName')), '2019-08-01').computeMode,'Dynamic'), 'false', 'true')]",
-          "appSettings": "[parameters('functionAppAppSettings')]",
-          "connectionStrings": "[parameters('functionAppConnectionStrings')]",
-          "ipSecurityRestrictions": "[parameters('ipSecurityRestrictions')]",
-          "ftpsState": "[parameters('ftpsState')]"
-        },
+        "siteConfig": "[if(or(equals(reference(resourceId(parameters('appServicePlanResourceGroup'), 'Microsoft.Web/serverFarms', parameters('appServicePlanName')), '2019-08-01').sku.tier, 'ElasticPremium'),equals(reference(resourceId(parameters('appServicePlanResourceGroup'),'Microsoft.Web/serverFarms',parameters('appServicePlanName')), '2019-08-01').computeMode,'Dynamic')), variables('alwaysOnDisabledConfigOption'), variables('alwaysOnEnabledConfigOption'))]",
         "httpsOnly": true
       }
     },
