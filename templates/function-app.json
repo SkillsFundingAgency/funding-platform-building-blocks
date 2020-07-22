@@ -87,7 +87,7 @@
       "properties": {
         "serverFarmId": "[variables('appServicePlanId')]",
         "clientAffinityEnabled": false,
-        "siteConfig": "[if(or(equals(reference(resourceId(parameters('appServicePlanResourceGroup'), 'Microsoft.Web/serverFarms', parameters('appServicePlanName')), '2019-08-01').sku.tier, 'ElasticPremium'),equals(reference(resourceId(parameters('appServicePlanResourceGroup'),'Microsoft.Web/serverFarms',parameters('appServicePlanName')), '2019-08-01').computeMode,'Dynamic')), variables('alwaysOnDisabledConfigOption'), variables('alwaysOnEnabledConfigOption'))]",
+        "siteConfig": "[if(or(equals(reference(resourceId(parameters('appServicePlanResourceGroup'), 'Microsoft.Web/serverFarms', parameters('appServicePlanName')), '2019-08-01').kind, 'elastic'),equals(reference(resourceId(parameters('appServicePlanResourceGroup'),'Microsoft.Web/serverFarms',parameters('appServicePlanName')), '2019-08-01').computeMode,'Dynamic')), variables('alwaysOnDisabledConfigOption'), variables('alwaysOnEnabledConfigOption'))]",
         "httpsOnly": true
       }
     },
