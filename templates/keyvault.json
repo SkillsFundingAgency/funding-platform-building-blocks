@@ -61,24 +61,30 @@
       "defaultValue": "30"
     }
   },
-  "variables": {},
+  "variables": {
+    "defaultProperties": {
+        "enabledForDiskEncryption": "[parameters('enabledForDiskEncryption')]",
+        "enabledForTemplateDeployment": "[parameters('enabledForTemplateDeployment')]",
+        "enableSoftDelete": "[parameters('enableSoftDelete')]",
+        "tenantId": "[subscription().tenantId]",
+        "sku": {
+          "name": "Standard",
+          "family": "A"
+        }
+    },
+    "accessPolicyProperty": {
+        "accessPolicies": "[parameters('keyVaultAccessPolicies')]",
+    },
+    "allProperties": "[if(empty(parameters('keyVaultAccessPolicies')), variables('defaultProperties'), union(variables('defaultProperties'), variables('accessPolicyProperty')))]"
+
+  },
   "resources": [
     {
       "type": "Microsoft.KeyVault/vaults",
       "name": "[parameters('keyVaultName')]",
       "apiVersion": "2018-02-14",
       "location": "[resourceGroup().location]",
-      "properties": {
-        "enabledForDiskEncryption": "[parameters('enabledForDiskEncryption')]",
-        "enabledForTemplateDeployment": "[parameters('enabledForTemplateDeployment')]",
-        "enableSoftDelete": "[parameters('enableSoftDelete')]",
-        "accessPolicies": "[parameters('keyVaultAccessPolicies')]",
-        "tenantId": "[subscription().tenantId]",
-        "sku": {
-          "name": "Standard",
-          "family": "A"
-        }
-      }
+      "properties": "[variables('allProperties')]"
     },
     {
       "type": "Microsoft.KeyVault/vaults/providers/diagnosticSettings",
