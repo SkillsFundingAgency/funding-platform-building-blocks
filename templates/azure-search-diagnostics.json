@@ -1,0 +1,85 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "enableAllMetrics": {
+            "type": "bool",
+            "defaultValue": true,
+            "metadata": {
+                "description": "Collect 'allMetrics' metrics"
+            }
+        },
+        "enableOperationLogs": {
+            "type": "bool",
+            "defaultValue": true,
+            "metadata": {
+                "description": "Collect operation logs"
+            }
+        },        
+        "searchService": {
+            "type": "string"
+        },
+        "setRetentionPolicyDays": {
+            "type": "string",
+            "defaultValue": "30",
+            "metadata": {
+                "description": "The number of days for the Retention policy"
+            }
+        },
+        "enableRetentionPolicy": {
+            "type": "bool",
+            "defaultValue": false,
+            "metadata": {
+                "description": "Indicates whether Retention Policy is enabled"
+            }
+        },
+        "settingName": {
+            "type": "String",
+            "defaultvalue": "SearchServiceDiagSettings",
+            "metadata": {
+                "description": "The name of the diagnostic setting"
+            }
+        },
+        "sharedWorkspaceID": {
+            "type": "string",
+            "metadata": {
+                "description": "The Shared WorkspaceID should be the Workspace ResourceID Value"
+            }
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "type": "Microsoft.Search/searchServices/providers/diagnosticSettings",
+            "apiVersion": "2017-05-01-preview",
+            "name": "[concat(parameters('searchService'),'/microsoft.insights/', parameters('settingName'))]",
+            "dependsOn": [
+            ],
+            "properties": {
+                "name": "[parameters('settingName')]",
+                "metrics": [
+                    {
+                        "category": "AllMetrics",
+                        "enabled": "[parameters('enableAllMetrics')]",
+                        "retentionPolicy": {
+                            "enabled": "[parameters('enableRetentionPolicy')]",
+                            "days": "[parameters('setRetentionPolicyDays')]"
+                        }
+                    }
+                ],
+                "logs": [
+                    {
+                        "category": "OperationLogs",
+                        "enabled": "[parameters('enableOperationLogs')]",
+                        "retentionPolicy": {
+                            "enabled": "[parameters('enableRetentionPolicy')]",
+                            "days": "[parameters('setRetentionPolicyDays')]"
+                        }
+                    }
+                ],
+                "workspaceId": "[parameters('sharedWorkspaceID')]"
+            }
+        }
+    ],
+    "outputs": {}
+}
