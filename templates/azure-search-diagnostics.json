@@ -6,7 +6,7 @@
             "type": "bool",
             "defaultValue": true,
             "metadata": {
-                "description": "Collect allMetrics"
+                "description": "Collect 'allMetrics' metrics"
             }
         },
         "enableOperationLogs": {
