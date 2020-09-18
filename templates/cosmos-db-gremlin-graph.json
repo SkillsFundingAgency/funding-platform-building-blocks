@@ -23,6 +23,10 @@
                 "Range"
             ],
             "type": "String"
+        },
+        "version": {
+            "defaultValue": 1,
+            "type": "int"
         }
     },
     "variables": {
@@ -37,7 +41,8 @@
                     "id": "[parameters('graphName')]",
                     "partitionKey": {
                         "paths": "[parameters('partitionKeyPaths')]",
-                        "kind": "[parameters('partitionKeyKind')]"
+                        "kind": "[parameters('partitionKeyKind')]",
+                        "version": "[parameters('version')]"
                     }
                 }
             }
