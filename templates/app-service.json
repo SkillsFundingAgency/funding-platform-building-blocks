@@ -97,6 +97,10 @@
         "description": "Resource ID of the subnet used for vNet integration"
       }
     },
+    "http20Enabled": {
+      "type": "bool",
+      "defaultValue": false
+    },
     "ftpsState": {
       "type": "string",
       "defaultValue": "Disabled",
@@ -197,6 +201,7 @@
           "connectionStrings": "[parameters('appServiceConnectionStrings')]",
           "virtualApplications": "[parameters('appServiceVirtualApplications')]",
           "ipSecurityRestrictions": "[parameters('ipSecurityRestrictions')]",
+          "http20Enabled": "[parameters('http20Enabled')]",
           "ftpsState": "[parameters('ftpsState')]"
         },
         "httpsOnly": true
@@ -220,6 +225,7 @@
               "connectionStrings": "[if(variables('useAppServiceSlotConnectionStrings'), parameters('appServiceSlotConnectionStrings'), parameters('appServiceConnectionStrings'))]",
               "virtualApplications": "[parameters('appServiceVirtualApplications')]",
               "ipSecurityRestrictions": "[parameters('ipSecurityRestrictions')]",
+              "http20Enabled": "[parameters('http20Enabled')]", 
               "ftpsState": "[parameters('ftpsState')]"
             },
             "httpsOnly": true
