@@ -24,6 +24,13 @@
       "type": "bool",
       "defaultValue": false
     },
+    "enablePurgeProtection": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Enables purge protection.  Warning: This can only be enabled when soft delete is already enabled."
+      }
+    },
     "settingName": {
       "type": "String",
       "defaultvalue": "keyVaultDiagSettings",
@@ -72,6 +79,7 @@
         "enabledForDiskEncryption": "[parameters('enabledForDiskEncryption')]",
         "enabledForTemplateDeployment": "[parameters('enabledForTemplateDeployment')]",
         "enableSoftDelete": "[parameters('enableSoftDelete')]",
+        "enablePurgeProtection": "[parameters('enablePurgeProtection')]",
         "accessPolicies": "[parameters('keyVaultAccessPolicies')]",
         "tenantId": "[subscription().tenantId]",
         "sku": {
