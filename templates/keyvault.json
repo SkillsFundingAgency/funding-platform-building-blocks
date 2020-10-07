@@ -68,25 +68,31 @@
       "defaultValue": "30"
     }
   },
-  "variables": {},
-  "resources": [
-    {
-      "type": "Microsoft.KeyVault/vaults",
-      "name": "[parameters('keyVaultName')]",
-      "apiVersion": "2018-02-14",
-      "location": "[resourceGroup().location]",
-      "properties": {
+  "variables": {
+    "shouldIncludePurgeProperty": "[and(parameters('enableSoftDelete'), parameters('enablePurgeProtection'))]",
+    "kvBaseProperties": {
         "enabledForDiskEncryption": "[parameters('enabledForDiskEncryption')]",
         "enabledForTemplateDeployment": "[parameters('enabledForTemplateDeployment')]",
         "enableSoftDelete": "[parameters('enableSoftDelete')]",
-        "enablePurgeProtection": "[parameters('enablePurgeProtection')]",
         "accessPolicies": "[parameters('keyVaultAccessPolicies')]",
         "tenantId": "[subscription().tenantId]",
         "sku": {
           "name": "Standard",
           "family": "A"
         }
-      }
+    },
+    "purgeProtectionProperty": {
+      "enablePurgeProtection": true
+    },
+    "allProperties": "[if(variables('shouldIncludePurgeProperty'), union(variables('kvBaseProperties'), variables('purgeProtectionProperty')), variables('kvBaseProperties'))]"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.KeyVault/vaults",
+      "name": "[parameters('keyVaultName')]",
+      "apiVersion": "2018-02-14",
+      "location": "[resourceGroup().location]",
+      "properties": "[variables('allProperties')]"
     },
     {
       "type": "Microsoft.KeyVault/vaults/providers/diagnosticSettings",
