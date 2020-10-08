@@ -68,7 +68,7 @@
       "appSettings": "[parameters('functionAppAppSettings')]",
       "connectionStrings": "[parameters('functionAppConnectionStrings')]",
       "ipSecurityRestrictions": "[parameters('ipSecurityRestrictions')]",
-      "http20Enabled": "[parameters('http20Enabled')]",
+   //   "http20Enabled": "[parameters('http20Enabled')]",
       "ftpsState": "[parameters('ftpsState')]"
     },
     "alwaysOnDisabledConfigOption": {
@@ -76,7 +76,7 @@
       "appSettings": "[parameters('functionAppAppSettings')]",
       "connectionStrings": "[parameters('functionAppConnectionStrings')]",
       "ipSecurityRestrictions": "[parameters('ipSecurityRestrictions')]",
-      "http20Enabled": "[parameters('http20Enabled')]",
+//      "http20Enabled": "[parameters('http20Enabled')]",
       "ftpsState": "[parameters('ftpsState')]"
     }
   },
