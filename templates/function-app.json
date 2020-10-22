@@ -45,6 +45,10 @@
         "description": "Must use this format: https://docs.microsoft.com/en-us/azure/templates/microsoft.web/2016-08-01/sites#IpSecurityRestriction. 2018-02-01 API will break template using current WAFOutboundIPAddresses shared variable."
       }
     },
+    "use32BitWorkerProcess": {
+      "type": "bool",
+      "defaultValue": true
+    },
     "http20Enabled": {
       "type": "bool",
       "defaultValue": false
@@ -68,6 +72,7 @@
       "appSettings": "[parameters('functionAppAppSettings')]",
       "connectionStrings": "[parameters('functionAppConnectionStrings')]",
       "ipSecurityRestrictions": "[parameters('ipSecurityRestrictions')]",
+      "use32BitWorkerProcess": "[parameters('use32BitWorkerProcess')]",
       "http20Enabled": "[parameters('http20Enabled')]",
       "ftpsState": "[parameters('ftpsState')]"
     },
@@ -76,6 +81,7 @@
       "appSettings": "[parameters('functionAppAppSettings')]",
       "connectionStrings": "[parameters('functionAppConnectionStrings')]",
       "ipSecurityRestrictions": "[parameters('ipSecurityRestrictions')]",
+      "use32BitWorkerProcess": "[parameters('use32BitWorkerProcess')]",
       "http20Enabled": "[parameters('http20Enabled')]",
       "ftpsState": "[parameters('ftpsState')]"
     }
