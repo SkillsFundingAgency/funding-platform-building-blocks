@@ -1,0 +1,32 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "storageAccountName": {
+            "type": "string",
+            "metadata": {
+                "description": "Name of the storage account"
+            }
+        },
+        "PolicyRules": {
+            "type": "array",
+            "metadata": {
+                "description": "Array of Policy Rules"
+            }
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "name": "[concat(parameters('storageAccountName'), '/default')]",
+            "type": "Microsoft.Storage/storageAccounts/managementPolicies",
+            "apiVersion": "2019-06-01",
+            "properties": {
+                "policy": {
+                    "rules": "[parameters('PolicyRules')]"
+                }
+            }
+        }
+    ],
+    "outputs": {}
+}
