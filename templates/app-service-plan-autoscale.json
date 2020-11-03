@@ -1,0 +1,72 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "appServicePlanName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the app service plan to apply the autoscale rules being applied"
+      }
+    },
+    "defaultCapacity": {
+      "type": "int",
+      "defaultValue": 2,
+      "metadata": {
+        "description": "The default number of instances without any autoscale rules being applied"
+      }
+    },
+    "minimumCapacity": {
+      "type": "int",
+      "defaultValue": 2,
+      "metadata": {
+        "description": "The lowest number of instances that the app service plan will auto-scale down to"
+      }
+    },
+    "maximumCapacity": {
+      "type": "int",
+      "defaultValue": 2,
+      "metadata": {
+        "description": "The highest number of instances that the app service plan will auto-scale up to"
+      }
+    },
+    "scalingRules": {
+      "type": "array",
+      "metadata": {
+        "description": "An array of objects representing the condition(s) to scale the plan upon. See https://docs.microsoft.com/en-us/azure/templates/microsoft.insights/2015-04-01/autoscalesettings for more info"
+      }
+    },
+    "enableAutoscale": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Enable/disable the autoscale operations"
+      }
+    }
+  },
+  "variables": {
+    "settingName": "[concat(parameters('appServicePlanName'), '-autoscale')]"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Insights/autoscalesettings",
+      "name": "[variables('settingName')]",
+      "apiVersion": "2014-04-01",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "profiles": [
+          {
+            "name": "DefaultAutoscaleProfile",
+            "capacity": {
+              "minimum": "[parameters('minimumCapacity')]",
+              "maximum": "[parameters('maximumCapacity')]",
+              "default": "[parameters('defaultCapacity')]"
+            },
+            "rules": "[parameters('scalingRules')]"
+          }
+        ],
+        "enabled": "[parameters('enableAutoscale')]",
+        "targetResourceUri": "[resourceId('Microsoft.Web/serverfarms', parameters('appServicePlanName'))]"
+      }
+    }
+  ]
+}
