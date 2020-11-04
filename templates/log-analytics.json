@@ -2,6 +2,21 @@
     "$schema": "http://schema.management.azure.com/schemas/2014-04-01-preview/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
+        "environmentTag": {
+            "type": "string"
+        },
+        "parentBusinessTag": {
+            "type": "string"
+        },
+        "portfolioTag": {
+            "type": "string"
+        },
+        "productTag": {
+            "type": "string"
+        },
+        "serviceLineTag": {
+            "type": "string"
+        },
         "logAnalyticsName": {
             "type": "String"
         },
@@ -34,6 +49,15 @@
             "apiVersion": "2017-03-15-preview",
             "name": "[parameters('logAnalyticsName')]",
             "location": "[parameters('logAnalyticsLocation')]",
+            "tags": {
+                "Environment": "[parameters('environmentTag')]",
+                "Parent Business": "[parameters('parentBusinessTag')]",
+                "Portfolio": "[parameters('portfolioTag')]",
+                "Product": "[parameters('productTag')]",
+                "Service": "[parameters('productTag')]",
+                "Service Line": "[parameters('serviceLineTag')]",
+                "Service Offering": "[parameters('productTag')]"
+            },
             "properties": {
                 "sku": {
                     "name": "[parameters('logAnalyticsSku')]"

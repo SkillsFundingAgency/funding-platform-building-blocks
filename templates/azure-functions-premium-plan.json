@@ -2,6 +2,21 @@
   "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
+    "environmentTag": {
+        "type": "string"
+    },
+    "parentBusinessTag": {
+        "type": "string"
+    },
+    "portfolioTag": {
+        "type": "string"
+    },
+    "productTag": {
+        "type": "string"
+    },
+    "serviceLineTag": {
+        "type": "string"
+    },
     "hostingPlanName": {
       "type": "string"
     },
@@ -43,6 +58,15 @@
       "apiVersion": "2016-09-01",
       "name": "[parameters('hostingPlanName')]",
       "location": "[parameters('hostingPlanLocation')]",
+      "tags": {
+          "Environment": "[parameters('environmentTag')]",
+          "Parent Business": "[parameters('parentBusinessTag')]",
+          "Portfolio": "[parameters('portfolioTag')]",
+          "Product": "[parameters('productTag')]",
+          "Service": "[parameters('productTag')]",
+          "Service Line": "[parameters('serviceLineTag')]",
+          "Service Offering": "[parameters('productTag')]"
+      },
       "sku": {
         "name": "[concat('EP', string(parameters('hostingPlanSize')))]",
         "tier": "ElasticPremium"
