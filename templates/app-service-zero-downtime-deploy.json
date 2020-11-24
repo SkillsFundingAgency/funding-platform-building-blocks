@@ -201,12 +201,7 @@
         "siteConfig": {
           "alwaysOn": true,
           "phpVersion": "off",
-          "minTlsVersion": "[parameters('minTlsVersion')]",
-          "virtualApplications": "[parameters('appServiceVirtualApplications')]",
-          "ipSecurityRestrictions": "[parameters('ipSecurityRestrictions')]",
-          "use32BitWorkerProcess": "[parameters('use32BitWorkerProcess')]",
-          "http20Enabled": "[parameters('http20Enabled')]",
-          "ftpsState": "[parameters('ftpsState')]"
+          "minTlsVersion": "[parameters('minTlsVersion')]"
         },
         "httpsOnly": true
       },
@@ -236,12 +231,7 @@
               "phpVersion": "off",
               "minTlsVersion": "[parameters('minTlsVersion')]",
               "appSettings": "[parameters('appServiceAppSettings')]",
-              "connectionStrings": "[parameters('appServiceConnectionStrings')]",
-              "virtualApplications": "[parameters('appServiceVirtualApplications')]",
-              "ipSecurityRestrictions": "[parameters('ipSecurityRestrictions')]",
-              "use32BitWorkerProcess": "[parameters('use32BitWorkerProcess')]",
-              "http20Enabled": "[parameters('http20Enabled')]",
-              "ftpsState": "[parameters('ftpsState')]"
+              "connectionStrings": "[parameters('appServiceConnectionStrings')]"
             },
             "httpsOnly": true
           },
