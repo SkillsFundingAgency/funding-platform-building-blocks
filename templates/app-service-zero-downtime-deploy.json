@@ -169,6 +169,10 @@
         "1.1",
         "1.2"
       ]
+    },
+    "stagingSlotIsAlwaysOn": {
+      "type": "bool",
+      "defaultValue": true
     }
   },
   "variables": {
@@ -278,7 +282,7 @@
         "ftpsState": "[parameters('ftpsState')]",
         "minTlsVersion": "[parameters('minTlsVersion')]",
         "phpVersion": "off",
-        "alwaysOn": false
+        "alwaysOn": "[parameters('stagingSlotIsAlwaysOn')]"
       }
     },
     {
