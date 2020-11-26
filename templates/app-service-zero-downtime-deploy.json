@@ -219,7 +219,7 @@
         "Service Offering": "[parameters('productTag')]"
       },
       "properties": {
-        "clientAffinityEnabled": true,
+        "clientAffinityEnabled": false,
         "siteConfig": {
           "appSettings": "[parameters('appServiceAppSettings')]",
           "connectionStrings": "[parameters('appServiceConnectionStrings')]"
