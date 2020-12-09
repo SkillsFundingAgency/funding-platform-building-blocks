@@ -88,6 +88,15 @@
       "defaultValue": [
         "*"
       ]
+    },
+    "minimumTlsVersion": {
+      "type": "array",
+      "defaultValue": "TLS1_0",
+      "allowedValues": [
+        "TLS1_0",
+        "TLS1_0",
+        "TLS1_2"
+      ]
     }
   },
   "variables": {
@@ -131,6 +140,7 @@
         },
         "accessTier": "[if(empty(parameters('accessTier')), json('null'), parameters('accessTier'))]",
         "supportsHttpsTrafficOnly": true,
+        "minimumTlsVersion": "[parameters('minimumTlsVersion')]",
         "networkAcls": "[if(greater(length(parameters('subnetResourceIdList')), 0), variables('networkAclObject'), json('null'))]"
       },
       "resources": [
