@@ -90,7 +90,7 @@
       ]
     },
     "minimumTlsVersion": {
-      "type": "array",
+      "type": "string",
       "defaultValue": "TLS1_0",
       "allowedValues": [
         "TLS1_0",
