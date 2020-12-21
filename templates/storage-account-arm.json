@@ -79,7 +79,7 @@
     },
     "allowedMethods": {
       "type": "array",
-        "defaultValue": [
+      "defaultValue": [
         "GET"
       ]
     },
@@ -97,10 +97,17 @@
         "TLS1_0",
         "TLS1_2"
       ]
+    },
+    "allowedIpAddressesList": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "A list of allowed IPs"
+      }
     }
   },
   "variables": {
-    "networkAclObject": {
+    "virtualNetworkRules": {
       "bypass": "Logging, Metrics",
       "copy": [
         {
@@ -112,6 +119,24 @@
           }
         }
       ],
+      "defaultAction": "Deny"
+    },
+    "ipRules": {
+      "copy": [
+        {
+          "name": "ipRules",
+          "count": "[if(greater(length(parameters('allowedIpAddressesList')), 0), length(parameters('allowedIpAddressesList')), 1)]",
+          "input": {
+            "value": "[if(greater(length(parameters('allowedIpAddressesList')), 0), parameters('allowedIpAddressesList')[copyIndex('ipRules')], json('null'))]",
+            "action": "Allow"
+          }
+        }
+      ]
+    },
+    "networkAclObject": {
+      "bypass": "Logging, Metrics",
+      "virtualNetworkRules": "[if(greater(length(parameters('subnetResourceIdList')), 0), variables('virtualNetworkRules').virtualNetworkRules, json('null'))]",
+      "ipRules": "[if(greater(length(parameters('allowedIpAddressesList')), 0), variables('ipRules').ipRules, json('null'))]",
       "defaultAction": "Deny"
     }
   },
@@ -141,33 +166,33 @@
         "accessTier": "[if(empty(parameters('accessTier')), json('null'), parameters('accessTier'))]",
         "supportsHttpsTrafficOnly": true,
         "minimumTlsVersion": "[parameters('minimumTlsVersion')]",
-        "networkAcls": "[if(greater(length(parameters('subnetResourceIdList')), 0), variables('networkAclObject'), json('null'))]"
+        "networkAcls": "[if(or(greater(length(parameters('subnetResourceIdList')), 0),greater(length(parameters('allowedIpAddressesList')), 0)), variables('networkAclObject'), json('null'))]"
       },
       "resources": [
-          {
-            "name": "default",
-            "type": "blobServices",
-            "condition": "[equals(parameters('enableCors'), 'True')]",
-            "apiVersion": "2018-11-01",
-            "dependsOn": [
-              "[parameters('storageAccountName')]"
-            ],
-            "properties": {
-              "cors": {
-                "corsRules": [
-                  {
-                    "allowedOrigins": "[parameters('allowedOrigins')]",
-                    "allowedMethods": "[parameters('allowedMethods')]",
-                    "maxAgeInSeconds": "[parameters('maxAgeInSeconds')]",
-                    "exposedHeaders": "[parameters('exposedHeaders')]",
-                    "allowedHeaders": "[parameters('allowedHeaders')]"
-                  }
-                ]
-              }
-            },
-            "resources": []
-          }
-        ]
+        {
+          "name": "default",
+          "type": "blobServices",
+          "condition": "[equals(parameters('enableCors'), 'True')]",
+          "apiVersion": "2018-11-01",
+          "dependsOn": [
+            "[parameters('storageAccountName')]"
+          ],
+          "properties": {
+            "cors": {
+              "corsRules": [
+                {
+                  "allowedOrigins": "[parameters('allowedOrigins')]",
+                  "allowedMethods": "[parameters('allowedMethods')]",
+                  "maxAgeInSeconds": "[parameters('maxAgeInSeconds')]",
+                  "exposedHeaders": "[parameters('exposedHeaders')]",
+                  "allowedHeaders": "[parameters('allowedHeaders')]"
+                }
+              ]
+            }
+          },
+          "resources": []
+        }
+      ]
     }
   ],
   "outputs": {
