@@ -177,6 +177,10 @@
     "retentionPolicyDays": {
       "type": "string",
       "defaultValue": "30"
+    },
+    "healthCheckPath": {
+      "type": "string",
+      "defaultValue": ""
     }
   },
   "variables": {
@@ -184,7 +188,7 @@
     "appServicePlanId": "[resourceId(parameters('appServicePlanResourceGroup'), 'Microsoft.Web/serverfarms', parameters('appServicePlanName'))]",
     "useAppServiceSlotAppSettings": "[greater(length(parameters('appServiceSlotAppSettings')), 0)]",
     "useAppServiceSlotConnectionStrings": "[greater(length(parameters('appServiceSlotConnectionStrings')), 0)]",
-    "appServiceApiVersion": "2018-11-01"
+    "appServiceApiVersion": "2020-09-01"
   },
   "resources": [
     {
@@ -207,7 +211,8 @@
           "ipSecurityRestrictions": "[parameters('ipSecurityRestrictions')]",
           "use32BitWorkerProcess": "[parameters('use32BitWorkerProcess')]",
           "http20Enabled": "[parameters('http20Enabled')]",
-          "ftpsState": "[parameters('ftpsState')]"
+          "ftpsState": "[parameters('ftpsState')]",
+          "healthCheckPath": "[parameters('healthCheckPath')]"
         },
         "httpsOnly": true
       },
@@ -216,7 +221,7 @@
           "condition": "[parameters('deployStagingSlot')]",
           "name": "staging",
           "type": "slots",
-          "apiVersion": "2018-11-01",
+          "apiVersion": "2020-09-01",
           "location": "[resourceGroup().location]",
           "identity": {
             "type": "SystemAssigned"
@@ -244,7 +249,7 @@
           "condition": "[parameters('deployStagingSlot')]",
           "name": "slotconfignames",
           "type": "config",
-          "apiVersion": "2018-11-01",
+          "apiVersion": "2020-09-01",
           "properties": {
             "appSettingNames": "[parameters('appServiceSlotSettingAppSettings')]",
             "connectionStringNames": "[parameters('appServiceSlotSettingConnectionStrings')]"
@@ -273,7 +278,7 @@
       "type": "Microsoft.Web/sites/config",
       "condition": "[greater(length(parameters('subnetResourceId')), 0)]",
       "name": "[concat(parameters('appServiceName'), '/virtualNetwork')]",
-      "apiVersion": "2018-11-01",
+      "apiVersion": "2020-09-01",
       "location": "[resourceGroup().location]",
       "properties": {
         "subnetResourceId": "[parameters('subnetResourceId')]",
@@ -286,7 +291,7 @@
     {
       "type": "Microsoft.Web/sites/providers/diagnosticSettings",
       "condition": "[greater(length(parameters('workspaceId')), 0)]",
-      "apiVersion": "2017-05-01-preview",
+      "apiVersion": "2020-09-01",
       "name": "[concat(parameters('appServiceName'),'/microsoft.insights/', parameters('settingName'))]",
       "dependsOn": [
         "[parameters('appServiceName')]"
