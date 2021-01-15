@@ -42,20 +42,6 @@
         "description": "Enable Mongo Requests. Valid for MongoDB accounts only"
       }
     },
-    "CassandraRequestsEnabled": {
-      "type": "bool",
-      "defaultValue": false,
-      "metadata": {
-        "description": "Enable Cassandra Requests. Valid for Cassandra accounts only"
-      }
-    },
-    "GremlinRequestsEnabled": {
-      "type": "bool",
-      "defaultValue": false,
-      "metadata": {
-        "description": "Enable Gremlin Requests. Valid for Gremlin accounts only"
-      }
-    },
     "QueryRuntimeStatisticsEnabled": {
       "type": "bool",
       "defaultValue": true,
@@ -82,6 +68,20 @@
       "defaultValue": false,
       "metadata": {
         "description": "Enable Control Plane Requests. Valid for SQL, Graph, MongoDB, Cassandra, and Table API accounts"
+      }
+    },
+    "CassandraRequestsEnabled": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Enable Cassandra Requests. Valid for Cassandra accounts only"
+      }
+    },
+    "GremlinRequestsEnabled": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Enable Gremlin Requests. Valid for Gremlin accounts only"
       }
     }
   },
@@ -114,22 +114,6 @@
             }
           },
           {
-            "category": "CassandraRequests",
-            "enabled": "[parameters('CassandraRequestsEnabled')]",
-            "retentionPolicy": {
-              "days": 0,
-              "enabled": false
-            }
-          },
-          {
-            "category": "GremlinRequests",
-            "enabled": "[parameters('GremlinRequestsEnabled')]",
-            "retentionPolicy": {
-              "days": 0,
-              "enabled": false
-            }
-          },
-          {
             "category": "QueryRuntimeStatistics",
             "enabled": "[parameters('QueryRuntimeStatisticsEnabled')]",
             "retentionPolicy": {
@@ -156,6 +140,22 @@
           {
             "category": "ControlPlaneRequests",
             "enabled": "[parameters('ControlPlaneRequestsEnabled')]",
+            "retentionPolicy": {
+              "days": 0,
+              "enabled": false
+            }
+          },
+          {
+            "category": "CassandraRequests",
+            "enabled": "[parameters('CassandraRequestsEnabled')]",
+            "retentionPolicy": {
+              "days": 0,
+              "enabled": false
+            }
+          },
+          {
+            "category": "GremlinRequests",
+            "enabled": "[parameters('GremlinRequestsEnabled')]",
             "retentionPolicy": {
               "days": 0,
               "enabled": false
