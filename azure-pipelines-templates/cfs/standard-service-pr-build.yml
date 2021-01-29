@@ -1,0 +1,61 @@
+parameters:
+- name: DotnetCoreSdkVersion
+  type: string
+  default: '3.1.101'
+- name: ProjectName
+  type: string
+  default: ''
+- name: releaseconfiguration
+  type: string
+  default: 'Release'
+- name: vstsFeed
+  type: string
+  default: 'ecf37bc0-472b-47bf-91e3-6774809fd194'
+
+steps:
+ - task: UseDotNet@2
+   displayName: 'Use .NET Core sdk ${{ parameters.DotnetCoreSdkVersion }}'
+   inputs:
+     version: ${{ parameters.DotnetCoreSdkVersion }}
+
+ - task: DotNetCoreCLI@2
+   displayName: 'dotnet restore'
+   inputs:
+     command: restore
+     vstsFeed: '${{ parameters.vstsFeed }}'
+     projects: |
+      **/*.${{ parameters.ProjectName }}.*Tests/*.csproj
+      **/*.Models.*UnitTests/*.csproj
+      CalculateFunding.Api.${{ parameters.ProjectName }}/CalculateFunding.Api.${{ parameters.ProjectName }}.csproj
+      CalculateFunding.Functions.${{ parameters.ProjectName }}/CalculateFunding.Functions.${{ parameters.ProjectName }}.csproj
+
+ - task: DotNetCoreCLI@2
+   displayName: 'dotnet test'
+   inputs:
+     command: test
+     arguments: '--configuration ${{ parameters.releaseconfiguration }} /p:AssemblyVersion=$(Build.BuildNumber)'
+     projects: |
+      !**/*.Api.${{ parameters.ProjectName }}.*SmokeTests/*.csproj
+      **/*.Api.${{ parameters.ProjectName }}.*Tests/*.csproj
+      **/*.Services.${{ parameters.ProjectName }}.*Tests/*.csproj
+      **/*.Functions.${{ parameters.ProjectName }}.*UnitTests/*.csproj
+      **/*.Models.*UnitTests/*.csproj
+      **/*.${{ parameters.ProjectName }}.*AcceptanceTests/*.csproj
+
+ - task: DotNetCoreCLI@2
+   displayName: 'dotnet publish API'
+   inputs:
+     command: publish
+     publishWebProjects: false
+     zipAfterPublish: false
+     arguments: '--configuration ${{ releaseconfiguration }} /p:AssemblyVersion=$(Build.BuildNumber)'
+     projects: 'CalculateFunding.Api.${{ parameters.ProjectName }}/CalculateFunding.Api.${{ parameters.ProjectName }}.csproj'
+
+ - task: DotNetCoreCLI@2
+   displayName: 'dotnet publish Function'
+   inputs:
+     command: publish
+     publishWebProjects: false
+     zipAfterPublish: false
+     arguments: '--configuration ${{ releaseconfiguration }} /p:AssemblyVersion=$(Build.BuildNumber)'
+     projects: 'CalculateFunding.Functions.${{ parameters.ProjectName }}/CalculateFunding.Functions.${{ parameters.ProjectName }}.csproj'
