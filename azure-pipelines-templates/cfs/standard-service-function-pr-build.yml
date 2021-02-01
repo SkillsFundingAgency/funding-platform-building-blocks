@@ -25,9 +25,9 @@ steps:
      command: restore
      vstsFeed: '${{ parameters.vstsFeed }}'
      projects: |
-     **/*.${{ parameters.ProjectName }}.*Tests/*.csproj
-     CalculateFunding.Api.${{ parameters.ProjectName }}/CalculateFunding.Api.${{ parameters.ProjectName }}.csproj
-     CalculateFunding.Functions.${{ parameters.ProjectName }}/CalculateFunding.Functions.${{ parameters.ProjectName }}.csproj
+      **/*.${{ parameters.ProjectName }}.*Tests/*.csproj
+      CalculateFunding.Api.${{ parameters.ProjectName }}/CalculateFunding.Api.${{ parameters.ProjectName }}.csproj
+      CalculateFunding.Functions.${{ parameters.ProjectName }}/CalculateFunding.Functions.${{ parameters.ProjectName }}.csproj
 
  - task: DotNetCoreCLI@2
    displayName: 'dotnet test for Service and Functions'
@@ -35,8 +35,8 @@ steps:
      command: test
      arguments: '--configuration ${{ parameters.releaseconfiguration }} /p:AssemblyVersion=$(Build.BuildNumber)'
      projects: |
-     **/*.Services.${{ parameters.ProjectName }}.*Tests/*.csproj
-     **/*.Functions.${{ parameters.ProjectName }}.*UnitTests/*.csproj
+      **/*.Services.${{ parameters.ProjectName }}.*Tests/*.csproj
+      **/*.Functions.${{ parameters.ProjectName }}.*UnitTests/*.csproj
      
  - task: DotNetCoreCLI@2
    displayName: 'dotnet publish Function'
