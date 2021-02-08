@@ -117,7 +117,9 @@
                         "threshold":"[parameters('threshold')]"
                     },
                     "aznsAction": {
-                        "actionGroup": "[resourceId(variables('actionGroupResourceGroup'), 'microsoft.insights/actionGroups', parameters('actionGroupName'))]"
+                        "actionGroup": [
+                            "[resourceId(variables('actionGroupResourceGroup'), 'microsoft.insights/actionGroups', parameters('actionGroupName'))]"
+                        ]
                     }
                 }
             }
