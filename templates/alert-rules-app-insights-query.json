@@ -1,0 +1,128 @@
+  
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "enabled": {
+            "type": "bool",
+            "defaultValue": true
+        },
+        "alertName": {
+            "type": "string"
+        },
+        "query": {
+            "type": "string",
+            "metadata": {
+                "description": "App insights log query to execute"
+            }
+        },
+        "queryType": {
+            "type": "string",
+            "defaultValue": "ResultCount",
+            "metadata": {
+                "description": "The type of result returned by the query"
+            }
+        },
+        "alertSeverity": {
+            "type": "int",
+            "defaultValue": 3,
+            "allowedValues": [
+                0,
+                1,
+                2,
+                3,
+                4
+            ]
+        },
+        "operator": {
+            "type": "string",
+            "defaultValue": "GreaterThan",
+            "allowedValues": [
+                "Equals",
+                "NotEquals",
+                "GreaterThan",
+                "GreaterThanOrEqual",
+                "LessThan",
+                "LessThanOrEqual"
+            ],
+            "metadata": {
+                "description": "Operator comparing the current value with the threshold value."
+            }
+        },
+        "queryFrequency": {
+            "type": "int",
+            "defaultValue": 5
+        },
+        "queryWindow": {
+            "type": "int",
+            "defaultValue": 5
+        },
+        "threshold": {
+            "type": "string",
+            "defaultValue": "0",
+            "metadata": {
+                "description": "The threshold value at which the alert is activated."
+            }
+        },
+        "actionGroupName": {
+            "type": "string"
+        },
+        "actionGroupResourceGroup": {
+            "type": "string",
+            "defaultValue": "",
+            "metadata": {
+                "description": "The name of the resource containing the action group. Leave empty for the same resource group."
+            }
+        },
+        "appInsightsResourceGroup": {
+            "type": "string",
+            "defaultValue": ""
+        },
+        "appInsightsName": {
+            "type": "string"
+        },
+        "alertThrottleInMinutes": {
+            "type": "int",
+            "defaultValue": 5
+        }
+    },
+    "variables": {
+        "actionGroupResourceGroup": "[if(empty(parameters('actionGroupResourceGroup')),  resourceGroup().Name, parameters('actionGroupResourceGroup'))]",
+        "appInsightsResourceGroup": "[if(empty(parameters('appInsightsResourceGroup')), resourceGroup().Name, parameters('appInsightsResourceGroup'))]"
+    },
+    "resources": [
+        {
+            "name":  "[parameters('alertName')]",
+            "type": "Microsoft.Insights/scheduledQueryRules",
+            "apiVersion": "2018-04-16",
+            "location": "[resourceGroup().location]",
+            "properties": {
+                "description": "Alert for log analytics query",
+                "enabled": "[parameters('enabled')]",
+                "source": {
+                    "query": "[parameters('query')]",
+                    "dataSourceId": "[resourceId(variables('appInsightsResourceGroup'), 'microsoft.insights/components', parameters('appInsightsName'))]",
+                    "queryType": "[parameters('queryType')]"
+                },
+                "schedule": {
+                    "frequencyInMinutes": "[parameters('queryFrequency')]",
+                    "timeWindowInMinutes": "[parameters('queryWindow')]"
+                },
+                "action": {
+                    "odata.type": "Microsoft.WindowsAzure.Management.Monitoring.Alerts.Models.Microsoft.AppInsights.Nexus.DataContracts.Resources.ScheduledQueryRules.AlertingAction",
+                    "severity": "[parameters('alertSeverity')]",
+                    "throttlingInMin": "[parameters('alertThrottleInMinutes')]",
+                    "trigger": {
+                        "thresholdOperator":"[parameters('operator')]",
+                        "threshold":"[parameters('threshold')]"
+                    },
+                    "aznsAction": {
+                        "actionGroup": [
+                            "[resourceId(variables('actionGroupResourceGroup'), 'microsoft.insights/actionGroups', parameters('actionGroupName'))]"
+                        ]
+                    }
+                }
+            }
+        }
+    ]
+}
