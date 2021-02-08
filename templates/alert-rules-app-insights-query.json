@@ -34,9 +34,6 @@
                 4
             ]
         },
-        "metricName": {
-            "type": "string"
-        },
         "operator": {
             "type": "string",
             "defaultValue": "GreaterThan",
@@ -100,7 +97,7 @@
             "apiVersion": "2018-04-16",
             "location": "global",
             "properties": {
-                "description": "[concat('Alert for metric ', parameters('metricName'))]",
+                "description": "Alert for log analytics query",
                 "enabled": "[parameters('enabled')]",
                 "source": {
                     "query": "[parameters('query')]",
