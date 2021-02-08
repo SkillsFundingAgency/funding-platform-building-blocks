@@ -95,7 +95,7 @@
             "name":  "[parameters('alertName')]",
             "type": "Microsoft.Insights/scheduledQueryRules",
             "apiVersion": "2018-04-16",
-            "location": "global",
+            "location": "[resourceGroup().location]",
             "properties": {
                 "description": "Alert for log analytics query",
                 "enabled": "[parameters('enabled')]",
