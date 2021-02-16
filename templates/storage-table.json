@@ -1,0 +1,28 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "storageAccountName": {
+      "type" : "string",
+      "metadata": {
+        "description": "Name of the storage account the table belongs to"
+      }
+    },
+    "tableName": {
+      "type": "string",
+      "metadata": {
+        "description": "Name of the table"
+      }
+    }
+  },
+  "variables": {},
+  "resources": [
+    {
+      "name": "[concat(parameters('storageAccountName'), '/default/', parameters('tableName'))]",
+      "type": "Microsoft.Storage/storageAccounts/tableServices/tables",
+      "apiVersion": "2019-06-01"
+    }
+  ],
+  "outputs": {}
+}
+
