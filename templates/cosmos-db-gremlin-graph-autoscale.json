@@ -27,9 +27,21 @@
         "version": {
             "defaultValue": 1,
             "type": "int"
+        },
+        "autoscaleMaxThoughput": {
+            "type": "int",
+            "defaultValue": "",
+            "metadata": {
+                "description": "Maximum thoughput of Autoscale setting"
+            }
         }
     },
     "variables": {
+        "options": {
+                    "autoscaleSettings": {
+                        "maxThroughput": "[parameters('autoscaleMaxThoughput')]"
+                    }
+                }
     },
     "resources": [
         {
@@ -45,11 +57,7 @@
                         "version": "[parameters('version')]"
                     }
                 },
-                "options": {
-                    "autoscaleSettings": { 
-                        "maxThroughput": 5000
-                    }
-                }
+                "options": "[if(equals(parameters('autoscaleMaxThoughput'),''), json('null'), variables('options'))]"
             }
         }
     ]
