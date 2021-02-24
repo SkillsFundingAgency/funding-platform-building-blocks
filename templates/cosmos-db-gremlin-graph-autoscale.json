@@ -30,7 +30,7 @@
         },
         "autoscaleMaxThoughput": {
             "type": "int",
-            "defaultValue": "",
+            "defaultValue": 0,
             "metadata": {
                 "description": "Maximum thoughput of Autoscale setting"
             }
@@ -57,7 +57,7 @@
                         "version": "[parameters('version')]"
                     }
                 },
-                "options": "[if(equals(parameters('autoscaleMaxThoughput'),''), '{}', variables('options'))]"
+                "options": "[if(equals(parameters('autoscaleMaxThoughput'),0), '{}', variables('options'))]"
             }
         }
     ]
