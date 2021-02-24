@@ -57,7 +57,7 @@
                         "version": "[parameters('version')]"
                     }
                 },
-                "options": "[if(equals(parameters('autoscaleMaxThoughput'),''), json('null'), variables('options'))]"
+                "options": "[if(equals(parameters('autoscaleMaxThoughput'),''), '{}', variables('options'))]"
             }
         }
     ]
