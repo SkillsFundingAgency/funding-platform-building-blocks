@@ -1,0 +1,31 @@
+parameters:
+- name: EnvironmentKey
+  type: string
+- name: productversion
+  type: string
+- name: TenantId
+  type: string
+- name: VstsDeployObjectId
+  type: string
+
+steps:
+- task: Npm@1
+  displayName: 'Install JsonLint'
+  inputs:
+    command: custom
+    verbose: false
+    customCommand: 'install jsonlint -g'
+
+- script: 'jsonlint keyvault-v2.json'
+  displayName: 'Run JsonLint'
+
+steps:
+- task: AzureResourceGroupDeployment@2
+  displayName: 'Azure Deployment: Validate ARM Template.'
+  inputs:
+    azureSubscription: 'dfe-gov-uk ADO to CFS in Azure Dev'
+    resourceGroupName: 'rg-t1dv-cfs-v2'
+    location: 'West Europe'
+    csmFile: 'keyvault-v2.json'
+    overrideParameters: '-environmentKey $(EnvironmentKey) -tenantId $(TenantId) -vstsDeployObjectId $(VstsDeployObjectId) -productversion $(productversion)'
+    deploymentMode: Validation
