@@ -1,0 +1,35 @@
+parameters:
+- name: DotNetCoreVersion
+  type: string
+  default: '3.1.101'
+- name: BuildConfiguration
+  type: string
+  default: 'Release'
+- name: vstsFeed
+  type: string
+  default: 'ecf37bc0-472b-47bf-91e3-6774809fd194'
+
+steps:
+ - task: UseDotNet@2
+   displayName: 'Use .NET Core sdk ${{ parameters.DotNetCoreVersion }}'
+   inputs:
+     version: ${{ parameters.DotNetCoreVersion }}
+
+ - task: DotNetCoreCLI@2
+   displayName: 'dotnet build'
+   inputs:
+     command: build
+     projects: '**/*.csproj'
+     arguments: '--configuration ${{ parameters.BuildConfiguration}}'
+
+ - task: DotNetCoreCLI@2
+   displayName: 'dotnet publish'
+   inputs:
+    command: publish
+    publishWebProjects: false
+    projects: '**/*.csproj'
+    arguments: '--configuration $(BuildConfiguration) --output $(build.artifactstagingdirectory)'
+    zipAfterPublish: false
+
+ - task: PublishBuildArtifacts@1
+   displayName: 'Publish Artifact: .NET Core Apps'
