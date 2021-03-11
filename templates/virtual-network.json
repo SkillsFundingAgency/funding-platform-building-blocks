@@ -2,6 +2,21 @@
   "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
+    "environmentTag": {
+      "type": "string"
+    },
+    "parentBusinessTag": {
+      "type": "string"
+    },
+    "portfolioTag": {
+      "type": "string"
+    },
+    "productTag": {
+      "type": "string"
+    },
+    "serviceLineTag": {
+      "type": "string"
+    },
     "armVnetName": {
       "type": "string",
       "metadata": {
@@ -28,11 +43,18 @@
       "name": "[parameters('armVnetName')]",
       "apiVersion": "2018-11-01",
       "location": "[resourceGroup().location]",
+      "tags": {
+        "Environment": "[parameters('environmentTag')]",
+        "Parent Business": "[parameters('parentBusinessTag')]",
+        "Portfolio": "[parameters('portfolioTag')]",
+        "Product": "[parameters('productTag')]",
+        "Service": "[parameters('productTag')]",
+        "Service Line": "[parameters('serviceLineTag')]",
+        "Service Offering": "[parameters('productTag')]"
+      },
       "properties": {
         "addressSpace": {
-          "addressPrefixes": [
-            "[parameters('armVnetAddressSpaceCIDR')]"
-          ]
+          "addressPrefixes": ["[parameters('armVnetAddressSpaceCIDR')]"]
         },
         "subnets": "[parameters('subnetConfiguration')]"
       }
