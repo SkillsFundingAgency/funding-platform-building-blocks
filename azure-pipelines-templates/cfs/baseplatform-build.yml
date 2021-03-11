@@ -1,5 +1,5 @@
 parameters:
-- name: DotNetCoreVersion
+- name: DotnetCoreSdkVersion
   type: string
   default: '3.1.101'
 - name: BuildConfiguration
@@ -11,9 +11,9 @@ parameters:
 
 steps:
  - task: UseDotNet@2
-   displayName: 'Use .NET Core sdk ${{ parameters.DotNetCoreVersion }}'
+   displayName: 'Use .NET Core sdk ${{ parameters.DotnetCoreSdkVersion }}'
    inputs:
-     version: ${{ parameters.DotNetCoreVersion }}
+     version: ${{ parameters.DotnetCoreSdkVersion }}
 
  - task: DotNetCoreCLI@2
    displayName: 'dotnet build'
