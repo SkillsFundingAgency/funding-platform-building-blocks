@@ -19,7 +19,6 @@ steps:
 - script: 'jsonlint keyvault-v2.json'
   displayName: 'Run JsonLint'
 
-steps:
 - task: AzureResourceGroupDeployment@2
   displayName: 'Azure Deployment: Validate ARM Template.'
   inputs:
