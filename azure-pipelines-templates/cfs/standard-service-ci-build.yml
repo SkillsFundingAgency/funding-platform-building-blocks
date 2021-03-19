@@ -135,8 +135,8 @@ steps:
      command: publish
      publishWebProjects: false
      zipAfterPublish: false
-     arguments: '--configuration ${{ parameters.BuildConfiguration }} /p:AssemblyVersion=$(Build.BuildNumber)' --output $(Build.ArtifactStagingDirectory)/CalculateFunding.Functions.${{ parameters.ProjectName }}.SmokeTests'
-     projects: 'CalculateFunding.Functions.${{ parameters.ProjectName }}.SmokeTests/CalculateFunding.Functions.${{ parameters.ProjectName }}.SmokeTests.csproj
+     arguments: '--configuration ${{ parameters.BuildConfiguration }} /p:AssemblyVersion=$(Build.BuildNumber) --output $(Build.ArtifactStagingDirectory)/CalculateFunding.Functions.${{ parameters.ProjectName }}.SmokeTests'
+     projects: 'CalculateFunding.Functions.${{ parameters.ProjectName }}.SmokeTests/CalculateFunding.Functions.${{ parameters.ProjectName }}.SmokeTests.csproj'
 
  - task: PublishPipelineArtifact@1
    condition: and(succeeded(), eq('$(ExecuteMyTask)', true))
