@@ -55,7 +55,7 @@ steps:
    displayName: 'dotnet test for API'
    condition: and(succeeded(), eq( '${{ parameters.BuildApi }}', true))
    inputs:
-     command: restore
+     command: test
      arguments: '--configuration ${{ parameters.BuildConfiguration }} /p:AssemblyVersion=$(Build.BuildNumber)'
      projects: |
       !**/*.Api.${{ parameters.ProjectName }}*SmokeTests/*.csproj
@@ -130,16 +130,16 @@ steps:
 
  - task: DotNetCoreCLI@2
    displayName: "dotnet publish Function Smoke Test"
-   condition: and(succeeded(), eq('$(ExecuteMyTask)', true))
+   condition: and(succeeded(), eq(variables['ExecuteMyTask'], 'True'))
    inputs:
      command: publish
      publishWebProjects: false
      zipAfterPublish: false
-     arguments: '--configuration ${{ parameters.BuildConfiguration }} /p:AssemblyVersion=$(Build.BuildNumber)' --output $(Build.ArtifactStagingDirectory)/CalculateFunding.Functions.${{ parameters.ProjectName }}.SmokeTests'
-     projects: 'CalculateFunding.Functions.${{ parameters.ProjectName }}.SmokeTests/CalculateFunding.Functions.${{ parameters.ProjectName }}.SmokeTests.csproj
+     arguments: '--configuration ${{ parameters.BuildConfiguration }} /p:AssemblyVersion=$(Build.BuildNumber) --output $(Build.ArtifactStagingDirectory)/CalculateFunding.Functions.${{ parameters.ProjectName }}.SmokeTests'
+     projects: 'CalculateFunding.Functions.${{ parameters.ProjectName }}.SmokeTests/CalculateFunding.Functions.${{ parameters.ProjectName }}.SmokeTests.csproj'
 
  - task: PublishPipelineArtifact@1
-   condition: and(succeeded(), eq('$(ExecuteMyTask)', true))
+   condition: and(succeeded(), eq(variables['ExecuteMyTask'], 'True'))
    displayName: 'Publish Artifact'
    inputs:
     targetPath: ' $(build.artifactstagingdirectory)/CalculateFunding.Functions.${{ parameters.ProjectName }}.SmokeTests'
