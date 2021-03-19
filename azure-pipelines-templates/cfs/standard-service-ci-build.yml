@@ -139,7 +139,7 @@ steps:
      projects: 'CalculateFunding.Functions.${{ parameters.ProjectName }}.SmokeTests/CalculateFunding.Functions.${{ parameters.ProjectName }}.SmokeTests.csproj'
 
  - task: PublishPipelineArtifact@1
-   condition: and(succeeded(), eq('$(ExecuteMyTask)', True))
+   condition: and(succeeded(), eq(variables['ExecuteMyTask'], 'True'))
    displayName: 'Publish Artifact'
    inputs:
     targetPath: ' $(build.artifactstagingdirectory)/CalculateFunding.Functions.${{ parameters.ProjectName }}.SmokeTests'
