@@ -41,21 +41,15 @@ steps:
       CalculateFunding.Api.${{ parameters.ProjectName }}/CalculateFunding.Api.{{ parameters.ProjectName }}.csproj
       CalculateFunding.Functions.${{ parameters.ProjectName }}/CalculateFunding.Functions.{{ parameters.ProjectName }}.csproj
 
-- task: DotNetCoreCLI@2
-  displayName: 'dotnet test for All'
-  inputs:
-    command: test
-    projects: '**/*.Models.*UnitTests/*.csproj'
-    arguments: '--configuration $(releaseconfiguration) /p:AssemblyVersion=$(Build.BuildNumber)'
-
  - task: DotNetCoreCLI@2
-   displayName: 'dotnet test for Service and Functions'
+   displayName: 'dotnet test for Service, Functions and Models'
    inputs:
      command: test
      arguments: '--configuration ${{ parameters.BuildConfiguration }} /p:AssemblyVersion=$(Build.BuildNumber)'
      projects: |
       **/*.${{ parameters.ProjectName }}*UnitTests/*.csproj
       **/*.${{ parameters.ProjectName }}*AcceptanceTests/*.csproj
+      **/*.Models.*UnitTests/*.csproj
 
  - task: DotNetCoreCLI@2
    displayName: 'dotnet test for API'
