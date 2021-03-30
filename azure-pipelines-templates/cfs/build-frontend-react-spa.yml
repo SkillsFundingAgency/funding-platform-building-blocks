@@ -1,5 +1,8 @@
 parameters:
-- name: DotNetCoreVersion
+- name: DotNetCoreSDKVersion
+  type: string
+  default: '3.1.101'
+- name: projectFolder
   type: string
   default: 'CalculateFunding.Web/calculatefunding-web'
 
