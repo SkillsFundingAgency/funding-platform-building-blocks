@@ -97,7 +97,7 @@
         "virtualNetworkRules": "[variables('virtualNetworkRules')]",
         "locations": [
           {
-            "locationName": "West Europe"
+            "locationName": "[resourceGroup().location]"
           }
         ],
         "createMode": "Default",
@@ -105,7 +105,8 @@
           "type": "Periodic",
           "periodicModeProperties": {
             "backupIntervalInMinutes": "[parameters('backupIntervalInMinutes')]",
-            "backupRetentionIntervalInHours": "[parameters('backupRetentionIntervalInHours')]"
+            "backupRetentionIntervalInHours": "[parameters('backupRetentionIntervalInHours')]",
+            "backupStorageRedundancy": "Geo"
           }
         }
       }
