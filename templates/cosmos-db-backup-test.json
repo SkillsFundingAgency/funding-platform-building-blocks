@@ -98,8 +98,8 @@
         "backupPolicy": {
           "type": "Periodic",
           "periodicModeProperties": {
-            "backupIntervalInMinutes": "[parameters('backupIntervalInMinutes')]",
-            "backupRetentionIntervalInHours": "[parameters('backupRetentionIntervalInHours')]"
+            "backupIntervalInMinutes": 1440,
+            "backupRetentionIntervalInHours": 48
           }
         }
       }
