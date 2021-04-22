@@ -95,6 +95,11 @@
         "ipRules": "[parameters('ipRules')]",
         "isVirtualNetworkFilterEnabled": "[if(greater(length(variables('virtualNetworkRules')), 0), bool('true'), bool('false'))]",
         "virtualNetworkRules": "[variables('virtualNetworkRules')]",
+        "locations": [
+          {
+            "locationName": "West Europe"
+          }
+        ],
         "createMode": "Default",
         "backupPolicy": {
           "type": "Periodic",
