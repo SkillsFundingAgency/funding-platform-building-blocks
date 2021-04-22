@@ -1,118 +1,118 @@
 {
-    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-    "contentVersion": "1.0.0.0",
-    "parameters": {
-      "environmentTag": {
-          "type": "string"
-      },
-      "parentBusinessTag": {
-          "type": "string"
-      },
-      "portfolioTag": {
-          "type": "string"
-      },
-      "productTag": {
-          "type": "string"
-      },
-      "serviceLineTag": {
-          "type": "string"
-      },
-      "cosmosDbName": {
-        "type": "string"
-      },
-      "cosmosDbType": {
-        "type": "string",
-        "allowedValues": [
-          "GlobalDocumentDB",
-          "MongoDB"
-        ]
-      },
-      "defaultConsistencyLevel": {
-        "type": "string",
-        "allowedValues": [
-          "Eventual",
-          "Session",
-          "BoundedStaleness",
-          "Strong",
-          "ConsistentPrefix"
-        ]
-      },
-      "enableVirtualNetworkFilter": {
-        "type": "bool",
-        "defaultValue": false
-      },
-      "subnetResourceIdList": {
-        "type": "array",
-        "defaultValue": []
-      },
-      "ipRules": {
-        "type": "array",
-        "defaultValue": []
-      },
-      "backupIntervalInMinutes": {
-        "type": "int",
-        "defaultValue": 240
-      },
-      "backupRetentionIntervalInHours": {
-        "type": "int",
-        "defaultValue": 8
-      }
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "environmentTag": {
+      "type": "string"
     },
-    "variables": {
-      "copy": [
-        {
-          "name": "virtualNetworkRulesCopy",
-          "count": "[if(greater(length(parameters('subnetResourceIdList')), 0), length(parameters('subnetResourceIdList')), 1)]",
-          "input": {
-            "id": "[if(greater(length(parameters('subnetResourceIdList')), 0), parameters('subnetResourceIdList')[copyIndex('virtualNetworkRulesCopy')], json('null'))]"
-          }
-        }
-      ],
-      "virtualNetworkRulesEmpty": [],
-      "virtualNetworkRules": "[if(greater(length(parameters('subnetResourceIdList')), 0), variables('virtualNetworkRulesCopy'), variables('virtualNetworkRulesEmpty'))]"
+    "parentBusinessTag": {
+      "type": "string"
     },
-    "resources": [
+    "portfolioTag": {
+      "type": "string"
+    },
+    "productTag": {
+      "type": "string"
+    },
+    "serviceLineTag": {
+      "type": "string"
+    },
+    "cosmosDbName": {
+      "type": "string"
+    },
+    "cosmosDbType": {
+      "type": "string",
+      "allowedValues": [
+        "GlobalDocumentDB",
+        "MongoDB"
+      ]
+    },
+    "defaultConsistencyLevel": {
+      "type": "string",
+      "allowedValues": [
+        "Eventual",
+        "Session",
+        "BoundedStaleness",
+        "Strong",
+        "ConsistentPrefix"
+      ]
+    },
+    "enableVirtualNetworkFilter": {
+      "type": "bool",
+      "defaultValue": false
+    },
+    "subnetResourceIdList": {
+      "type": "array",
+      "defaultValue": []
+    },
+    "ipRules": {
+      "type": "array",
+      "defaultValue": []
+    },
+    "backupIntervalInMinutes": {
+      "type": "int",
+      "defaultValue": 240
+    },
+    "backupRetentionIntervalInHours": {
+      "type": "int",
+      "defaultValue": 8
+    }
+  },
+  "variables": {
+    "copy": [
       {
-        "name": "[parameters('cosmosDbName')]",
-        "type": "Microsoft.DocumentDB/databaseAccounts",
-        "apiVersion": "2021-01-15",
-        "location": "[resourceGroup().location]",
-        "kind": "[parameters('cosmosDbType')]",
-        "tags": {
-            "Environment": "[parameters('environmentTag')]",
-            "Parent Business": "[parameters('parentBusinessTag')]",
-            "Portfolio": "[parameters('portfolioTag')]",
-            "Product": "[parameters('productTag')]",
-            "Service": "[parameters('productTag')]",
-            "Service Line": "[parameters('serviceLineTag')]",
-            "Service Offering": "[parameters('productTag')]"
-        },
-        "properties": {
-            "consistencyPolicy": {
-                "defaultConsistencyLevel": "[parameters('defaultConsistencyLevel')]"
-            },
-            "databaseAccountOfferType": "Standard",
-            "ipRules": "[parameters('ipRules')]",
-            "isVirtualNetworkFilterEnabled": "[if(greater(length(variables('virtualNetworkRules')), 0), bool('true'), bool('false'))]",
-            "virtualNetworkRules": "[variables('virtualNetworkRules')]",
-            "backupPolicy": {
-                    "type": "Periodic",
-                    "periodicModeProperties": {
-                        "backupIntervalInMinutes": "[parameters('backupIntervalInMinutes')]",
-                        "backupRetentionIntervalInHours": "[parameters('backupRetentionIntervalInHours')]"
-                    }
-            }
+        "name": "virtualNetworkRulesCopy",
+        "count": "[if(greater(length(parameters('subnetResourceIdList')), 0), length(parameters('subnetResourceIdList')), 1)]",
+        "input": {
+          "id": "[if(greater(length(parameters('subnetResourceIdList')), 0), parameters('subnetResourceIdList')[copyIndex('virtualNetworkRulesCopy')], json('null'))]"
         }
       }
     ],
-    "outputs": {
-      "PrimaryMasterKey": {
-        "type": "string",
-        "value": "[listKeys(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('cosmosDbName')), '2021-03-01-preview').primaryMasterKey]"
+    "virtualNetworkRulesEmpty": [],
+    "virtualNetworkRules": "[if(greater(length(parameters('subnetResourceIdList')), 0), variables('virtualNetworkRulesCopy'), variables('virtualNetworkRulesEmpty'))]"
+  },
+  "resources": [
+    {
+      "name": "[parameters('cosmosDbName')]",
+      "type": "Microsoft.DocumentDB/databaseAccounts",
+      "apiVersion": "2021-01-15",
+      "location": "[resourceGroup().location]",
+      "kind": "[parameters('cosmosDbType')]",
+      "tags": {
+        "Environment": "[parameters('environmentTag')]",
+        "Parent Business": "[parameters('parentBusinessTag')]",
+        "Portfolio": "[parameters('portfolioTag')]",
+        "Product": "[parameters('productTag')]",
+        "Service": "[parameters('productTag')]",
+        "Service Line": "[parameters('serviceLineTag')]",
+        "Service Offering": "[parameters('productTag')]"
       },
-      "PrimaryReadonlyMasterKey": {
-        "type": "string",
-        "value": "[listKeys(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('cosmosDbName')), '2021-03-01-preview').primaryReadonlyMasterKey]"
+      "properties": {
+        "consistencyPolicy": {
+          "defaultConsistencyLevel": "[parameters('defaultConsistencyLevel')]"
+        },
+        "databaseAccountOfferType": "Standard",
+        "ipRules": "[parameters('ipRules')]",
+        "isVirtualNetworkFilterEnabled": "[if(greater(length(variables('virtualNetworkRules')), 0), bool('true'), bool('false'))]",
+        "virtualNetworkRules": "[variables('virtualNetworkRules')]",
+        "backupPolicy": {
+          "type": "Periodic",
+          "periodicModeProperties": {
+            "backupIntervalInMinutes": "[parameters('backupIntervalInMinutes')]",
+            "backupRetentionIntervalInHours": "[parameters('backupRetentionIntervalInHours')]"
+          }
+        }
       }
     }
+  ],
+  "outputs": {
+    "PrimaryMasterKey": {
+      "type": "string",
+      "value": "[listKeys(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('cosmosDbName')), '2021-03-01-preview').primaryMasterKey]"
+    },
+    "PrimaryReadonlyMasterKey": {
+      "type": "string",
+      "value": "[listKeys(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('cosmosDbName')), '2021-03-01-preview').primaryReadonlyMasterKey]"
+    }
   }
+}
