@@ -48,6 +48,14 @@
       "ipRules": {
         "type": "array",
         "defaultValue": []
+      },
+      "backupIntervalInMinutes": {
+        "type": "int",
+        "defaultValue": 240
+      },
+      "backupRetentionIntervalInHours": {
+        "type": "int",
+        "defaultValue": 8
       }
     },
     "variables": {
@@ -86,7 +94,15 @@
             "databaseAccountOfferType": "Standard",
             "ipRules": "[parameters('ipRules')]",
             "isVirtualNetworkFilterEnabled": "[if(greater(length(variables('virtualNetworkRules')), 0), bool('true'), bool('false'))]",
-            "virtualNetworkRules": "[variables('virtualNetworkRules')]"
+            "virtualNetworkRules": "[variables('virtualNetworkRules')]",
+            "backupPolicy": {
+                    "type": "Periodic",
+                    "periodicModeProperties": {
+                        "backupIntervalInMinutes": "[parameters('backupIntervalInMinutes')]",
+                        "backupRetentionIntervalInHours": "[parameters('backupRetentionIntervalInHours')]",
+                        "backupStorageRedundancy": "Geo"
+                    }
+            }
         }
       }
     ],
