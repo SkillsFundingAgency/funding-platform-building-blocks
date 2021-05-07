@@ -59,8 +59,9 @@ steps:
      arguments: '--configuration ${{ parameters.BuildConfiguration }} /p:AssemblyVersion=$(Build.BuildNumber)'
      projects: |
       !**/*.Api.${{ parameters.ProjectName }}*SmokeTests/*.csproj
-      **/*.Api.${{ parameters.ProjectName }}*IntegrationTests/*.csproj
+      !**/*.Api.${{ parameters.ProjectName }}*IntegrationTests/*.csproj
       **/*.Api.${{ parameters.ProjectName }}.Tests/*.csproj
+      **/*.Api.${{ parameters.ProjectName }}*UnitTests/*.csproj
 
  - task: DotNetCoreCLI@2
    displayName: "dotnet publish API"
