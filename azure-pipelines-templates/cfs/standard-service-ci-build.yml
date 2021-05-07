@@ -59,6 +59,7 @@ steps:
      arguments: '--configuration ${{ parameters.BuildConfiguration }} /p:AssemblyVersion=$(Build.BuildNumber)'
      projects: |
       !**/*.Api.${{ parameters.ProjectName }}*SmokeTests/*.csproj
+      !**/*IntegrationTests*/*.csproj
       **/*.Api.${{ parameters.ProjectName }}*Tests/*.csproj
 
  - task: DotNetCoreCLI@2
