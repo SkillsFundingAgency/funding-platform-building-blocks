@@ -60,7 +60,7 @@ steps:
      projects: |
       !**/*.Api.${{ parameters.ProjectName }}*SmokeTests/*.csproj
       !**/*.Api.${{ parameters.ProjectName }}*IntegrationTests/*.csproj
-      **/*.Api.${{ parameters.ProjectName }}Tests/*.csproj
+      **/*.Api.${{ parameters.ProjectName }}*Tests/*.csproj
 
  - task: DotNetCoreCLI@2
    displayName: "dotnet publish API"
