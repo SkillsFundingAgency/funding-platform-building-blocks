@@ -33,7 +33,7 @@ steps:
    displayName: 'dotnet test'
    inputs:
      command: test
-     arguments: '--configuration ${{ parameters.releaseconfiguration }} /p:AssemblyVersion=$(Build.BuildNumber)'
+     arguments: '--configuration ${{ parameters.releaseconfiguration }}'
      projects: |
       !**/*.Api.${{ parameters.ProjectName }}*SmokeTests/*.csproj
       **/*.Api.${{ parameters.ProjectName }}*Tests/*.csproj
@@ -48,7 +48,7 @@ steps:
      command: publish
      publishWebProjects: false
      zipAfterPublish: false
-     arguments: '--configuration ${{ parameters.releaseconfiguration }} /p:AssemblyVersion=$(Build.BuildNumber)'
+     arguments: '--configuration ${{ parameters.releaseconfiguration }}'
      projects: 'CalculateFunding.Api.${{ parameters.ProjectName }}/CalculateFunding.Api.${{ parameters.ProjectName }}.csproj'
 
  - task: DotNetCoreCLI@2
@@ -57,5 +57,5 @@ steps:
      command: publish
      publishWebProjects: false
      zipAfterPublish: false
-     arguments: '--configuration ${{ parameters.releaseconfiguration }} /p:AssemblyVersion=$(Build.BuildNumber)'
+     arguments: '--configuration ${{ parameters.releaseconfiguration }}'
      projects: 'CalculateFunding.Functions.${{ parameters.ProjectName }}/CalculateFunding.Functions.${{ parameters.ProjectName }}.csproj'
