@@ -33,7 +33,7 @@ steps:
    displayName: 'dotnet test for Service'
    inputs:
      command: test
-     arguments: '--configuration ${{ parameters.releaseconfiguration }} /p:AssemblyVersion=$(Build.BuildNumber)'
+     arguments: '--configuration ${{ parameters.releaseconfiguration }}'
      projects: |
       **/*.Services.${{ parameters.ProjectName }}.*Tests/*.csproj
 
@@ -41,7 +41,7 @@ steps:
    displayName: 'dotnet test for API'
    inputs:
      command: test
-     arguments: '--configuration ${{ parameters.releaseconfiguration }} /p:AssemblyVersion=$(Build.BuildNumber)'
+     arguments: '--configuration ${{ parameters.releaseconfiguration }}'
      projects: |
       !**/*.Api.${{ parameters.ProjectName }}.*SmokeTests/*.csproj
       **/*.Api.${{ parameters.ProjectName }}.*Tests/*.csproj
@@ -52,5 +52,5 @@ steps:
      command: publish
      publishWebProjects: false
      zipAfterPublish: false
-     arguments: '--configuration ${{ parameters.releaseconfiguration }} /p:AssemblyVersion=$(Build.BuildNumber)'
+     arguments: '--configuration ${{ parameters.releaseconfiguration }}'
      projects: 'CalculateFunding.Api.${{ parameters.ProjectName }}/CalculateFunding.Api.${{ parameters.ProjectName }}.csproj'
