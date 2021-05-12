@@ -33,7 +33,7 @@ steps:
    displayName: 'dotnet test for Service and Functions'
    inputs:
      command: test
-     arguments: '--configuration ${{ parameters.releaseconfiguration }} /p:AssemblyVersion=$(Build.BuildNumber)'
+     arguments: '--configuration ${{ parameters.releaseconfiguration }}'
      projects: |
       **/*.Services.${{ parameters.ProjectName }}.*Tests/*.csproj
       **/*.Functions.${{ parameters.ProjectName }}.*UnitTests/*.csproj
@@ -42,7 +42,7 @@ steps:
    displayName: 'dotnet publish Function'
    inputs:
      command: publish
-     arguments: '--configuration ${{ parameters.releaseconfiguration }} /p:AssemblyVersion=$(Build.BuildNumber)'
+     arguments: '--configuration ${{ parameters.releaseconfiguration }}'
      publishWebProjects: false
      zipAfterPublish: false
      projects: 'CalculateFunding.Functions.${{ parameters.ProjectName }}/CalculateFunding.Functions.${{ parameters.ProjectName }}.csproj'   

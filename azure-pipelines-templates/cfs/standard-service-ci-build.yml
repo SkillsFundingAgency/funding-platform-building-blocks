@@ -45,7 +45,7 @@ steps:
    displayName: 'dotnet test for Service, Functions and Models'
    inputs:
      command: test
-     arguments: '--configuration ${{ parameters.BuildConfiguration }} /p:AssemblyVersion=$(Build.BuildNumber)'
+     arguments: '--configuration ${{ parameters.BuildConfiguration }}'
      projects: |
       **/*.${{ parameters.ProjectName }}*UnitTests/*.csproj
       **/*.${{ parameters.ProjectName }}*AcceptanceTests/*.csproj
@@ -56,7 +56,7 @@ steps:
    condition: and(succeeded(), eq( '${{ parameters.BuildApi }}', true))
    inputs:
      command: test
-     arguments: '--configuration ${{ parameters.BuildConfiguration }} /p:AssemblyVersion=$(Build.BuildNumber)'
+     arguments: '--configuration ${{ parameters.BuildConfiguration }}'
      projects: |
       **/*.Api.${{ parameters.ProjectName }}*Tests/*.csproj
       !**/*.Api.${{ parameters.ProjectName }}*SmokeTests/*.csproj
@@ -69,7 +69,7 @@ steps:
      command: publish
      publishWebProjects: false
      zipAfterPublish: false
-     arguments: '--configuration ${{ parameters.BuildConfiguration }} /p:AssemblyVersion=$(Build.BuildNumber)'
+     arguments: '--configuration ${{ parameters.BuildConfiguration }}'
      projects: 'CalculateFunding.Api.${{ parameters.ProjectName }}/CalculateFunding.Api.${{ parameters.ProjectName }}.csproj'
 
  - task: DotNetCoreCLI@2
@@ -79,7 +79,7 @@ steps:
      command: publish
      publishWebProjects: false
      zipAfterPublish: false
-     arguments: '--configuration ${{ parameters.BuildConfiguration }} /p:AssemblyVersion=$(Build.BuildNumber)'
+     arguments: '--configuration ${{ parameters.BuildConfiguration }}'
      projects: 'CalculateFunding.Functions.${{ parameters.ProjectName }}/CalculateFunding.Functions.${{ parameters.ProjectName }}.csproj'
 
  - task: ArchiveFiles@2
@@ -136,7 +136,7 @@ steps:
      command: publish
      publishWebProjects: false
      zipAfterPublish: false
-     arguments: '--configuration ${{ parameters.BuildConfiguration }} /p:AssemblyVersion=$(Build.BuildNumber) --output $(Build.ArtifactStagingDirectory)/CalculateFunding.Functions.${{ parameters.ProjectName }}.SmokeTests'
+     arguments: '--configuration ${{ parameters.BuildConfiguration }} --output $(Build.ArtifactStagingDirectory)/CalculateFunding.Functions.${{ parameters.ProjectName }}.SmokeTests'
      projects: 'CalculateFunding.Functions.${{ parameters.ProjectName }}.SmokeTests/CalculateFunding.Functions.${{ parameters.ProjectName }}.SmokeTests.csproj'
 
  - task: PublishPipelineArtifact@1
