@@ -35,12 +35,13 @@ steps:
      command: test
      arguments: '--configuration ${{ parameters.releaseconfiguration }}'
      projects: |
-      !**/*.Api.${{ parameters.ProjectName }}*SmokeTests/*.csproj
       **/*.Api.${{ parameters.ProjectName }}*Tests/*.csproj
       **/*.Services.${{ parameters.ProjectName }}*Tests/*.csproj
       **/*.Functions.${{ parameters.ProjectName }}*UnitTests/*.csproj
       **/*.Models.*UnitTests/*.csproj
       **/*.${{ parameters.ProjectName }}*AcceptanceTests/*.csproj
+      !**/*.Api.${{ parameters.ProjectName }}.*SmokeTests/*.csproj
+      !**/*.Api.${{ parameters.ProjectName }}.IntegrationTests/*.csproj
 
  - task: DotNetCoreCLI@2
    displayName: 'dotnet publish API'
