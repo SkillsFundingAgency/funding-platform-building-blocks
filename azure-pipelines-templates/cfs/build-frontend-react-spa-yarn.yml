@@ -1,0 +1,45 @@
+parameters:
+- name: DotNetCoreSDKVersion
+  type: string
+  default: '3.1.101'
+- name: projectFolder
+  type: string
+  default: 'CalculateFunding.Web/calculatefunding-web'
+
+steps:
+- task: NodeTool@0
+  displayName: 'Use Node 14.x'
+  inputs:
+    versionSpec: 14.x
+
+- powershell: |
+   cd '${{ parameters.projectFolder }}'
+   dir
+   $env:CI = “true”
+   Write-host "============================================ Yarn test"
+   yarn install
+   yarn test
+   
+   Write-host "============================================  Finished tests"
+  displayName: 'Run Yarn Tests'
+
+- task: PublishTestResults@2
+  displayName: 'Publish React Test Results as test-report.xml'
+  inputs:
+    testResultsFiles: 'test-report.xml'
+    searchFolder: '$(System.DefaultWorkingDirectory)\${{ parameters.projectFolder }}'
+    testRunTitle: 'React Test _$(Build.BuildNumber)'
+
+- task: Npm@1
+  displayName: 'npm custom'
+  inputs:
+    command: custom
+    workingDir: '${{ parameters.projectFolder }}'
+    verbose: false
+    customCommand: 'run-script build'
+
+- task: CopyFiles@2
+  displayName: 'Copy Files to: CalculateFunding.Frontend/wwwroot/app'
+  inputs:
+    SourceFolder: '${{ parameters.projectFolder }}/Build'
+    TargetFolder: CalculateFunding.Frontend/wwwroot/app
