@@ -12,21 +12,16 @@ steps:
   inputs:
     versionSpec: 14.x
 
-- task: Npm@1
-  displayName: 'npm install'
-  inputs:
-    workingDir: '${{ parameters.projectFolder }}'
-    verbose: false
-
 - powershell: |
    cd '${{ parameters.projectFolder }}'
-   dir;
-   ($env:CI = “true”)
-   Write-host "============================================ npm test"
-   npm test;
+   dir
+   $env:CI = “true”
+   Write-host "============================================ Yarn test"
+   yarn install
+   yarn test
    
    Write-host "============================================  Finished tests"
-  displayName: 'Run NPM Tests'
+  displayName: 'Run Yarn Tests'
 
 - task: PublishTestResults@2
   displayName: 'Publish React Test Results as test-report.xml'
