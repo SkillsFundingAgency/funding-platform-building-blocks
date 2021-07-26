@@ -1,0 +1,99 @@
+﻿{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "clusterName": {
+            "type": "string",
+            "metadata": {
+                "description": "The name of the Managed Cluster resource."
+            }
+        },
+
+        "poolName": {
+            "type": "string",
+            "metadata": {
+                "description": "The name of the node pool"
+            }
+        },
+        "kubernetesVersion": {
+            "type": "string",
+            "metadata": {
+                "description": "The version of Kubernetes."
+            }
+        },
+        "nodeCount": {
+            "type": "int",
+            "defaultValue": 3,
+            "metadata": {
+                "description": "The initial number of nodes in this node pool"
+            }
+        },
+        "VmSize": {
+            "type": "string",
+            "defaultValue": "Standard_DS2_v2",
+            "metadata": {
+                "description": "The size of Azure VM to use in this node pool"
+            }
+        },
+        "osDiskSizeInGb": {
+            "type": "int",
+            "defaultValue": 128,
+            "metadata": {
+                "description": "The size of the manage disk created for the nodes (defaults to 128GB)"
+            }
+        },
+        "enableAutoScaling": {
+            "type": "bool",
+            "defaultValue": "true",
+            "metadata": {
+                "description": "Enable autoscaling on this node pool. defaults to true"
+            }
+        },
+        "nodeMinCount": {
+            "type": "int",
+            "defaultValue": 1,
+            "metadata": {
+                "description": "The minimum number of nodes in this node pool. Only used if auto-scale is enabled"
+            }
+        },
+        "nodeMaxCount": {
+            "type": "int",
+            "defaultValue": 5,
+            "metadata": {
+                "description": "The maximum number of nodes in this node pool. Only used if auto-scale is enabled"
+            }
+        }
+    },
+    "resources": [
+        {
+            "type": "Microsoft.ContainerService/managedClusters/agentPools",
+            "apiVersion": "2021-05-01",
+            "name": "[concat(parameters('clusterName'), '/', parameters('poolName'))]",
+            "properties": {
+                "count": "[parameters('nodeCount')]",
+                "vmSize": "[parameters('VmSize')]",
+                "osDiskSizeGB": "[parameters('osDiskSizeInGb')]",
+                "osDiskType": "Managed",
+                "kubeletDiskType": "OS",
+                "maxPods": 110,
+                "type": "VirtualMachineScaleSets",
+                "availabilityZones": [
+                    "1",
+                    "2",
+                    "3"
+                ],
+                "maxCount": "[parameters('nodeMinCount')]",
+                "minCount": "[parameters('nodeMaxCount')]",
+                "enableAutoScaling": "[parameters('enableAutoScaling')]",
+                "orchestratorVersion": "[parameters('kubernetesVersion')]",
+                "nodeLabels": {},
+                "mode": "System",
+                "osType": "Linux",
+                "osSKU": "Ubuntu",
+                "enableFIPS": false
+            }
+        }
+    ],
+    "outputs": {
+    }
+}

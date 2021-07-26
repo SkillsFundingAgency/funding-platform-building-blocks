@@ -15,10 +15,12 @@
             }
         },
         "serviceCidr": {
-            "type": "string"
+            "type": "string",
+            "defaultValue": "10.0.0.0/16"
         },
         "dnsServiceIp": {
-            "type": "string"
+            "type": "string",
+            "defaultValue": "10.0.0.10"
         },
         "podCidr": {
             "type": "string",
@@ -28,46 +30,17 @@
             "type": "string",
             "defaultValue": "172.17.0.1/16"
         },
-        "agentPoolName": {
+        "publicOutboundIpResourceId": {
             "type": "string",
-            "defaultValue": "agentpool",
             "metadata": {
-                "description": "The name of the default agent pool"
+                "description": "resource id of the public ip to use for outbound traffic"
             }
         },
-        "agentNodeCount": {
-            "type": "int",
-            "defaultValue": 3,
+        "autoscaleProfile": {
+            "type": "object",
+            "defaultValue": {},
             "metadata": {
-                "description": "The number of nodes for the cluster."
-            },
-            "minValue": 1,
-            "maxValue": 50
-        },
-        "agentVMSize": {
-            "type": "string",
-            "defaultValue": "Standard_DS2_v2",
-            "metadata": {
-                "description": "The sku of the machines that will be used for the default agentpool."
-            }
-        },
-        "subnetName": {
-            "type": "string",
-            "metadata": {
-                "description": "Subnet name that will contain the aks CLUSTER"
-            }
-        },
-        "virtualNetworkName": {
-            "type": "string",
-            "metadata": {
-                "description": "Name of an existing VNET that will contain this AKS deployment."
-            }
-        },
-        "virtualNetworkResourceGroup": {
-            "type": "string",
-            "defaultValue": "[resourceGroup().name]",
-            "metadata": {
-                "description": "Name of the existing VNET resource group"
+                "description": "Auto-scale configuration, as documented here: https://docs.microsoft.com/en-us/azure/templates/microsoft.containerservice/2021-05-01/managedclusters?tabs=json#ManagedClusterPropertiesAutoScalerProfile"
             }
         },
         "logAnalyticsResourceGroupName": {
@@ -89,10 +62,51 @@
             "metadata": {
                 "description": "The name of the resource group used for nodes"
             }
+        },
+        "nodeCount": {
+            "type": "int",
+            "defaultValue": 3,
+            "metadata": {
+                "description": "The initial number of nodes in the default node pool"
+            }
+        },
+        "VmSize": {
+            "type": "string",
+            "defaultValue": "Standard_DS2_v2",
+            "metadata": {
+                "description": "The size of Azure VM to use in the default node pool"
+            }
+        },
+        "osDiskSizeInGb": {
+            "type": "int",
+            "defaultValue": 128,
+            "metadata": {
+                "description": "The size of the manage disk created for the nodes in the default pool (defaults to 128GB)"
+            }
+        },
+        "enableAutoScaling": {
+            "type": "bool",
+            "defaultValue": "true",
+            "metadata": {
+                "description": "Enable autoscaling on the default node pool. defaults to true"
+            }
+        },
+        "nodeMinCount": {
+            "type": "int",
+            "defaultValue": 1,
+            "metadata": {
+                "description": "The minimum number of nodes in the default node pool. Only used if auto-scale is enabled"
+            }
+        },
+        "nodeMaxCount": {
+            "type": "int",
+            "defaultValue": 5,
+            "metadata": {
+                "description": "The maximum number of nodes in the default node pool. Only used if auto-scale is enabled"
+            }
         }
     },
     "variables": {
-        "vnetSubnetId": "[resourceId(parameters('virtualNetworkResourceGroup'),'Microsoft.Network/virtualNetworks/subnets',parameters('virtualNetworkName'),parameters('subnetName'))]",
         "logAnalyticsId": "[resourceId(parameters('logAnalyticsResourceGroupName'), 'Microsoft.OperationalInsights/workspaces', parameters('logAnalyticsWorkspaceName'))]",
         "addOnObject": {
             "noAddons": "[json('null')]",
@@ -104,6 +118,16 @@
                     }
                 }
             }
+        },
+        "loadBalancerConfig" : {
+            "managedOutboundIPs": { 
+                "count": 1
+            },
+            "effectiveOutboundIPs": [
+                {
+                    "id": "[parameters('publicOutboundIpResourceId')]"
+                }
+            ]
         }
     },
     "resources": [
@@ -117,16 +141,31 @@
             },
             "properties": {
                 "kubernetesVersion": "[parameters('kubernetesVersion')]",
-                "dnsPrefix": "[parameters('clusterName')]",
+                "dnsPrefix": "[concat(parameters('clusterName'), '-dns')]",
                 "agentPoolProfiles": [
                     {
-                        "name": "[parameters('agentPoolName')]",
-                        "count": "[parameters('agentNodeCount')]",
-                        "vmSize": "[parameters('agentVMSize')]",
-                        "osType": "Linux",
-                        "vnetSubnetID": "[variables('vnetSubnetID')]",
+                        "name": "agentpool",
+                        "count": "[parameters('nodeCount')]",
+                        "vmSize": "[parameters('VmSize')]",
+                        "osDiskSizeGB": "[parameters('osDiskSizeInGb')]",
+                        "osDiskType": "Managed",
+                        "kubeletDiskType": "OS",
+                        "maxPods": 110,
                         "type": "VirtualMachineScaleSets",
-                        "mode": "System"
+                        "availabilityZones": [
+                            "1",
+                            "2",
+                            "3"
+                        ],
+                        "maxCount": "[parameters('nodeMaxCount')]",
+                        "minCount": "[parameters('nodeMinCount')]",
+                        "enableAutoScaling": "[parameters('enableAutoScaling')]",
+                        "orchestratorVersion": "[parameters('kubernetesVersion')]",
+                        "nodeLabels": {},
+                        "mode": "System",
+                        "osType": "Linux",
+                        "osSKU": "Ubuntu",
+                        "enableFIPS": false
                     }
                 ],
                 "addonProfiles": "[if(equals(parameters('logAnalyticsWorkspaceName'), ''), variables('addOnObject').noAddons, variables('addOnObject').omsAddon)]",
@@ -134,11 +173,14 @@
                 "enableRBAC": true,
                 "networkProfile": {
                     "networkPlugin": "kubenet",
+                    "loadBalancerSku": "Standard",
+                    "loadBalancerProfile": "[if(not(empty(parameters('publicOutboundIpResourceId'))), variables('loadBalancerConfig'), json('{}'))]",
                     "serviceCidr": "[parameters('serviceCidr')]",
                     "dnsServiceIP": "[parameters('dnsServiceIp')]",
                     "podCidr": "[parameters('podCidr')]",
                     "dockerBridgeCidr": "[parameters('dockerBridgeCidr')]"
-                }
+                },
+                "autoScalerProfile": "[parameters('autoscaleProfile')]"
             }
         }
     ],
