@@ -30,12 +30,6 @@
             "type": "string",
             "defaultValue": "172.17.0.1/16"
         },
-        "publicOutboundIpResourceId": {
-            "type": "string",
-            "metadata": {
-                "description": "resource id of the public ip to use for outbound traffic"
-            }
-        },
         "autoscaleProfile": {
             "type": "object",
             "defaultValue": {},
@@ -118,16 +112,6 @@
                     }
                 }
             }
-        },
-        "loadBalancerConfig" : {
-            "managedOutboundIPs": { 
-                "count": 1
-            },
-            "effectiveOutboundIPs": [
-                {
-                    "id": "[parameters('publicOutboundIpResourceId')]"
-                }
-            ]
         }
     },
     "resources": [
@@ -174,7 +158,6 @@
                 "networkProfile": {
                     "networkPlugin": "kubenet",
                     "loadBalancerSku": "Standard",
-                    "loadBalancerProfile": "[if(not(empty(parameters('publicOutboundIpResourceId'))), variables('loadBalancerConfig'), json('{}'))]",
                     "serviceCidr": "[parameters('serviceCidr')]",
                     "dnsServiceIP": "[parameters('dnsServiceIp')]",
                     "podCidr": "[parameters('podCidr')]",
