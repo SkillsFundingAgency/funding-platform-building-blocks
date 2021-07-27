@@ -82,8 +82,8 @@
                     "2",
                     "3"
                 ],
-                "maxCount": "[parameters('nodeMinCount')]",
-                "minCount": "[parameters('nodeMaxCount')]",
+                "maxCount": "[parameters('nodeMaxCount')]",
+                "minCount": "[parameters('nodeMinCount')]",
                 "enableAutoScaling": "[parameters('enableAutoScaling')]",
                 "orchestratorVersion": "[parameters('kubernetesVersion')]",
                 "nodeLabels": {},
