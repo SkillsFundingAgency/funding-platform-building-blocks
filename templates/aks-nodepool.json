@@ -87,7 +87,6 @@
                 "enableAutoScaling": "[parameters('enableAutoScaling')]",
                 "orchestratorVersion": "[parameters('kubernetesVersion')]",
                 "nodeLabels": {},
-                "mode": "System",
                 "osType": "Linux",
                 "osSKU": "Ubuntu",
                 "enableFIPS": false
