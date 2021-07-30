@@ -172,7 +172,7 @@
     },
     "resources": [
         {
-            "apiVersion": "2020-03-01",
+            "apiVersion": "2021-05-01",
             "type": "Microsoft.ContainerService/managedClusters",
             "location": "[resourceGroup().location]",
             "name": "[parameters('clusterName')]",
