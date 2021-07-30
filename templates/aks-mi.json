@@ -113,6 +113,27 @@
             "metadata": {
                 "description": "The maximum number of nodes in the default node pool. Only used if auto-scale is enabled"
             }
+        },
+        "enablePrivateCluster": {
+            "type": "bool",
+            "defaultValue": "false",
+            "metadata": {
+                "description": "Enable the AKS 'private cluster' feature to protect API calls from the public internet. Defaults to false." 
+            }
+        },
+        "privateClusterDnsZone": {
+            "type": "string",
+            "defaultValue": "[parameters('clusterName')]",
+            "metadata": {
+                "description": "The name of the private dns zone. defaults to the cluster name."
+            }
+        },
+        "enablePublicDnsZoneOnPrivateCluster": {
+            "type": "string",
+            "defaultValue": "false",
+            "metadata": {
+                "description": "Optionally, enable a publicly accessible fqdn for the cluster. Defaults to false."
+            }
         }
     },
     "variables": {
@@ -187,7 +208,10 @@
                     "podCidr": "[parameters('podCidr')]",
                     "dockerBridgeCidr": "[parameters('dockerBridgeCidr')]"
                 },
-                "autoScalerProfile": "[parameters('autoscaleProfile')]"
+                "autoScalerProfile": "[parameters('autoscaleProfile')]",
+                "enablePrivateCluster": "[parameters('enablePrivateCluster')]",
+                "privateDNSZone": "[parameters('privateClusterDnsZone')]",
+                "enablePrivateClusterPublicFQDN": "[parameters('enablePublicDnsZoneOnPrivateCluster')]"
             }
         }
     ],
