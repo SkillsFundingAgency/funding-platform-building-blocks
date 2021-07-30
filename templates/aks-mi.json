@@ -113,6 +113,34 @@
             "metadata": {
                 "description": "The maximum number of nodes in the default node pool. Only used if auto-scale is enabled"
             }
+        },
+        "apiServerWhitelistedAddresses": {
+            "type": "array",
+            "defaultValue": [],
+            "metadata": {
+                "description": "IP addresses that are authorised to use the api server"
+            }
+        },
+        "enablePrivateCluster": {
+            "type": "bool",
+            "defaultValue": false,
+            "metadata": {
+                "description": "Enable the AKS 'private cluster' feature to protect API calls from the public internet. Defaults to false." 
+            }
+        },
+        "privateClusterDnsZone": {
+            "type": "string",
+            "defaultValue": "[parameters('clusterName')]",
+            "metadata": {
+                "description": "The name of the private dns zone. defaults to the cluster name."
+            }
+        },
+        "enablePublicDnsZoneOnPrivateCluster": {
+            "type": "bool",
+            "defaultValue": false,
+            "metadata": {
+                "description": "Optionally, enable a publicly accessible fqdn for the cluster. Defaults to false."
+            }
         }
     },
     "variables": {
@@ -127,11 +155,24 @@
                     }
                 }
             }
-        }
+        },
+        "whitelistedAddresses": "[if(parameters('enablePrivateCluster'), variables('emptyArray'), parameters('apiServerWhitelistedAddresses'))]",
+        "emptyArray": [],
+        "allApiServerAccessProfiles": {
+            "privateCluster": {
+                "enablePrivateCluster": "[parameters('enablePrivateCluster')]",
+                "privateDNSZone": "[parameters('privateClusterDnsZone')]",
+                "enablePrivateClusterPublicFQDN": "[parameters('enablePublicDnsZoneOnPrivateCluster')]"
+            },
+            "publicCluster": {
+                "authorizedIPRanges": "[variables('whitelistedAddresses')]"
+            }
+        },
+        "apiServerAccessProfile": "[if(parameters('enablePrivateCluster'), variables('allApiServerAccessProfiles').privateCluster, variables('allApiServerAccessProfiles').publicCluster)]"
     },
     "resources": [
         {
-            "apiVersion": "2020-03-01",
+            "apiVersion": "2021-05-01",
             "type": "Microsoft.ContainerService/managedClusters",
             "location": "[resourceGroup().location]",
             "name": "[parameters('clusterName')]",
@@ -187,7 +228,8 @@
                     "podCidr": "[parameters('podCidr')]",
                     "dockerBridgeCidr": "[parameters('dockerBridgeCidr')]"
                 },
-                "autoScalerProfile": "[parameters('autoscaleProfile')]"
+                "autoScalerProfile": "[parameters('autoscaleProfile')]",
+                "apiServerAccessProfile": "[variables('apiServerAccessProfile')]"
             }
         }
     ],
