@@ -123,7 +123,7 @@
         },
         "enablePrivateCluster": {
             "type": "bool",
-            "defaultValue": "false",
+            "defaultValue": false,
             "metadata": {
                 "description": "Enable the AKS 'private cluster' feature to protect API calls from the public internet. Defaults to false." 
             }
