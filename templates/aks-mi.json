@@ -114,6 +114,13 @@
                 "description": "The maximum number of nodes in the default node pool. Only used if auto-scale is enabled"
             }
         },
+        "apiServerWhitelistedAddresses": {
+            "type": "array",
+            "defaultValue": [],
+            "metadata": {
+                "description": "IP addresses that are authorised to use the api server"
+            }
+        },
         "enablePrivateCluster": {
             "type": "bool",
             "defaultValue": "false",
@@ -148,7 +155,17 @@
                     }
                 }
             }
-        }
+        },
+        "emptyObject": {},
+        "privateClusterAccessProfile": {
+            "enablePrivateCluster": "[parameters('enablePrivateCluster')]",
+            "privateDNSZone": "[parameters('privateClusterDnsZone')]",
+            "enablePrivateClusterPublicFQDN": "[parameters('enablePublicDnsZoneOnPrivateCluster')]"
+        },
+        "whitelistedPublicCluster": {
+            "withWhiteList": "[parameters('apiServerWhitelistedAddresses')]"
+        },
+        "apiServerAccessProfile": "[union(if(not(empty(parameters('apiServerWhitelistedAddresses'))), variables('whitelistedPublicCluster'), variables('emptyObject')), if(parameters('enablePrivateCluster'), variables('privateClusterAccessProfile'), variables('emptyObject')))]"
     },
     "resources": [
         {
@@ -209,9 +226,7 @@
                     "dockerBridgeCidr": "[parameters('dockerBridgeCidr')]"
                 },
                 "autoScalerProfile": "[parameters('autoscaleProfile')]",
-                "enablePrivateCluster": "[parameters('enablePrivateCluster')]",
-                "privateDNSZone": "[parameters('privateClusterDnsZone')]",
-                "enablePrivateClusterPublicFQDN": "[parameters('enablePublicDnsZoneOnPrivateCluster')]"
+                "apiServerAccessProfile": "[variables('apiServerAccessProfile')]"
             }
         }
     ],
