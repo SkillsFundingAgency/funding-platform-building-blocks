@@ -136,8 +136,8 @@
             }
         },
         "enablePublicDnsZoneOnPrivateCluster": {
-            "type": "string",
-            "defaultValue": "false",
+            "type": "bool",
+            "defaultValue": false,
             "metadata": {
                 "description": "Optionally, enable a publicly accessible fqdn for the cluster. Defaults to false."
             }
