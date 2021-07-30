@@ -156,16 +156,19 @@
                 }
             }
         },
-        "emptyObject": {},
-        "privateClusterAccessProfile": {
-            "enablePrivateCluster": "[parameters('enablePrivateCluster')]",
-            "privateDNSZone": "[parameters('privateClusterDnsZone')]",
-            "enablePrivateClusterPublicFQDN": "[parameters('enablePublicDnsZoneOnPrivateCluster')]"
+        "whitelistedAddresses": "[if(parameters('enablePrivateCluster'), variables('emptyArray'), parameters('apiServerWhitelistedAddresses'))]",
+        "emptyArray": [],
+        "allApiServerAccessProfiles": {
+            "privateCluster": {
+                "enablePrivateCluster": "[parameters('enablePrivateCluster')]",
+                "privateDNSZone": "[parameters('privateClusterDnsZone')]",
+                "enablePrivateClusterPublicFQDN": "[parameters('enablePublicDnsZoneOnPrivateCluster')]"
+            },
+            "publicCluster": {
+                "authorizedIPRanges": "[variables('whitelistedAddresses')]"
+            }
         },
-        "whitelistedPublicCluster": {
-            "withWhiteList": "[parameters('apiServerWhitelistedAddresses')]"
-        },
-        "apiServerAccessProfile": "[union(if(not(empty(parameters('apiServerWhitelistedAddresses'))), variables('whitelistedPublicCluster'), variables('emptyObject')), if(parameters('enablePrivateCluster'), variables('privateClusterAccessProfile'), variables('emptyObject')))]"
+        "apiServerAccessProfile": "[if(parameters('enablePrivateCluster'), variables('allApiServerAccessProfiles').privateCluster, variables('allApiServerAccessProfiles').publicCluster)]"
     },
     "resources": [
         {
