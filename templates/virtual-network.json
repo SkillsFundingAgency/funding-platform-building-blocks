@@ -14,8 +14,16 @@
     "productTag": {
       "type": "string"
     },
+    "serviceTag": {
+        "type": "string",
+        "defaultValue": "[parameters('productTag')]"
+    },
     "serviceLineTag": {
       "type": "string"
+    },
+    "serviceOfferingTag": {
+        "type": "string",
+        "defaultValue": "[parameters('productTag')]"
     },
     "armVnetName": {
       "type": "string",
@@ -48,9 +56,9 @@
         "Parent Business": "[parameters('parentBusinessTag')]",
         "Portfolio": "[parameters('portfolioTag')]",
         "Product": "[parameters('productTag')]",
-        "Service": "[parameters('productTag')]",
+        "Service": "[parameters('serviceTag')]",
         "Service Line": "[parameters('serviceLineTag')]",
-        "Service Offering": "[parameters('productTag')]"
+        "Service Offering": "[parameters('serviceOfferingTag')]"
       },
       "properties": {
         "addressSpace": {
