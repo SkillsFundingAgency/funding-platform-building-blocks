@@ -75,6 +75,13 @@
         "description": "Format removing backlashes: [{\"Name\": \"IP A\",\"ipAddress\": \"123.123.123.123\"},{\"Name\": \"IP B\",\"ipAddress\": \"234.234.234.234\"}]"
       }
     },
+    "scmIpSecurityRestrictions": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Format removing backlashes: [{\"Name\": \"IP A\",\"ipAddress\": \"123.123.123.123\"},{\"Name\": \"IP B\",\"ipAddress\": \"234.234.234.234\"}]"
+      }
+    },
     "appServiceSlotAppSettings": {
       "type": "array",
       "defaultValue": [],
@@ -237,6 +244,7 @@
           "connectionStrings": "[parameters('appServiceConnectionStrings')]",
           "virtualApplications": "[parameters('appServiceVirtualApplications')]",
           "ipSecurityRestrictions": "[parameters('ipSecurityRestrictions')]",
+          "scmIpSecurityRestrictions": "[parameters('scmIpSecurityRestrictions')]",
           "use32BitWorkerProcess": "[parameters('use32BitWorkerProcess')]",
           "http20Enabled": "[parameters('http20Enabled')]",
           "ftpsState": "[parameters('ftpsState')]"
