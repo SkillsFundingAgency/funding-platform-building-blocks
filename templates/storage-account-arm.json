@@ -120,6 +120,13 @@
         "TLS1_0",
         "TLS1_2"
       ]
+    },
+    "allowBlobPublicAccess": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Allow or disable public access to all blobs and containers in the storage account. Individual containers access levels must also be set to Blob/Contaienr to be accessible anonymously. Defaults to true for backwards compatibility with existing projects."
+      }
     }
   },
   "variables": {
@@ -170,6 +177,7 @@
           "keySource": "Microsoft.Storage"
         },
         "accessTier": "[if(empty(parameters('accessTier')), json('null'), parameters('accessTier'))]",
+        "allowBlobPublicAccess": "[parameters('allowBlobPublicAccess')]",
         "supportsHttpsTrafficOnly": true,
         "minimumTlsVersion": "[parameters('minimumTlsVersion')]",
         "networkAcls": "[if(greater(length(parameters('subnetResourceIdList')), 0), variables('networkAclObject'), json('null'))]"
