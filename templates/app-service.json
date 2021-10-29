@@ -179,13 +179,6 @@
         "description": "App Service app logs diagnostic setting"
       }
     },
-    "appServiceFileAuditLogsSetting": {
-      "type": "bool",
-      "defaultvalue": false,
-      "metadata": {
-        "description": "App Service file audit logs diagnostic setting"
-      }
-    },
     "appServiceAuditLogsSetting": {
       "type": "bool",
       "defaultvalue": false,
@@ -363,14 +356,6 @@
           {
             "category": "AppServiceAppLogs",
             "enabled": "[parameters('appServiceAppLogsSetting')]",
-            "retentionPolicy": {
-              "enabled": "[parameters('retentionPolicyEnabled')]",
-              "days": "[parameters('retentionPolicyDays')]"
-            }
-          },
-          {
-            "category": "AppServiceFileAuditLogs",
-            "enabled": "[parameters('appServiceFileAuditLogsSetting')]",
             "retentionPolicy": {
               "enabled": "[parameters('retentionPolicyEnabled')]",
               "days": "[parameters('retentionPolicyDays')]"
