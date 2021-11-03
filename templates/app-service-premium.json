@@ -179,6 +179,13 @@
           "description": "App Service app logs diagnostic setting"
         }
       },
+      "appServiceFileAuditLogsSetting": {
+        "type": "bool",
+        "defaultvalue": false,
+        "metadata": {
+          "description": "App Service file audit logs diagnostic setting"
+        }
+      },
       "appServiceAuditLogsSetting": {
         "type": "bool",
         "defaultvalue": false,
