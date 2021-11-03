@@ -369,6 +369,14 @@
               }
             },
             {
+              "category": "AppServiceFileAuditLogs",
+              "enabled": "[parameters('appServiceFileAuditLogsSetting')]",
+              "retentionPolicy": {
+                "enabled": "[parameters('retentionPolicyEnabled')]",
+                "days": "[parameters('retentionPolicyDays')]"
+              }
+            },
+            {
               "category": "AppServiceAuditLogs",
               "enabled": "[parameters('appServiceAuditLogsSetting')]",
               "retentionPolicy": {
