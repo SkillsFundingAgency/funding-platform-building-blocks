@@ -117,7 +117,8 @@
         "web",
         "app",
         "api",
-        "functionapp"
+        "functionapp",
+        "app,linux,container"
       ]
     },
     "subnetResourceId": {
