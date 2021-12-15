@@ -1,0 +1,173 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "environmentTag": {
+            "type": "string"
+        },
+        "parentBusinessTag": {
+            "type": "string"
+        },
+        "portfolioTag": {
+            "type": "string"
+        },
+        "productTag": {
+            "type": "string"
+        },
+        "serviceTag": {
+            "type": "string",
+            "defaultValue": "[parameters('productTag')]"
+        },
+        "serviceLineTag": {
+            "type": "string"
+        },
+        "serviceOfferingTag": {
+            "type": "string",
+            "defaultValue": "[parameters('productTag')]"
+        },
+        "msqlServerName": {
+            "type": "string",
+            "metadata": {
+                "description": "Name of the SQL Server Managed Instance"
+            }
+        },
+        "msqlSubnetId": {
+            "type": "string",
+            "metadata": {
+                "description": "Name of the SQL Server Managed Instance and the resources that use them"
+            }
+        },
+        "sqlServerAdminUserName": {
+            "type": "string",
+            "defaultValue": "",
+            "metadata": {
+                "description": "The Azure SQL Server Administrator (SA) username. A generated name will be used if not supplied."
+            }
+        },
+        "sqlServerAdminPassword": {
+            "type": "securestring",
+            "metadata": {
+                "description": "The Azure SQL Server Administrator (SA) password."
+            }
+        },
+        "azureADOnlyAuthentication": {
+            "type": "bool",
+            "defaultValue": false,
+            "metadata": {
+                "description": "Azure Active Directory only Authentication enabled."
+            }
+        },
+        "sqlServerActiveDirectoryAdminLogin": {
+            "type": "string",
+            "metadata": {
+                "description": "The active directory admin or group name that will be assigned to the SQL server."
+            }
+        },
+        "principalType": {
+            "type": "string",
+            "defaultValue": "Group",
+            "metadata": {
+                "description": "Principal Type of the server administrator."
+            }
+        },
+        "sqlServerActiveDirectoryAdminObjectId": {
+            "type": "string",
+            "metadata": {
+                "description": "The object id of the active directory admin that will be assigned to the SQL server."
+            }
+        },
+        "skuName": {
+            "type": "string",
+            "defaultValue": "GP_Gen5",
+            "allowedValues": [
+                "GP_Gen4",
+                "GP_Gen5",
+                "GP_G8IM",
+                "GP_G8IH",
+                "BC_Gen4",
+                "BC_Gen5",
+                "BC_G8IM",
+                "BC_G8IH"
+            ],
+            "metadata": {
+                "description": "Managed instance SKU. If SKU is not set, skuEdition and hardwareFamily values have to be populated."
+            }
+        },
+        "vCores": {
+            "type": "int",
+            "defaultValue": 8,
+            "allowedValues": [
+                4,
+                8,
+                16,
+                24,
+                32,
+                40,
+                64,
+                80
+            ],
+            "metadata": {
+                "description": "Number of vCores"
+            }
+        },
+        "storageSizeGb": {
+            "type": "int",
+            "defaultValue": 128,
+            "minValue": 32,
+            "metadata": {
+                "description": "Determines how much Storage size in GB to associate with instance. Increments of 32 GB allowed only."
+            }
+        },
+        "publicDataEndpointEnabled": {
+            "type": "bool",
+            "defaultValue": false,
+            "metadata": {
+                "description": "Control whether the public endopint is available or not."
+            }
+        }
+    },
+    "variables": {
+        },
+    "resources": [
+      {
+        "name": "[parameters('msqlServerName')]",
+        "type": "Microsoft.Sql/managedInstances",
+        "apiVersion": "2021-05-01-preview",
+        "location": "[resourceGroup().location]",
+        "tags": {
+            "Environment": "[parameters('environmentTag')]",
+            "Parent Business": "[parameters('parentBusinessTag')]",
+            "Portfolio": "[parameters('portfolioTag')]",
+            "Product": "[parameters('productTag')]",
+            "Service": "[parameters('serviceTag')]",
+            "Service Line": "[parameters('serviceLineTag')]",
+            "Service Offering": "[parameters('serviceOfferingTag')]"
+        },
+        "sku": {
+            "name": "[parameters('skuName')]"
+        },
+        "properties": {
+            "administratorLogin": "[parameters('sqlServerAdminUserName')]",
+            "administratorLoginPassword": "[parameters('sqlServerAdminPassword')]",
+            "administrators": {
+              "administratorType": "ActiveDirectory",
+              "azureADOnlyAuthentication": "[parameters('azureADOnlyAuthentication')]",
+              "login": "[parameters('sqlServerActiveDirectoryAdminLogin')]",
+              "principalType": "[parameters('principalType')]",
+              "sid": "[parameters('sqlServerActiveDirectoryAdminObjectId')]",
+              "tenantId": "[subscription().tenantId]"
+              },
+            "publicDataEndpointEnabled": "[parameters('publicDataEndpointEnabled')]",
+            "storageSizeInGB": "[parameters('storageSizeGb')]",
+            "subnetId": "[parameters('msqlSubnetId')]",
+            "vCores": "[parameters('vCores')]"
+        }
+      }
+    ],
+    "outputs": {
+            "fullyQualifiedDomainName": {
+            "type": "string",
+            "value": "[reference(parameters('msqlServerName')).fullyQualifiedDomainName]"
+        }
+    }
+}
