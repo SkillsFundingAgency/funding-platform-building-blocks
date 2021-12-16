@@ -144,10 +144,7 @@
             "Service Offering": "[parameters('serviceOfferingTag')]"
         },
         "sku": {
-            "name": "[parameters('skuName')]",
-            "tier": "GeneralPurpose",
-            "family": "Gen5",
-            "capacity": "[parameters('vCores')]"
+            "name": "[parameters('skuName')]"
         },
         "properties": {
             "administratorLogin": "[parameters('sqlServerAdminUserName')]",
