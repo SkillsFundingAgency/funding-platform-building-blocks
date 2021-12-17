@@ -133,7 +133,7 @@
         }
     },
     "variables": {
-        "msqlSubnetId": "[concat('/subscriptions/',uniqueString(subscription().tenantId),'/resourceGroups/',uniqueString(resourceGroup().name),'/providers/Microsoft.Network/virtualNetworks/',parameters('msqlVNet'),'/subnets/',parameters('msqlSubnet'))]"
+        "msqlSubnetId": "[concat('/subscriptions/', subscription().tenantId, '/resourceGroups/' ,resourceGroup().name, '/providers/Microsoft.Network/virtualNetworks/', parameters('msqlVNet'), '/subnets/' ,parameters('msqlSubnet'))]"
         },
     "resources": [
       {
