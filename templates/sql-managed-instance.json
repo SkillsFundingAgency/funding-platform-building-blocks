@@ -166,7 +166,7 @@
               },
             "publicDataEndpointEnabled": "[parameters('publicDataEndpointEnabled')]",
             "storageSizeInGB": "[parameters('storageSizeGb')]",
-            "subnetId": "[variables('msqlSubnetId')]",
+            "subnetId": "[resourceId(resourceGroup().name , 'Microsoft.Network/virtualNetworks/subnets', parameters('msqlVNet'), parameters('msqlSubnet'))]",
             "vCores": "[parameters('vCores')]"
         }
       }
