@@ -31,7 +31,13 @@
                 "description": "Name of the SQL Server Managed Instance"
             }
         },
-        "msqlSubnetId": {
+        "msqlVNet": {
+            "type": "string",
+            "metadata": {
+                "description": "Name of the SQL Server Managed Instance and the resources that use them"
+            }
+        },
+        "msqlSubnet": {
             "type": "string",
             "metadata": {
                 "description": "Name of the SQL Server Managed Instance and the resources that use them"
@@ -127,6 +133,7 @@
         }
     },
     "variables": {
+        "msqlSubnetId": "[concat('/subscriptions/',subscription().tenantId,'/resourceGroups/',resourceGroup().location,'/providers/Microsoft.Network/virtualNetworks/',parameters('msqlVNet'),'/subnets/',parameters('msqlSubnet'))]"
         },
     "resources": [
       {
@@ -159,7 +166,7 @@
               },
             "publicDataEndpointEnabled": "[parameters('publicDataEndpointEnabled')]",
             "storageSizeInGB": "[parameters('storageSizeGb')]",
-            "subnetId": "[parameters('msqlSubnetId')]",
+            "subnetId": "[variables('msqlSubnetId')]",
             "vCores": "[parameters('vCores')]"
         }
       }
