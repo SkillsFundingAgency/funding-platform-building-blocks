@@ -132,9 +132,7 @@
             }
         }
     },
-    "variables": {
-        "msqlSubnetId": "[concat('/subscriptions/', subscription().tenantId, '/resourceGroups/' ,resourceGroup().name, '/providers/Microsoft.Network/virtualNetworks/', parameters('msqlVNet'), '/subnets/' ,parameters('msqlSubnet'))]"
-        },
+    "variables": {},
     "resources": [
       {
         "name": "[parameters('msqlServerName')]",
