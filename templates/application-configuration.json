@@ -38,7 +38,7 @@
         },
         "settingName": {
             "type": "String",
-            "defaultvalue": "keyVaultDiagSettings",
+            "defaultvalue": "AppConDiagSettings",
             "metadata": {
                 "description": "The name of the diagnostic setting"
             }
@@ -95,7 +95,7 @@
         {
             "type": "Microsoft.AppConfiguration/configurationStores/providers/diagnosticSettings",
             "condition": "[greater(length(parameters('workspaceId')), 0)]",
-            "apiVersion": "2019-10-01",
+            "apiVersion": "2020-01-01-preview",
             "name": "[concat(parameters('appConfigName'),'/microsoft.insights/', parameters('settingName'))]",
             "dependsOn": [
                 "[parameters('appConfigName')]"
