@@ -95,7 +95,7 @@
         {
             "type": "Microsoft.AppConfiguration/configurationStores/providers/diagnosticSettings",
             "condition": "[greater(length(parameters('workspaceId')), 0)]",
-            "apiVersion": "2020-01-01-preview",
+            "apiVersion": "2021-05-01-preview",
             "name": "[concat(parameters('appConfigName'),'/microsoft.insights/', parameters('settingName'))]",
             "dependsOn": [
                 "[parameters('appConfigName')]"
@@ -105,7 +105,7 @@
                 "workspaceId": "[parameters('workspaceId')]",
                 "logs": [
                     {
-                        "category": "AuditEvent",
+                        "category": "HttpRequest",
                         "enabled": "[parameters('auditEventSetting')]",
                         "retentionPolicy": {
                             "enabled": "[parameters('retentionPolicyEnabled')]",
