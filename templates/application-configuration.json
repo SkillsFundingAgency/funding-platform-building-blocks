@@ -50,7 +50,14 @@
                 "description": "ResourceID of the Log Analytics workspace in which resource logs should be saved."
             }
         },
-        "auditEventSetting": {
+        "HttpRequestSetting": {
+            "type": "bool",
+            "defaultvalue": false,
+            "metadata": {
+                "description": "Audit Event diagnostic setting"
+            }
+        },
+        "auditSetting": {
             "type": "bool",
             "defaultvalue": false,
             "metadata": {
@@ -106,7 +113,15 @@
                 "logs": [
                     {
                         "category": "HttpRequest",
-                        "enabled": "[parameters('auditEventSetting')]",
+                        "enabled": "[parameters('HttpRequestSetting')]",
+                        "retentionPolicy": {
+                            "enabled": "[parameters('retentionPolicyEnabled')]",
+                            "days": "[parameters('retentionPolicyDays')]"
+                        }
+                    },
+                    {
+                        "category": "Audit",
+                        "enabled": "[parameters('auditSetting')]",
                         "retentionPolicy": {
                             "enabled": "[parameters('retentionPolicyEnabled')]",
                             "days": "[parameters('retentionPolicyDays')]"
