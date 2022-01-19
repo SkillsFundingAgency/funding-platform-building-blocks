@@ -54,14 +54,14 @@
             "type": "bool",
             "defaultvalue": false,
             "metadata": {
-                "description": "Audit Event diagnostic setting"
+                "description": "HttpRequest diagnostic setting"
             }
         },
         "auditSetting": {
             "type": "bool",
             "defaultvalue": false,
             "metadata": {
-                "description": "Audit Event diagnostic setting"
+                "description": "Audit diagnostic setting"
             }
         },
         "allMetricsSetting": {
