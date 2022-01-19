@@ -1,5 +1,5 @@
 ﻿{
-    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
         "environmentTag": {
@@ -35,6 +35,42 @@
                 "Free",
                 "Standard"
             ]
+        },
+        "settingName": {
+            "type": "String",
+            "defaultvalue": "keyVaultDiagSettings",
+            "metadata": {
+                "description": "The name of the diagnostic setting"
+            }
+        },
+        "workspaceId": {
+            "type": "String",
+            "defaultValue": "",
+            "metadata": {
+                "description": "ResourceID of the Log Analytics workspace in which resource logs should be saved."
+            }
+        },
+        "auditEventSetting": {
+            "type": "bool",
+            "defaultvalue": false,
+            "metadata": {
+                "description": "Audit Event diagnostic setting"
+            }
+        },
+        "allMetricsSetting": {
+            "type": "bool",
+            "defaultvalue": false,
+            "metadata": {
+                "description": "All Metrics diagnostic setting"
+            }
+        },
+        "retentionPolicyEnabled": {
+            "type": "bool",
+            "defaultValue": true
+        },
+        "retentionPolicyDays": {
+            "type": "string",
+            "defaultValue": "30"
         }
     },
     "resources": [
@@ -54,6 +90,39 @@
             },
             "sku": {
                 "name": "[parameters('appConfigSku')]"
+            }
+        },
+        {
+            "type": "Microsoft.AppConfiguration/configurationStores/providers/diagnosticSettings",
+            "condition": "[greater(length(parameters('workspaceId')), 0)]",
+            "apiVersion": "2019-10-01",
+            "name": "[concat(parameters('appConfigName'),'/microsoft.insights/', parameters('settingName'))]",
+            "dependsOn": [
+                "[parameters('appConfigName')]"
+            ],
+            "properties": {
+                "name": "[parameters('settingName')]",
+                "workspaceId": "[parameters('workspaceId')]",
+                "logs": [
+                    {
+                        "category": "AuditEvent",
+                        "enabled": "[parameters('auditEventSetting')]",
+                        "retentionPolicy": {
+                            "enabled": "[parameters('retentionPolicyEnabled')]",
+                            "days": "[parameters('retentionPolicyDays')]"
+                        }
+                    }
+                ],
+                "metrics": [
+                    {
+                        "category": "AllMetrics",
+                        "enabled": "[parameters('allMetricsSetting')]",
+                        "retentionPolicy": {
+                            "enabled": "[parameters('retentionPolicyEnabled')]",
+                            "days": "[parameters('retentionPolicyDays')]"
+                        }
+                    }
+                ]
             }
         }
     ],
