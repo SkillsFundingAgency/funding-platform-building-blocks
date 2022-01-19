@@ -1,60 +1,60 @@
 {
-  "$schema": "http://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    "environmentTag": {
-        "type": "string"
-    },
-    "parentBusinessTag": {
-        "type": "string"
-    },
-    "portfolioTag": {
-        "type": "string"
-    },
-    "productTag": {
-        "type": "string"
-    },
-    "serviceTag": {
-        "type": "string",
-        "defaultValue": "[parameters('productTag')]"
-    },
-    "serviceLineTag": {
-        "type": "string"
-    },
-    "serviceOfferingTag": {
-        "type": "string",
-        "defaultValue": "[parameters('productTag')]"
-    },
-    "redisCacheName": {
-      "type": "string"
-    },
-    "redisCacheSKU": {
-      "type": "string",
-      "defaultValue": "Basic"
-    },
-    "redisCacheFamily": {
-      "type": "string",
-      "defaultValue": "C"
-    },
-    "redisCacheCapacity": {
-      "type": "int",
-      "defaultValue": 1
-    },
-    "enableNonSslPort": {
-      "type": "bool",
-      "defaultValue": false
-    },
-    "minimumTlsVersion": {
-      "type": "string",
-      "defaultValue": "1.2"
-    },
-    "redisConfiguration": {
-      "type": "object",
-      "defaultValue": {},
-      "metadata": {
-        "description": "An object containing redis configuration options. See https://docs.microsoft.com/en-us/azure/templates/microsoft.cache/2019-07-01/redis for more info"
-      }
-    },
+   "$schema": "http://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json",
+   "contentVersion": "1.0.0.0",
+   "parameters": {
+        "environmentTag": {
+            "type": "string"
+        },
+        "parentBusinessTag": {
+            "type": "string"
+        },
+        "portfolioTag": {
+           "type": "string"
+        },
+        "productTag": {
+            "type": "string"
+        },
+        "serviceTag": {
+            "type": "string",
+            "defaultValue": "[parameters('productTag')]"
+        },
+        "serviceLineTag": {
+            "type": "string"
+        },
+        "serviceOfferingTag": {
+            "type": "string",
+            "defaultValue": "[parameters('productTag')]"
+        },
+        "redisCacheName": {
+            "type": "string"
+        },
+        "redisCacheSKU": {
+            "type": "string",
+            "defaultValue": "Basic"
+        },
+        "redisCacheFamily": {
+            "type": "string",
+            "defaultValue": "C"
+        },
+        "redisCacheCapacity": {
+            "type": "int",
+            "defaultValue": 1
+        },
+        "enableNonSslPort": {
+            "type": "bool",
+            "defaultValue": false
+        },
+        "minimumTlsVersion": {
+            "type": "string",
+            "defaultValue": "1.2"
+        },
+        "redisConfiguration": {
+            "type": "object",
+            "defaultValue": {},
+            "metadata": {
+               "description": "An object containing redis configuration options. See https://docs.microsoft.com/en-us/azure/templates/microsoft.cache/2019-07-01/redis for more info"
+        }
+        },
         "settingName": {
             "type": "String",
             "defaultvalue": "AppConDiagSettings",
@@ -91,83 +91,83 @@
             "type": "string",
             "defaultValue": "30"
         }
-  },
-  "resources": [
-    {
-      "apiVersion": "2019-07-01",
-      "name": "[parameters('redisCacheName')]",
-      "type": "Microsoft.Cache/Redis",
-      "location": "[resourceGroup().location]",
-      "tags": {
-          "Environment": "[parameters('environmentTag')]",
-          "Parent Business": "[parameters('parentBusinessTag')]",
-          "Portfolio": "[parameters('portfolioTag')]",
-          "Product": "[parameters('productTag')]",
-          "Service": "[parameters('serviceTag')]",
-          "Service Line": "[parameters('serviceLineTag')]",
-          "Service Offering": "[parameters('serviceOfferingTag')]"
-      },
-      "properties": {
-        "enableNonSslPort": "[parameters('enableNonSslPort')]",
-        "minimumTlsVersion": "[parameters('minimumTlsVersion')]",
-        "sku": {
-          "capacity": "[parameters('redisCacheCapacity')]",
-          "family": "[parameters('redisCacheFamily')]",
-          "name": "[parameters('redisCacheSKU')]"
+    },
+    "resources": [
+        {
+            "apiVersion": "2019-07-01",
+            "name": "[parameters('redisCacheName')]",
+            "type": "Microsoft.Cache/Redis",
+            "location": "[resourceGroup().location]",
+            "tags": {
+                "Environment": "[parameters('environmentTag')]",
+                "Parent Business": "[parameters('parentBusinessTag')]",
+                "Portfolio": "[parameters('portfolioTag')]",
+                "Product": "[parameters('productTag')]",
+                "Service": "[parameters('serviceTag')]",
+                "Service Line": "[parameters('serviceLineTag')]",
+                "Service Offering": "[parameters('serviceOfferingTag')]"
+            },
+            "properties": {
+                "enableNonSslPort": "[parameters('enableNonSslPort')]",
+                "minimumTlsVersion": "[parameters('minimumTlsVersion')]",
+                "sku": {
+                     "capacity": "[parameters('redisCacheCapacity')]",
+                     "family": "[parameters('redisCacheFamily')]",
+                     "name": "[parameters('redisCacheSKU')]"
+            },
+            "redisConfiguration": "[parameters('redisConfiguration')]"
+            }
         },
-        "redisConfiguration": "[parameters('redisConfiguration')]"
-      }
-    },
-    {
-      "type": "Microsoft.Cache/Redis/providers/diagnosticSettings",
-      "condition": "[greater(length(parameters('workspaceId')), 0)]",
-      "apiVersion": "2021-05-01-preview",
-      "name": "[concat(parameters('redisCacheName'),'/microsoft.insights/', parameters('settingName'))]",
-      "dependsOn": [
-        "[parameters('redisCacheName')]"
-      ],
-      "properties": {
-        "name": "[parameters('settingName')]",
-        "workspaceId": "[parameters('workspaceId')]",
-        "logs": [
-          {
-            "category": "ConnectedClientList",
-            "enabled": "[parameters('ConnectedClientListSetting')]",
-            "retentionPolicy": {
-              "enabled": "[parameters('retentionPolicyEnabled')]",
-              "days": "[parameters('retentionPolicyDays')]"
+        {
+            "type": "Microsoft.Cache/Redis/providers/diagnosticSettings",
+            "condition": "[greater(length(parameters('workspaceId')), 0)]",
+            "apiVersion": "2021-05-01-preview",
+            "name": "[concat(parameters('redisCacheName'),'/microsoft.insights/', parameters('settingName'))]",
+            "dependsOn": [
+                "[parameters('redisCacheName')]"
+             ],
+             "properties": {
+                "name": "[parameters('settingName')]",
+                "workspaceId": "[parameters('workspaceId')]",
+                "logs": [
+                    {
+                        "category": "ConnectedClientList",
+                        "enabled": "[parameters('ConnectedClientListSetting')]",
+                        "retentionPolicy": {
+                            "enabled": "[parameters('retentionPolicyEnabled')]",
+                            "days": "[parameters('retentionPolicyDays')]"
+                        }
+                    }
+                ],
+                "metrics": [
+                    {
+                        "category": "AllMetrics",
+                        "enabled": "[parameters('allMetricsSetting')]",
+                        "retentionPolicy": {
+                            "enabled": "[parameters('retentionPolicyEnabled')]",
+                            "days": "[parameters('retentionPolicyDays')]"
+                        }
+                    }
+                ]
             }
-          }
-        ],
-        "metrics": [
-          {
-            "category": "AllMetrics",
-            "enabled": "[parameters('allMetricsSetting')]",
-            "retentionPolicy": {
-              "enabled": "[parameters('retentionPolicyEnabled')]",
-              "days": "[parameters('retentionPolicyDays')]"
-            }
-          }
-        ]
-      }
+        }
+    ],
+    "outputs": {
+        "PrimaryKey": {
+            "type": "securestring",
+            "value": "[listKeys(resourceId('Microsoft.Cache/Redis', parameters('redisCacheName')),'2018-03-01').primaryKey]"
+        },
+        "SecondaryKey": {
+            "type": "securestring",
+            "value": "[listKeys(resourceId('Microsoft.Cache/Redis', parameters('redisCacheName')),'2018-03-01').secondaryKey]"
+        },
+        "PrimaryConnectionString": {
+            "type": "securestring",
+            "value": "[concat(parameters('redisCacheName'), '.redis.cache.windows.net:6380,password=', listKeys(resourceId('Microsoft.Cache/Redis', parameters('redisCacheName')),'2018-03-01').primaryKey, ',ssl=True,abortConnect=False')]"
+        },
+        "SecondaryConnectionString": {
+            "type": "securestring",
+            "value": "[concat(parameters('redisCacheName'), '.redis.cache.windows.net:6380,password=', listKeys(resourceId('Microsoft.Cache/Redis', parameters('redisCacheName')),'2018-03-01').secondaryKey, ',ssl=True,abortConnect=False')]"
+        }
     }
-  ],
-  "outputs": {
-    "PrimaryKey": {
-      "type": "securestring",
-      "value": "[listKeys(resourceId('Microsoft.Cache/Redis', parameters('redisCacheName')),'2018-03-01').primaryKey]"
-    },
-    "SecondaryKey": {
-      "type": "securestring",
-      "value": "[listKeys(resourceId('Microsoft.Cache/Redis', parameters('redisCacheName')),'2018-03-01').secondaryKey]"
-    },
-    "PrimaryConnectionString": {
-      "type": "securestring",
-      "value": "[concat(parameters('redisCacheName'), '.redis.cache.windows.net:6380,password=', listKeys(resourceId('Microsoft.Cache/Redis', parameters('redisCacheName')),'2018-03-01').primaryKey, ',ssl=True,abortConnect=False')]"
-    },
-    "SecondaryConnectionString": {
-      "type": "securestring",
-      "value": "[concat(parameters('redisCacheName'), '.redis.cache.windows.net:6380,password=', listKeys(resourceId('Microsoft.Cache/Redis', parameters('redisCacheName')),'2018-03-01').secondaryKey, ',ssl=True,abortConnect=False')]"
-    }
-  }
 }
