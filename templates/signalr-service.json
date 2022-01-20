@@ -58,6 +58,54 @@
         "metadata": {
           "description": "A comma-delimited list of allowed origins for CORS. Defaults to '*'"
         }
+      },
+      "EnableConnectivityLogs": {
+        "type": "string",
+        "defaultValue": "False"
+      },
+      "EnableMessagingLogs": {
+        "type": "string",
+        "defaultValue": "False"
+      },
+      "EnableLiveTrace": {
+        "type": "string",
+        "defaultValue": "False"
+      },
+      "settingName": {
+        "type": "String",
+        "defaultvalue": "AppConDiagSettings",
+        "metadata": {
+          "description": "The name of the diagnostic setting"
+        }
+      },
+      "workspaceId": {
+        "type": "String",
+        "defaultValue": "",
+        "metadata": {
+          "description": "ResourceID of the Log Analytics workspace in which resource logs should be saved."
+        }
+      },
+      "AllLogsSetting": {
+        "type": "bool",
+        "defaultvalue": false,
+        "metadata": {
+          "description": "All Logs diagnostic setting"
+        }
+      },
+      "allMetricsSetting": {
+        "type": "bool",
+        "defaultvalue": false,
+        "metadata": {
+          "description": "All Metrics diagnostic setting"
+        }
+      },
+      "retentionPolicyEnabled": {
+        "type": "bool",
+        "defaultValue": true
+      },
+      "retentionPolicyDays": {
+        "type": "string",
+        "defaultValue": "30"
       }
     },
     "variables": {
@@ -66,9 +114,9 @@
     "resources": [
         {
           "name": "[parameters('serviceName')]",
-          "apiVersion": "2018-10-01",
+          "apiVersion": "2021-10-01",
           "location": "[resourceGroup().location]",
-          "type": "Microsoft.SignalRService/SignalR",
+          "type": "Microsoft.SignalRService/signalR",
           "tags": {
               "Environment": "[parameters('environmentTag')]",
               "Parent Business": "[parameters('parentBusinessTag')]",
@@ -84,11 +132,61 @@
             "capacity": "[parameters('serviceCapacity')]"
           }, 
           "properties": {
+            "features": [
+                    {
+                        "flag": "EnableConnectivityLogs",
+                        "value": "[parameters('EnableConnectivityLogs')]",
+                        "properties": {}
+                    },
+                    {
+                        "flag": "EnableMessagingLogs",
+                        "value": "[parameters('EnableMessagingLogs')]",
+                        "properties": {}
+                    },
+                    {
+                        "flag": "EnableLiveTrace",
+                        "value": "[parameters('EnableLiveTrace')]",
+                        "properties": {}
+                    }
+                ],
             "cors": {
               "allowedOrigins": "[split(parameters('serviceAllowedOrigins'), ',')]"
             }
           }
-      }
+      },
+        {
+            "type": "Microsoft.SignalRService/signalR/providers/diagnosticSettings",
+            "condition": "[greater(length(parameters('workspaceId')), 0)]",
+            "apiVersion": "2021-05-01-preview",
+            "name": "[concat(parameters('serviceName'),'/microsoft.insights/', parameters('settingName'))]",
+            "dependsOn": [
+                "[parameters('serviceName')]"
+             ],
+             "properties": {
+                "name": "[parameters('settingName')]",
+                "workspaceId": "[parameters('workspaceId')]",
+                "logs": [
+                    {
+                        "category": "AllLogs",
+                        "enabled": "[parameters('AllLogsSetting')]",
+                        "retentionPolicy": {
+                            "enabled": "[parameters('retentionPolicyEnabled')]",
+                            "days": "[parameters('retentionPolicyDays')]"
+                        }
+                    }
+                ],
+                "metrics": [
+                    {
+                        "category": "AllMetrics",
+                        "enabled": "[parameters('allMetricsSetting')]",
+                        "retentionPolicy": {
+                            "enabled": "[parameters('retentionPolicyEnabled')]",
+                            "days": "[parameters('retentionPolicyDays')]"
+                        }
+                    }
+                ]
+            }
+        }
     ],
     "outputs": {}
 }

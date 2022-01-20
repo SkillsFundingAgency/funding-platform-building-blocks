@@ -53,7 +53,7 @@
             "defaultValue": {},
             "metadata": {
                "description": "An object containing redis configuration options. See https://docs.microsoft.com/en-us/azure/templates/microsoft.cache/2019-07-01/redis for more info"
-        }
+            }
         },
         "settingName": {
             "type": "String",
