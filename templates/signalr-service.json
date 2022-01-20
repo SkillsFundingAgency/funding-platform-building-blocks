@@ -102,7 +102,7 @@
     "resources": [
         {
           "name": "[parameters('serviceName')]",
-          "apiVersion": "2018-10-01",
+          "apiVersion": "2021-10-01",
           "location": "[resourceGroup().location]",
           "type": "Microsoft.SignalRService/SignalR",
           "tags": {
@@ -120,6 +120,23 @@
             "capacity": "[parameters('serviceCapacity')]"
           }, 
           "properties": {
+            "features": [
+                    {
+                        "flag": "EnableConnectivityLogs",
+                        "value": "False",
+                        "properties": {}
+                    },
+                    {
+                        "flag": "EnableMessagingLogs",
+                        "value": "False",
+                        "properties": {}
+                    },
+                    {
+                        "flag": "EnableLiveTrace",
+                        "value": "False",
+                        "properties": {}
+                    }
+                ],
             "cors": {
               "allowedOrigins": "[split(parameters('serviceAllowedOrigins'), ',')]"
             }
