@@ -130,7 +130,7 @@
                 "workspaceId": "[parameters('workspaceId')]",
                 "logs": [
                     {
-                        "category": "allLogs",
+                        "categorygroups": "allLogs",
                         "enabled": "[parameters('allLogsSetting')]",
                         "retentionPolicy": {
                             "enabled": "[parameters('retentionPolicyEnabled')]",
