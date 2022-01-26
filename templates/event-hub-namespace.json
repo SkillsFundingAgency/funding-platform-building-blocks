@@ -51,29 +51,85 @@
             "minValue": 0,
             "maxValue": 20,
             "metadata": {
-            "description": "Upper limit for Auto Inflate scaling"
+                "description": "Upper limit for Auto Inflate scaling"
             }
         },
         "settingName": {
             "type": "String",
             "defaultvalue": "AppConDiagSettings",
             "metadata": {
-            "description": "The name of the diagnostic setting"
-        }
+                "description": "The name of the diagnostic setting"
+            }
         },
         "workspaceId": {
             "type": "String",
             "defaultValue": "",
             "metadata": {
-            "description": "ResourceID of the Log Analytics workspace in which resource logs should be saved."
-        }
+                "description": "ResourceID of the Log Analytics workspace in which resource logs should be saved."
+            }
         },
         "ArchiveLogsSetting": {
             "type": "bool",
             "defaultvalue": false,
             "metadata": {
-                "description": "HttpRequest diagnostic setting"
-        }
+                "description": "ArchiveLogs diagnostic setting"
+            }
+        },
+        "OperationalLogsSetting": {
+            "type": "bool",
+            "defaultvalue": false,
+            "metadata": {
+                "description": "OperationalLogs diagnostic setting"
+            }
+        },
+        "AutoScaleLogsSetting": {
+            "type": "bool",
+            "defaultvalue": false,
+            "metadata": {
+                "description": "AutoScaleLogs diagnostic setting"
+            }
+        },
+        "KafkaCoordinatorLogsSetting": {
+            "type": "bool",
+            "defaultvalue": false,
+            "metadata": {
+                "description": "KafkaCoordinator diagnostic setting"
+            }
+        },
+        "KafkaUserErrorLogsSetting": {
+            "type": "bool",
+            "defaultvalue": false,
+            "metadata": {
+                "description": "KafkaUserError diagnostic setting"
+            }
+        },
+        "EventHubVNetConnectionEventSetting": {
+            "type": "bool",
+            "defaultvalue": false,
+            "metadata": {
+                "description": "EventHubVNetConnectionEvent diagnostic setting"
+            }
+        },
+        "CustomerManagedKeyUserLogsSetting": {
+            "type": "bool",
+            "defaultvalue": false,
+            "metadata": {
+                "description": "CustomerManagedKeyUser diagnostic setting"
+            }
+        },
+        "RuntimeAuditLogsSetting": {
+            "type": "bool",
+            "defaultvalue": false,
+            "metadata": {
+                "description": "RuntimeAudit diagnostic setting"
+            }
+        },
+        "ApplicationMetricsLogsSetting": {
+            "type": "bool",
+            "defaultvalue": false,
+            "metadata": {
+                "description": "ApplicationMetricsLogs diagnostic setting"
+            }
         },
         "allMetricsSetting": {
             "type": "bool",
@@ -132,6 +188,70 @@
                     {
                         "category": "ArchiveLogs",
                         "enabled": "[parameters('ArchiveLogsSetting')]",
+                        "retentionPolicy": {
+                            "enabled": "[parameters('retentionPolicyEnabled')]",
+                            "days": "[parameters('retentionPolicyDays')]"
+                        }
+                    },
+                    {
+                        "category": "OperationalLogs",
+                        "enabled": "[parameters('OperationalLogsSetting')]",
+                        "retentionPolicy": {
+                            "enabled": "[parameters('retentionPolicyEnabled')]",
+                            "days": "[parameters('retentionPolicyDays')]"
+                        }
+                    },
+                    {
+                        "category": "AutoScaleLogs",
+                        "enabled": "[parameters('AutoScaleLogsSetting')]",
+                        "retentionPolicy": {
+                            "enabled": "[parameters('retentionPolicyEnabled')]",
+                            "days": "[parameters('retentionPolicyDays')]"
+                        }
+                    },
+                    {
+                        "category": "KafkaCoordinatorLogs",
+                        "enabled": "[parameters('KafkaCoordinatorLogsSetting')]",
+                        "retentionPolicy": {
+                            "enabled": "[parameters('retentionPolicyEnabled')]",
+                            "days": "[parameters('retentionPolicyDays')]"
+                        }
+                    },
+                    {
+                        "category": "KafkaUserErrorLogs",
+                        "enabled": "[parameters('KafkaUserErrorLogsSetting')]",
+                        "retentionPolicy": {
+                            "enabled": "[parameters('retentionPolicyEnabled')]",
+                            "days": "[parameters('retentionPolicyDays')]"
+                        }
+                    },
+                    {
+                        "category": "EventHubVNetConnectionEvent",
+                        "enabled": "[parameters('EventHubVNetConnectionEventSetting')]",
+                        "retentionPolicy": {
+                            "enabled": "[parameters('retentionPolicyEnabled')]",
+                            "days": "[parameters('retentionPolicyDays')]"
+                        }
+                    },
+                    {
+                        "category": "CustomerManagedKeyUserLogs",
+                        "enabled": "[parameters('CustomerManagedKeyUserLogsSetting')]",
+                        "retentionPolicy": {
+                            "enabled": "[parameters('retentionPolicyEnabled')]",
+                            "days": "[parameters('retentionPolicyDays')]"
+                        }
+                    },
+                    {
+                        "category": "RuntimeAuditLogs",
+                        "enabled": "[parameters('RuntimeAuditLogsSetting')]",
+                        "retentionPolicy": {
+                            "enabled": "[parameters('retentionPolicyEnabled')]",
+                            "days": "[parameters('retentionPolicyDays')]"
+                        }
+                    },
+                    {
+                        "category": "ApplicationMetricsLogs",
+                        "enabled": "[parameters('ApplicationMetricsLogsSetting')]",
                         "retentionPolicy": {
                             "enabled": "[parameters('retentionPolicyEnabled')]",
                             "days": "[parameters('retentionPolicyDays')]"
