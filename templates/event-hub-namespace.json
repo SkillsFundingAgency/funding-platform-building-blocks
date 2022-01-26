@@ -68,7 +68,7 @@
             "description": "ResourceID of the Log Analytics workspace in which resource logs should be saved."
         }
         },
-        "allLogsSetting": {
+        "ArchiveLogsSetting": {
             "type": "bool",
             "defaultvalue": false,
             "metadata": {
@@ -130,8 +130,8 @@
                 "workspaceId": "[parameters('workspaceId')]",
                 "logs": [
                     {
-                        "categorygroups": "allLogs",
-                        "enabled": "[parameters('allLogsSetting')]",
+                        "category": "ArchiveLogs",
+                        "enabled": "[parameters('ArchiveLogsSetting')]",
                         "retentionPolicy": {
                             "enabled": "[parameters('retentionPolicyEnabled')]",
                             "days": "[parameters('retentionPolicyDays')]"
