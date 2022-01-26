@@ -16,6 +16,13 @@
                 "description": "Collect Operational Logs"
             }
         },
+        "enableVNetAndIPFilteringLogs": {
+            "type": "bool",
+            "defaultValue": false,
+            "metadata": {
+                "description": "Collect VNetAndIPFiltering Logs Logs"
+            }
+        },
         "ServiceBusName": {
             "type": "string"
         },
@@ -72,6 +79,14 @@
                     {
                         "category": "OperationalLogs",
                         "enabled": "[parameters('enableOperationalLogs')]",
+                        "retentionPolicy": {
+                            "enabled": "[parameters('enableRetentionPolicy')]",
+                            "days": "[parameters('setRetentionPolicyDays')]"
+                        }
+                    },
+                    {
+                        "category": "VNetAndIPFilteringLogs",
+                        "enabled": "[parameters('enableVNetAndIPFilteringLogs')]",
                         "retentionPolicy": {
                             "enabled": "[parameters('enableRetentionPolicy')]",
                             "days": "[parameters('setRetentionPolicyDays')]"
