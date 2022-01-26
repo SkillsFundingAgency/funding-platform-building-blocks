@@ -1,86 +1,275 @@
 {
-  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    "environmentTag": {
-        "type": "string"
+   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+   "contentVersion": "1.0.0.0",
+   "parameters": {
+        "environmentTag": {
+            "type": "string"
+        },
+        "parentBusinessTag": {
+            "type": "string"
+        },
+        "portfolioTag": {
+            "type": "string"
+        },
+        "productTag": {
+            "type": "string"
+        },
+        "serviceTag": {
+            "type": "string",
+            "defaultValue": "[parameters('productTag')]"
+        },
+        "serviceLineTag": {
+            "type": "string"
+        },
+        "serviceOfferingTag": {
+            "type": "string",
+            "defaultValue": "[parameters('productTag')]"
+        },
+        "eventHubNamespaceName": {
+            "type": "string"
+        },
+        "eventHubTier": {
+            "type": "string",
+            "allowedValues": [
+               "Basic",
+               "Standard"
+            ]
+        },
+        "eventHubCapacity": {
+            "type": "int",
+            "defaultValue": 1,
+            "minValue": 1,
+            "maxValue": 20
+        },
+        "isAutoInflateEnabled": {
+            "type": "bool",
+            "defaultValue": false
+        },
+        "maximumThroughputUnits": {
+            "type": "int",
+            "defaultValue": 0,
+            "minValue": 0,
+            "maxValue": 20,
+            "metadata": {
+                "description": "Upper limit for Auto Inflate scaling"
+            }
+        },
+        "settingName": {
+            "type": "String",
+            "defaultvalue": "AppConDiagSettings",
+            "metadata": {
+                "description": "The name of the diagnostic setting"
+            }
+        },
+        "workspaceId": {
+            "type": "String",
+            "defaultValue": "",
+            "metadata": {
+                "description": "ResourceID of the Log Analytics workspace in which resource logs should be saved."
+            }
+        },
+        "ArchiveLogsSetting": {
+            "type": "bool",
+            "defaultvalue": false,
+            "metadata": {
+                "description": "ArchiveLogs diagnostic setting"
+            }
+        },
+        "OperationalLogsSetting": {
+            "type": "bool",
+            "defaultvalue": false,
+            "metadata": {
+                "description": "OperationalLogs diagnostic setting"
+            }
+        },
+        "AutoScaleLogsSetting": {
+            "type": "bool",
+            "defaultvalue": false,
+            "metadata": {
+                "description": "AutoScaleLogs diagnostic setting"
+            }
+        },
+        "KafkaCoordinatorLogsSetting": {
+            "type": "bool",
+            "defaultvalue": false,
+            "metadata": {
+                "description": "KafkaCoordinator diagnostic setting"
+            }
+        },
+        "KafkaUserErrorLogsSetting": {
+            "type": "bool",
+            "defaultvalue": false,
+            "metadata": {
+                "description": "KafkaUserError diagnostic setting"
+            }
+        },
+        "EventHubVNetConnectionEventSetting": {
+            "type": "bool",
+            "defaultvalue": false,
+            "metadata": {
+                "description": "EventHubVNetConnectionEvent diagnostic setting"
+            }
+        },
+        "CustomerManagedKeyUserLogsSetting": {
+            "type": "bool",
+            "defaultvalue": false,
+            "metadata": {
+                "description": "CustomerManagedKeyUser diagnostic setting"
+            }
+        },
+        "RuntimeAuditLogsSetting": {
+            "type": "bool",
+            "defaultvalue": false,
+            "metadata": {
+                "description": "RuntimeAudit diagnostic setting"
+            }
+        },
+        "ApplicationMetricsLogsSetting": {
+            "type": "bool",
+            "defaultvalue": false,
+            "metadata": {
+                "description": "ApplicationMetricsLogs diagnostic setting"
+            }
+        },
+        "allMetricsSetting": {
+            "type": "bool",
+            "defaultvalue": false,
+            "metadata": {
+                "description": "All Metrics diagnostic setting"
+        }
+        },
+        "retentionPolicyEnabled": {
+            "type": "bool",
+            "defaultValue": true
+        },
+        "retentionPolicyDays": {
+            "type": "string",
+            "defaultValue": "30"
+        }
     },
-    "parentBusinessTag": {
-        "type": "string"
-    },
-    "portfolioTag": {
-        "type": "string"
-    },
-    "productTag": {
-        "type": "string"
-    },
-    "serviceTag": {
-        "type": "string",
-        "defaultValue": "[parameters('productTag')]"
-    },
-    "serviceLineTag": {
-        "type": "string"
-    },
-    "serviceOfferingTag": {
-        "type": "string",
-        "defaultValue": "[parameters('productTag')]"
-    },
-    "eventHubNamespaceName": {
-      "type": "string"
-    },
-    "eventHubTier": {
-      "type": "string",
-      "allowedValues": [
-        "Basic",
-        "Standard"
-      ]
-    },
-    "eventHubCapacity": {
-      "type": "int",
-      "defaultValue": 1,
-      "minValue": 1,
-      "maxValue": 20
-    },
-    "isAutoInflateEnabled": {
-      "type": "bool",
-      "defaultValue": false
-    },
-    "maximumThroughputUnits": {
-      "type": "int",
-      "defaultValue": 0,
-      "minValue": 0,
-      "maxValue": 20,
-      "metadata": {
-        "description": "Upper limit for Auto Inflate scaling"
-      }
-    }
-  },
-  "variables": {},
-  "resources": [
-    {
-      "name": "[parameters('eventHubNamespaceName')]",
-      "type": "Microsoft.EventHub/namespaces",
-      "apiVersion": "2017-04-01",
-      "location": "[resourceGroup().location]",
-      "tags": {
-          "Environment": "[parameters('environmentTag')]",
-          "Parent Business": "[parameters('parentBusinessTag')]",
-          "Portfolio": "[parameters('portfolioTag')]",
-          "Product": "[parameters('productTag')]",
-          "Service": "[parameters('serviceTag')]",
-          "Service Line": "[parameters('serviceLineTag')]",
-          "Service Offering": "[parameters('serviceOfferingTag')]"
-      },
-      "sku": {
-        "name": "[parameters('eventHubTier')]",
-        "tier": "[parameters('eventHubTier')]",
-        "capacity": "[parameters('eventHubCapacity')]"
-      },
-      "properties": {
-        "isAutoInflateEnabled": "[parameters('isAutoInflateEnabled')]",
-        "maximumThroughputUnits": "[parameters('maximumThroughputUnits')]"
-      }
-    }
-  ],
-  "outputs": {}
+    "variables": {},
+    "resources": [
+        {
+            "name": "[parameters('eventHubNamespaceName')]",
+            "type": "Microsoft.EventHub/namespaces",
+            "apiVersion": "2017-04-01",
+            "location": "[resourceGroup().location]",
+            "tags": {
+                "Environment": "[parameters('environmentTag')]",
+                "Parent Business": "[parameters('parentBusinessTag')]",
+                "Portfolio": "[parameters('portfolioTag')]",
+                "Product": "[parameters('productTag')]",
+                "Service": "[parameters('serviceTag')]",
+                "Service Line": "[parameters('serviceLineTag')]",
+                "Service Offering": "[parameters('serviceOfferingTag')]"
+            },
+            "sku": {
+                "name": "[parameters('eventHubTier')]",
+                "tier": "[parameters('eventHubTier')]",
+                "capacity": "[parameters('eventHubCapacity')]"
+            },
+            "properties": {
+                "isAutoInflateEnabled": "[parameters('isAutoInflateEnabled')]",
+                "maximumThroughputUnits": "[parameters('maximumThroughputUnits')]"
+                 }
+        },
+        {
+            "type": "Microsoft.EventHub/namespaces/providers/diagnosticSettings",
+            "condition": "[greater(length(parameters('workspaceId')), 0)]",
+            "apiVersion": "2021-05-01-preview",
+            "name": "[concat(parameters('eventHubNamespaceName'),'/microsoft.insights/', parameters('settingName'))]",
+            "dependsOn": [
+                "[parameters('eventHubNamespaceName')]"
+            ],
+            "properties": {
+                "name": "[parameters('settingName')]",
+                "workspaceId": "[parameters('workspaceId')]",
+                "logs": [
+                    {
+                        "category": "ArchiveLogs",
+                        "enabled": "[parameters('ArchiveLogsSetting')]",
+                        "retentionPolicy": {
+                            "enabled": "[parameters('retentionPolicyEnabled')]",
+                            "days": "[parameters('retentionPolicyDays')]"
+                        }
+                    },
+                    {
+                        "category": "OperationalLogs",
+                        "enabled": "[parameters('OperationalLogsSetting')]",
+                        "retentionPolicy": {
+                            "enabled": "[parameters('retentionPolicyEnabled')]",
+                            "days": "[parameters('retentionPolicyDays')]"
+                        }
+                    },
+                    {
+                        "category": "AutoScaleLogs",
+                        "enabled": "[parameters('AutoScaleLogsSetting')]",
+                        "retentionPolicy": {
+                            "enabled": "[parameters('retentionPolicyEnabled')]",
+                            "days": "[parameters('retentionPolicyDays')]"
+                        }
+                    },
+                    {
+                        "category": "KafkaCoordinatorLogs",
+                        "enabled": "[parameters('KafkaCoordinatorLogsSetting')]",
+                        "retentionPolicy": {
+                            "enabled": "[parameters('retentionPolicyEnabled')]",
+                            "days": "[parameters('retentionPolicyDays')]"
+                        }
+                    },
+                    {
+                        "category": "KafkaUserErrorLogs",
+                        "enabled": "[parameters('KafkaUserErrorLogsSetting')]",
+                        "retentionPolicy": {
+                            "enabled": "[parameters('retentionPolicyEnabled')]",
+                            "days": "[parameters('retentionPolicyDays')]"
+                        }
+                    },
+                    {
+                        "category": "EventHubVNetConnectionEvent",
+                        "enabled": "[parameters('EventHubVNetConnectionEventSetting')]",
+                        "retentionPolicy": {
+                            "enabled": "[parameters('retentionPolicyEnabled')]",
+                            "days": "[parameters('retentionPolicyDays')]"
+                        }
+                    },
+                    {
+                        "category": "CustomerManagedKeyUserLogs",
+                        "enabled": "[parameters('CustomerManagedKeyUserLogsSetting')]",
+                        "retentionPolicy": {
+                            "enabled": "[parameters('retentionPolicyEnabled')]",
+                            "days": "[parameters('retentionPolicyDays')]"
+                        }
+                    },
+                    {
+                        "category": "RuntimeAuditLogs",
+                        "enabled": "[parameters('RuntimeAuditLogsSetting')]",
+                        "retentionPolicy": {
+                            "enabled": "[parameters('retentionPolicyEnabled')]",
+                            "days": "[parameters('retentionPolicyDays')]"
+                        }
+                    },
+                    {
+                        "category": "ApplicationMetricsLogs",
+                        "enabled": "[parameters('ApplicationMetricsLogsSetting')]",
+                        "retentionPolicy": {
+                            "enabled": "[parameters('retentionPolicyEnabled')]",
+                            "days": "[parameters('retentionPolicyDays')]"
+                        }
+                    }
+                ],
+                "metrics": [
+                    {
+                        "category": "AllMetrics",
+                        "enabled": "[parameters('allMetricsSetting')]",
+                        "retentionPolicy": {
+                            "enabled": "[parameters('retentionPolicyEnabled')]",
+                            "days": "[parameters('retentionPolicyDays')]"
+                        }
+                    }
+                ]
+            }
+        }
+    ],
+    "outputs": {}
 }
