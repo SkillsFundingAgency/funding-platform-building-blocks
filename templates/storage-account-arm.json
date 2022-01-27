@@ -149,6 +149,13 @@
                 "description": "All Metrics diagnostic setting"
             }
         },
+        "BlobTransactionSetting": {
+            "type": "bool",
+            "defaultvalue": false,
+            "metadata": {
+                "description": "All Metrics diagnostic setting"
+            }
+        },
         "BlobStorageReadSetting": {
             "type": "bool",
             "defaultvalue": false,
@@ -322,7 +329,7 @@
         "metrics": [
           {
             "category": "Transaction",
-            "enabled": "[parameters('TransactionSetting')]",
+            "enabled": "[parameters('BlobTransactionSetting')]",
             "retentionPolicy": {
               "enabled": "[parameters('retentionPolicyEnabled')]",
               "days": "[parameters('retentionPolicyDays')]"
