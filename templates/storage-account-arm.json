@@ -153,21 +153,21 @@
             "type": "bool",
             "defaultvalue": false,
             "metadata": {
-                "description": "All Metrics diagnostic setting"
+                "description": "Blob Storage Read diagnostic setting"
             }
         },
         "BlobStorageWriteSetting": {
             "type": "bool",
             "defaultvalue": false,
             "metadata": {
-                "description": "All Metrics diagnostic setting"
+                "description": "Blob Storage Write diagnostic setting"
             }
         },
-        "'BlobStorageDeleteSetting'": {
+        "BlobStorageDeleteSetting": {
             "type": "bool",
             "defaultvalue": false,
             "metadata": {
-                "description": "All Metrics diagnostic setting"
+                "description": "Blob Storage Delete diagnostic setting"
             }
         },
         "retentionPolicyEnabled": {
