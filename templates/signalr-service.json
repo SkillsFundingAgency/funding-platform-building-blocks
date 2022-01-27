@@ -73,7 +73,7 @@
       },
       "settingName": {
         "type": "String",
-        "defaultvalue": "AppConDiagSettings",
+        "defaultvalue": "SignalRDiagSettings",
         "metadata": {
           "description": "The name of the diagnostic setting"
         }

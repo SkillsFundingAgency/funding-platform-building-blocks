@@ -127,7 +127,36 @@
       "metadata": {
         "description": "Allow or disable public access to all blobs and containers in the storage account. Individual containers access levels must also be set to Blob/Contaienr to be accessible anonymously. Defaults to true for backwards compatibility with existing projects."
       }
-    }
+    },
+        "settingName": {
+            "type": "String",
+            "defaultvalue": "StorageAccDiagSettings",
+            "metadata": {
+                "description": "The name of the diagnostic setting"
+            }
+        },
+        "workspaceId": {
+            "type": "String",
+            "defaultValue": "",
+            "metadata": {
+                "description": "ResourceID of the Log Analytics workspace in which resource logs should be saved."
+            }
+        },
+        "TransactionSetting": {
+            "type": "bool",
+            "defaultvalue": false,
+            "metadata": {
+                "description": "All Metrics diagnostic setting"
+            }
+        },
+        "retentionPolicyEnabled": {
+            "type": "bool",
+            "defaultValue": true
+        },
+        "retentionPolicyDays": {
+            "type": "string",
+            "defaultValue": "30"
+        }
   },
   "variables": {
     "networkAclObject": {
@@ -208,7 +237,30 @@
             "resources": []
           }
         ]
-    }
+    },
+    {
+            "type": "Microsoft.Storage/storageAccounts/providers/diagnosticSettings",
+            "condition": "[greater(length(parameters('workspaceId')), 0)]",
+            "apiVersion": "2021-05-01-preview",
+            "name": "[concat(parameters('storageAccountName'),'/microsoft.insights/', parameters('settingName'))]",
+            "dependsOn": [
+                "[parameters('storageAccountName')]"
+             ],
+             "properties": {
+                "name": "[parameters('settingName')]",
+                "workspaceId": "[parameters('workspaceId')]",
+                "metrics": [
+                    {
+                        "category": "Transaction",
+                        "enabled": "[parameters('TransactionSetting')]",
+                        "retentionPolicy": {
+                            "enabled": "[parameters('retentionPolicyEnabled')]",
+                            "days": "[parameters('retentionPolicyDays')]"
+                        }
+                    }
+                ]
+            }
+        }
   ],
   "outputs": {
     "storageKey": {
