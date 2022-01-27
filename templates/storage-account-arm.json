@@ -163,7 +163,7 @@
                 "description": "All Metrics diagnostic setting"
             }
         },
-        "BlobStroageDeleteSetting": {
+        "'BlobStorageDeleteSetting'": {
             "type": "bool",
             "defaultvalue": false,
             "metadata": {
@@ -311,8 +311,8 @@
             }
           },
           {
-            "category": "StroageDelete",
-            "enabled": "[parameters('BlobStroageDeleteSetting')]",
+            "category": "StorageDelete",
+            "enabled": "[parameters('BlobStorageDeleteSetting')]",
             "retentionPolicy": {
               "enabled": "[parameters('retentionPolicyEnabled')]",
               "days": "[parameters('retentionPolicyDays')]"
