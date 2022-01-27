@@ -149,6 +149,27 @@
                 "description": "All Metrics diagnostic setting"
             }
         },
+        "BlobStorageReadSetting": {
+            "type": "bool",
+            "defaultvalue": false,
+            "metadata": {
+                "description": "All Metrics diagnostic setting"
+            }
+        },
+        "BlobStorageWriteSetting": {
+            "type": "bool",
+            "defaultvalue": false,
+            "metadata": {
+                "description": "All Metrics diagnostic setting"
+            }
+        },
+        "BlobStroageDeleteSetting": {
+            "type": "bool",
+            "defaultvalue": false,
+            "metadata": {
+                "description": "All Metrics diagnostic setting"
+            }
+        },
         "retentionPolicyEnabled": {
             "type": "bool",
             "defaultValue": true
@@ -239,28 +260,77 @@
         ]
     },
     {
-            "type": "Microsoft.Storage/storageAccounts/providers/diagnosticSettings",
-            "condition": "[greater(length(parameters('workspaceId')), 0)]",
-            "apiVersion": "2021-05-01-preview",
-            "name": "[concat(parameters('storageAccountName'),'/microsoft.insights/', parameters('settingName'))]",
-            "dependsOn": [
-                "[parameters('storageAccountName')]"
-             ],
-             "properties": {
-                "name": "[parameters('settingName')]",
-                "workspaceId": "[parameters('workspaceId')]",
-                "metrics": [
-                    {
-                        "category": "Transaction",
-                        "enabled": "[parameters('TransactionSetting')]",
-                        "retentionPolicy": {
-                            "enabled": "[parameters('retentionPolicyEnabled')]",
-                            "days": "[parameters('retentionPolicyDays')]"
-                        }
-                    }
-                ]
+      "type": "Microsoft.Storage/storageAccounts/providers/diagnosticSettings",
+      "condition": "[greater(length(parameters('workspaceId')), 0)]",
+      "apiVersion": "2021-05-01-preview",
+      "name": "[concat(parameters('storageAccountName'),'/microsoft.insights/', parameters('settingName'))]",
+      "dependsOn": [
+          "[parameters('storageAccountName')]"
+      ],
+      "properties": {
+      "name": "[parameters('settingName')]",
+      "workspaceId": "[parameters('workspaceId')]",
+      "metrics": [
+            {
+              "category": "Transaction",
+              "enabled": "[parameters('TransactionSetting')]",
+              "retentionPolicy": {
+              "enabled": "[parameters('retentionPolicyEnabled')]",
+              "days": "[parameters('retentionPolicyDays')]"
             }
-        }
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.Storage/storageAccounts/blobServices/providers/diagnosticSettings",
+      "condition": "[greater(length(parameters('workspaceId')), 0)]",
+      "apiVersion": "2021-05-01-preview",
+      "name": "[concat(parameters('storageAccountName'),'/default/microsoft.insights/', parameters('settingName'))]",
+      "dependsOn": [
+          "[parameters('storageAccountName')]"
+      ],
+      "properties": {
+      "name": "[parameters('settingName')]",
+      "workspaceId": "[parameters('workspaceId')]",
+        "logs": [
+          {
+            "category": "StorageRead",
+            "enabled": "[parameters('BlobStorageReadSetting')]",
+            "retentionPolicy": {
+              "enabled": "[parameters('retentionPolicyEnabled')]",
+              "days": "[parameters('retentionPolicyDays')]"
+            }
+          },
+          {
+            "category": "StorageWrite",
+            "enabled": "[parameters('BlobStorageWriteSetting')]",
+            "retentionPolicy": {
+              "enabled": "[parameters('retentionPolicyEnabled')]",
+              "days": "[parameters('retentionPolicyDays')]"
+            }
+          },
+          {
+            "category": "StroageDelete",
+            "enabled": "[parameters('BlobStroageDeleteSetting')]",
+            "retentionPolicy": {
+              "enabled": "[parameters('retentionPolicyEnabled')]",
+              "days": "[parameters('retentionPolicyDays')]"
+            }
+          }
+        ],
+        "metrics": [
+          {
+            "category": "Transaction",
+            "enabled": "[parameters('TransactionSetting')]",
+            "retentionPolicy": {
+              "enabled": "[parameters('retentionPolicyEnabled')]",
+              "days": "[parameters('retentionPolicyDays')]"
+            }
+          }
+        ]
+      }
+    }
   ],
   "outputs": {
     "storageKey": {
