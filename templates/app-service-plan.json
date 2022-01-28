@@ -163,7 +163,7 @@
       }
     },
     {
-      "type": "Microsoft.KeyVault/vaults/providers/diagnosticSettings",
+      "type": "Microsoft.Web/serverfarms/providers/diagnosticSettings",
       "condition": "[greater(length(parameters('workspaceId')), 0)]",
       "apiVersion": "2017-05-01-preview",
       "name": "[concat(parameters('appServicePlanName'),'/microsoft.insights/', parameters('settingName'))]",
