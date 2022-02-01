@@ -1,5 +1,5 @@
 {
-  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
     "environmentTag": {
@@ -119,11 +119,18 @@
         "description": "ResourceID of the Log Analytics workspace in which resource logs should be saved."
       }
     },
+    "appServiceAntivirusScanAuditLogsSetting": {
+      "type": "bool",
+      "defaultvalue": false,
+      "metadata": {
+        "description": "App Service Anti-Virus Scan Audit diagnostic setting"
+      }
+    },
     "appServiceHTTPLogsSetting": {
       "type": "bool",
       "defaultvalue": false,
       "metadata": {
-        "description": "Audit Event diagnostic setting"
+        "description": "App Service HTTP Logs diagnostic setting"
       }
     },
     "appServiceConsoleLogsSetting": {
@@ -152,6 +159,20 @@
       "defaultvalue": false,
       "metadata": {
         "description": "App Service audit logs diagnostic setting"
+      }
+    },
+    "appServiceIPSecAuditLogsSetting": {
+      "type": "bool",
+      "defaultvalue": false,
+      "metadata": {
+        "description": "App Service IP Sec audit logs diagnostic setting"
+      }
+    },
+    "appServicePlatformLogsSetting": {
+      "type": "bool",
+      "defaultvalue": false,
+      "metadata": {
+        "description": "App Service platform logs diagnostic setting"
       }
     },
     "allMetricsSetting": {
@@ -320,6 +341,14 @@
         "workspaceId": "[parameters('workspaceId')]",
         "logs": [
           {
+            "category": "AppServiceAntivirusScanAuditLogs",
+            "enabled": "[parameters('AppServiceAntivirusScanAuditLogsSetting')]",
+            "retentionPolicy": {
+              "enabled": "[parameters('retentionPolicyEnabled')]",
+              "days": "[parameters('retentionPolicyDays')]"
+            }
+          },
+          {
             "category": "AppServiceHTTPLogs",
             "enabled": "[parameters('appServiceHTTPLogsSetting')]",
             "retentionPolicy": {
@@ -358,8 +387,23 @@
               "enabled": "[parameters('retentionPolicyEnabled')]",
               "days": "[parameters('retentionPolicyDays')]"
             }
+          },
+          {
+            "category": "AppServiceIPSecAuditLogs",
+            "enabled": "[parameters('AppServiceIPSecAuditLogsSetting')]",
+            "retentionPolicy": {
+              "enabled": "[parameters('retentionPolicyEnabled')]",
+              "days": "[parameters('retentionPolicyDays')]"
+            }
+          },
+          {
+            "category": "AppServicePlatformLogs",
+            "enabled": "[parameters('AppServicePlatformLogsSetting')]",
+            "retentionPolicy": {
+              "enabled": "[parameters('retentionPolicyEnabled')]",
+              "days": "[parameters('retentionPolicyDays')]"
+            }
           }
-
         ],
         "metrics": [
           {
