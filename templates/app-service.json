@@ -187,6 +187,13 @@
         "description": "App Service audit logs diagnostic setting"
       }
     },
+    "appServiceFileAuditLogsSetting": {
+      "type": "bool",
+      "defaultvalue": false,
+      "metadata": {
+        "description": "Unused in template, required for VYP backwards compatibility"
+      }
+    },
     "allMetricsSetting": {
       "type": "bool",
       "defaultvalue": false,
