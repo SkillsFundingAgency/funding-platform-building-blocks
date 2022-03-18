@@ -43,6 +43,12 @@
                 "description": "Name of the SQL Server Managed Instance and the resources that use them"
             }
         },
+        "vNetResourceGroup": {
+            "type": "string",
+            "metadata": {
+                "description": "Name of the Resource group for SQL MI VNet"
+            }
+        },
         "sqlServerAdminUserName": {
             "type": "string",
             "defaultValue": "",
@@ -164,7 +170,7 @@
               },
             "publicDataEndpointEnabled": "[parameters('publicDataEndpointEnabled')]",
             "storageSizeInGB": "[parameters('storageSizeGb')]",
-            "subnetId": "[resourceId(resourceGroup().name , 'Microsoft.Network/virtualNetworks/subnets', parameters('msqlVNet'), parameters('msqlSubnet'))]",
+            "subnetId": "[resourceId(parameters('vNetResourceGroup') , 'Microsoft.Network/virtualNetworks/subnets', parameters('msqlVNet'), parameters('msqlSubnet'))]",
             "vCores": "[parameters('vCores')]"
         }
       }
