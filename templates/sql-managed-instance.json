@@ -57,7 +57,8 @@
             }
         },
         "sqlServerAdminPassword": {
-            "type": "securestring",
+            "type": "securestring",            
+            "defaultValue": "",
             "metadata": {
                 "description": "The Azure SQL Server Administrator (SA) password."
             }
@@ -158,8 +159,8 @@
             "name": "[parameters('skuName')]"
         },
         "properties": {
-            "administratorLogin": "[parameters('sqlServerAdminUserName')]",
-            "administratorLoginPassword": "[parameters('sqlServerAdminPassword')]",
+            "administratorLogin": "[if(parameters('azureADOnlyAuthentication'), json('null'), parameters('sqlServerAdminUserName'))]",
+            "administratorLoginPassword": "[if(parameters('azureADOnlyAuthentication'), json('null'), parameters('sqlServerAdminPassword'))]",
             "administrators": {
               "administratorType": "ActiveDirectory",
               "azureADOnlyAuthentication": "[parameters('azureADOnlyAuthentication')]",
