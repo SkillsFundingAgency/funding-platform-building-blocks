@@ -53,7 +53,7 @@
             "type": "string",
             "defaultValue": "",
             "metadata": {
-                "description": "The Azure SQL Server Administrator (SA) username. A generated name will be used if not supplied."
+                "description": "The Azure SQL Server Administrator (SA) username."
             }
         },
         "sqlServerAdminPassword": {
@@ -159,8 +159,8 @@
             "name": "[parameters('skuName')]"
         },
         "properties": {
-            "administratorLogin": "[if(parameters('azureADOnlyAuthentication'), json('null'), parameters('sqlServerAdminUserName'))]",
-            "administratorLoginPassword": "[if(parameters('azureADOnlyAuthentication'), json('null'), parameters('sqlServerAdminPassword'))]",
+            "administratorLogin": "[parameters('sqlServerAdminUserName')]",
+            "administratorLoginPassword": "[parameters('sqlServerAdminPassword')]",
             "administrators": {
               "administratorType": "ActiveDirectory",
               "azureADOnlyAuthentication": "[parameters('azureADOnlyAuthentication')]",
