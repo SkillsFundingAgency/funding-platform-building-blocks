@@ -108,7 +108,7 @@
         },
         "identityType": {
             "type": "string",
-            "defaultValue": "None",
+            "defaultValue": "SystemAssigned",
             "allowedValues": [
                 "None",
                 "SystemAssigned",
