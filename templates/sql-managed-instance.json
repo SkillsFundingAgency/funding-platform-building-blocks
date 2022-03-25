@@ -43,15 +43,22 @@
                 "description": "Name of the SQL Server Managed Instance and the resources that use them"
             }
         },
+        "vNetResourceGroup": {
+            "type": "string",
+            "metadata": {
+                "description": "Name of the Resource group for SQL MI VNet"
+            }
+        },
         "sqlServerAdminUserName": {
             "type": "string",
             "defaultValue": "",
             "metadata": {
-                "description": "The Azure SQL Server Administrator (SA) username. A generated name will be used if not supplied."
+                "description": "The Azure SQL Server Administrator (SA) username."
             }
         },
         "sqlServerAdminPassword": {
-            "type": "securestring",
+            "type": "securestring",            
+            "defaultValue": "",
             "metadata": {
                 "description": "The Azure SQL Server Administrator (SA) password."
             }
@@ -164,7 +171,7 @@
               },
             "publicDataEndpointEnabled": "[parameters('publicDataEndpointEnabled')]",
             "storageSizeInGB": "[parameters('storageSizeGb')]",
-            "subnetId": "[resourceId(resourceGroup().name , 'Microsoft.Network/virtualNetworks/subnets', parameters('msqlVNet'), parameters('msqlSubnet'))]",
+            "subnetId": "[resourceId(parameters('vNetResourceGroup') , 'Microsoft.Network/virtualNetworks/subnets', parameters('msqlVNet'), parameters('msqlSubnet'))]",
             "vCores": "[parameters('vCores')]"
         }
       }
