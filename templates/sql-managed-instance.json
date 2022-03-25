@@ -106,6 +106,19 @@
                 "description": "Managed instance SKU. If SKU is not set, skuEdition and hardwareFamily values have to be populated."
             }
         },
+        "identityType": {
+            "type": "string",
+            "defaultValue": "SystemAssigned",
+            "allowedValues": [
+                "None",
+                "SystemAssigned",
+                "SystemAssigned,UserAssigned",
+                "UserAssigned"
+            ],
+            "metadata": {
+                "description": "Managed instance SKU. If SKU is not set, skuEdition and hardwareFamily values have to be populated."
+            }
+        },
         "vCores": {
             "type": "int",
             "defaultValue": 8,
@@ -157,6 +170,9 @@
         },
         "sku": {
             "name": "[parameters('skuName')]"
+        },
+        "identity": {
+             "type": "[parameters('identitytype')]"
         },
         "properties": {
             "administratorLogin": "[parameters('sqlServerAdminUserName')]",
