@@ -41,7 +41,7 @@
     "variables": {},
     "resources": [
       {
-        "name": "[concat(parameters('msqlServerName'), parameters('msqlDatabaseName'))]",
+        "name": "[concat(parameters('msqlServerName'), '/', parameters('msqlDatabaseName'))]",
         "type": "Microsoft.Sql/managedInstances/databases",
         "apiVersion": "2021-08-01-preview",
         "location": "[resourceGroup().location]",
