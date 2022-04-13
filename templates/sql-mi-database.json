@@ -1,0 +1,64 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "environmentTag": {
+            "type": "string"
+        },
+        "parentBusinessTag": {
+            "type": "string"
+        },
+        "portfolioTag": {
+            "type": "string"
+        },
+        "productTag": {
+            "type": "string"
+        },
+        "serviceTag": {
+            "type": "string",
+            "defaultValue": "[parameters('productTag')]"
+        },
+        "serviceLineTag": {
+            "type": "string"
+        },
+        "serviceOfferingTag": {
+            "type": "string",
+            "defaultValue": "[parameters('productTag')]"
+        },
+        "msqlServerName": {
+            "type": "string",
+            "metadata": {
+                "description": "Name of the SQL Server Managed Instance"
+            }
+        },
+        "msqlDatabaseName": {
+            "type": "string",
+            "metadata": {
+                "description": "Name of the SQL Server Managed Instance"
+            }
+        }
+    },
+    "variables": {},
+    "resources": [
+      {
+        "name": "[concat(parameters('msqlServerName'), parameters('msqlDatabaseName'))]",
+        "type": "Microsoft.Sql/managedInstances/databases",
+        "apiVersion": "2021-08-01-preview",
+        "location": "[resourceGroup().location]",
+        "tags": {
+            "Environment": "[parameters('environmentTag')]",
+            "Parent Business": "[parameters('parentBusinessTag')]",
+            "Portfolio": "[parameters('portfolioTag')]",
+            "Product": "[parameters('productTag')]",
+            "Service": "[parameters('serviceTag')]",
+            "Service Line": "[parameters('serviceLineTag')]",
+            "Service Offering": "[parameters('serviceOfferingTag')]"
+        },
+        "properties": {
+            "catalogCollation": "DATABASE_DEFAULT",
+            "createMode": "Default"
+        }
+      }
+    ],
+    "outputs": {}
+}
