@@ -65,11 +65,5 @@
                 }
             }
         }
-    ],
-    "outputs": {
-        "workspaceId": {
-            "type": "string",
-            "value": "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('logAnalyticsName'))]"
-        }
-    }
+    ]
 }
