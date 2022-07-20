@@ -31,7 +31,7 @@
         "description": "Name of the application insights resource"
       }
     },
-    "logAnalyticsName": {
+    "workspaceId": {
       "type": "string",
       "metadata": {
         "description": "The workspace id of a log analytics account to attach to"
@@ -59,7 +59,7 @@
         "Application_Type": "web",
         "Flow_Type": "Bluefield",
         "Request_Source": "Custom",
-        "WorkspaceResourceId": "[resourceId('microsoft.operationalinsights/workspaces', parameters('logAnalyticsName'))]"
+        "WorkspaceResourceId": "[parameters('workspaceId')]"
       }
     }
   ],
