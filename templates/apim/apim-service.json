@@ -2,206 +2,259 @@
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-      "apimName": {
-        "type": "string"
-      },
-      "apimInitialDeploy": {
-        "type": "bool"
-      },
-      "publisherEmail": {
-        "type": "string",
-        "minLength": 1,
-        "metadata": {
-          "description": "The email address of the owner of the service"
+        "environmentTag": {
+            "type": "string"
+        },
+        "parentBusinessTag": {
+            "type": "string"
+        },
+        "portfolioTag": {
+            "type": "string"
+        },
+        "productTag": {
+            "type": "string"
+        },
+        "serviceTag": {
+            "type": "string",
+            "defaultValue": "[parameters('productTag')]"
+        },
+        "serviceLineTag": {
+            "type": "string"
+        },
+        "serviceOfferingTag": {
+            "type": "string",
+            "defaultValue": "[parameters('productTag')]"
+        },
+        "apimName": {
+            "type": "string"
+        },
+        "apimInitialDeploy": {
+            "type": "bool"
+        },
+        "publisherEmail": {
+            "type": "string",
+            "minLength": 1,
+            "metadata": {
+                "description": "The email address of the owner of the service"
+            }
+        },
+        "publisherName": {
+            "type": "string",
+            "minLength": 1,
+            "metadata": {
+                "description": "The name of the owner of the service"
+            }
+        },
+        "sku": {
+            "type": "string",
+            "allowedValues": [
+                "Consumption",
+                "Developer",
+                "Basic",
+                "Standard",
+                "Premium"
+            ],
+            "defaultValue": "Developer",
+            "metadata": {
+                "description": "The pricing tier of this API Management service"
+            }
+        },
+        "skuCount": {
+            "type": "string",
+            "allowedValues": [
+                "1",
+                "2"
+            ],
+            "defaultValue": "1",
+            "metadata": {
+                "description": "The instance size of this API Management service."
+            }
+        },
+        "virtualNetworkType": {
+            "type": "string",
+            "allowedValues": [
+                "None",
+                "Internal",
+                "External"
+            ],
+            "defaultValue": "None"
+        },
+        "virtualNetworkResourceGroup": {
+            "type": "string",
+            "defaultValue": ""
+        },
+        "virtualNetworkName": {
+            "type": "string",
+            "defaultValue": ""
+        },
+        "subnetName": {
+            "type": "string",
+            "defaultValue": ""
+        },
+        "keyVaultName": {
+            "type": "string",
+            "defaultValue": ""
+        },
+        "keyVaultResourceGroup": {
+            "type": "string",
+            "defaultValue": ""
+        },
+        "portalHostname": {
+            "type": "string",
+            "defaultValue": ""
+        },
+        "portalKeyVaultCertificateName": {
+            "type": "string",
+            "defaultValue": ""
+        },
+        "gatewayHostname": {
+            "type": "string",
+            "defaultValue": ""
+        },
+        "gatewayKeyVaultCertificateName": {
+            "type": "string",
+            "defaultValue": ""
+        },
+        "managementHostname": {
+            "type": "string",
+            "defaultValue": ""
+        },
+        "managementKeyVaultCertificateName": {
+            "type": "string",
+            "defaultValue": ""
+        },
+        "tenantId": {
+            "type": "string"
+        },
+        "apimAppRegistrationClientId": {
+            "type": "string"
+        },
+        "apimAppRegistrationClientSecret": {
+            "type": "securestring"
         }
-      },
-      "publisherName": {
-        "type": "string",
-        "minLength": 1,
-        "metadata": {
-          "description": "The name of the owner of the service"
-        }
-      },
-      "sku": {
-        "type": "string",
-        "allowedValues": [
-          "Consumption",
-          "Developer",
-          "Basic",
-          "Standard",
-          "Premium"
-        ],
-        "defaultValue": "Developer",
-        "metadata": {
-          "description": "The pricing tier of this API Management service"
-        }
-      },
-      "skuCount": {
-        "type": "string",
-        "allowedValues": [
-          "1",
-          "2"
-        ],
-        "defaultValue": "1",
-        "metadata": {
-          "description": "The instance size of this API Management service."
-        }
-      },
-      "virtualNetworkType": {
-        "type": "string",
-        "allowedValues": [
-          "None",
-          "Internal",
-          "External"
-        ],
-        "defaultValue": "None"
-      },
-      "virtualNetworkResourceGroup": {
-        "type": "string",
-        "defaultValue": ""
-      },
-      "virtualNetworkName": {
-        "type": "string",
-        "defaultValue": ""
-      },
-      "subnetName": {
-        "type": "string",
-        "defaultValue": ""
-      },
-      "keyVaultName": {
-        "type": "string",
-        "defaultValue": ""
-      },
-      "keyVaultResourceGroup": {
-        "type": "string",
-        "defaultValue": ""
-      },
-      "portalHostname": {
-        "type": "string",
-        "defaultValue": ""
-      },
-      "portalKeyVaultCertificateName": {
-        "type": "string",
-        "defaultValue": ""
-      },
-      "gatewayHostname": {
-        "type": "string",
-        "defaultValue": ""
-      },
-      "gatewayKeyVaultCertificateName": {
-        "type": "string",
-        "defaultValue": ""
-      },
-      "managementHostname": {
-        "type": "string",
-        "defaultValue": ""
-      },
-      "managementKeyVaultCertificateName": {
-        "type": "string",
-        "defaultValue": ""
-      },
-      "tenantId": {
-        "type": "string"
-      },
-      "apimAppRegistrationClientId": {
-        "type": "string"
-      },
-      "apimAppRegistrationClientSecret": {
-        "type": "securestring"
-      }
     },
     "variables": {
-      "deploymentUrlBase": "https://raw.githubusercontent.com/SkillsFundingAgency/das-platform-building-blocks/master/templates/",
-      "deployCustomHostnames": "[and(greater(length(parameters('portalKeyVaultCertificateName')), 0), greater(length(parameters('gatewayKeyVaultCertificateName')), 0))]",
-      "deployToNetwork": "[and(greater(length(parameters('virtualNetworkName')), 0), not(equals(parameters('virtualNetworkType'), 'None')))]",
-      "subnetResourceId": "[concat(resourceId(parameters('virtualNetworkResourceGroup'), 'Microsoft.Network/virtualNetworks', parameters('virtualNetworkName')), '/subnets/', parameters('subnetName'))]",
-      "vnetConfiguration": {
-        "subnetResourceId": "[variables('subnetResourceId')]"
-      }
+        "deploymentUrlBase": "https://raw.githubusercontent.com/SkillsFundingAgency/das-platform-building-blocks/master/templates/",
+        "deployCustomHostnames": "[and(greater(length(parameters('portalKeyVaultCertificateName')), 0), greater(length(parameters('gatewayKeyVaultCertificateName')), 0))]",
+        "deployToNetwork": "[and(greater(length(parameters('virtualNetworkName')), 0), not(equals(parameters('virtualNetworkType'), 'None')))]",
+        "subnetResourceId": "[concat(resourceId(parameters('virtualNetworkResourceGroup'), 'Microsoft.Network/virtualNetworks', parameters('virtualNetworkName')), '/subnets/', parameters('subnetName'))]",
+        "vnetConfiguration": {
+            "subnetResourceId": "[variables('subnetResourceId')]"
+        }
     },
     "resources": [
-      {
-        "apiVersion": "2019-12-01",
-        "name": "[parameters('apimName')]",
-        "condition": "[parameters('apimInitialDeploy')]",
-        "type": "Microsoft.ApiManagement/service",
-        "location": "[resourceGroup().location]",
-        "sku": {
-          "name": "[parameters('sku')]",
-          "capacity": "[parameters('skuCount')]"
-        },
-        "properties": {
-          "publisherEmail": "[parameters('publisherEmail')]",
-          "publisherName": "[parameters('publisherName')]",
-          "virtualNetworkConfiguration": "[if(variables('deployToNetwork'), variables('vnetConfiguration'), json('null'))]",
-          "virtualNetworkType": "[parameters('virtualNetworkType')]"
-        },
-        "identity": {
-          "type": "SystemAssigned"
-        }
-      },
-      {
-        "apiVersion": "2017-05-10",
-        "name": "[concat(parameters('apimName'),'-with-hostname-configurations')]",
-        "type": "Microsoft.Resources/deployments",
-        "condition": "[and(variables('deployCustomHostnames'), not(parameters('apimInitialDeploy')))]",
-        "properties": {
-          "mode": "Incremental",
-          "templateLink": {
-            "uri": "[concat(variables('deploymentUrlBase'),'apim/apim-service-with-hostnames.json')]",
-            "contentVersion": "1.0.0.0"
-          },
-          "parameters": {
-            "apimName": {
-              "value": "[parameters('apimName')]"
-            },
-            "publisherEmail": {
-              "value": "[parameters('publisherEmail')]"
-            },
-            "publisherName": {
-              "value": "[parameters('publisherName')]"
+        {
+            "apiVersion": "2019-12-01",
+            "name": "[parameters('apimName')]",
+            "condition": "[parameters('apimInitialDeploy')]",
+            "type": "Microsoft.ApiManagement/service",
+            "location": "[resourceGroup().location]",
+            "tags": {
+                "Environment": "[parameters('environmentTag')]",
+                "Parent Business": "[parameters('parentBusinessTag')]",
+                "Portfolio": "[parameters('portfolioTag')]",
+                "Product": "[parameters('productTag')]",
+                "Service": "[parameters('serviceTag')]",
+                "Service Line": "[parameters('serviceLineTag')]",
+                "Service Offering": "[parameters('serviceOfferingTag')]"
             },
             "sku": {
-              "value": "[parameters('sku')]"
+                "name": "[parameters('sku')]",
+                "capacity": "[parameters('skuCount')]"
             },
-            "skuCount": {
-              "value": "[parameters('skuCount')]"
+            "properties": {
+                "publisherEmail": "[parameters('publisherEmail')]",
+                "publisherName": "[parameters('publisherName')]",
+                "virtualNetworkConfiguration": "[if(variables('deployToNetwork'), variables('vnetConfiguration'), json('null'))]",
+                "virtualNetworkType": "[parameters('virtualNetworkType')]"
             },
-            "portalHostname": {
-              "value": "[parameters('portalHostname')]"
-            },
-            "portalKeyVaultSecretId": {
-              "value": "[if(variables('deployCustomHostnames'), reference(resourceId(parameters('keyVaultResourceGroup'), 'Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), parameters('portalKeyVaultCertificateName')), '2018-02-14').secretUri, json('null'))]"
-            },
-            "gatewayHostname": {
-              "value": "[parameters('gatewayHostname')]"
-            },
-            "gatewayKeyVaultSecretId": {
-              "value": "[if(variables('deployCustomHostnames'), reference(resourceId(parameters('keyVaultResourceGroup'), 'Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), parameters('gatewayKeyVaultCertificateName')), '2018-02-14').secretUri, json('null'))]"
-            },
-            "managementHostname": {
-              "value": "[parameters('managementHostname')]"
-            },
-            "managementKeyVaultSecretId": {
-              "value": "[if(variables('deployCustomHostnames'), reference(resourceId(parameters('keyVaultResourceGroup'), 'Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), parameters('managementKeyVaultCertificateName')), '2018-02-14').secretUri, json('null'))]"
-            },
-            "virtualNetworkType": {
-              "value": "[parameters('virtualNetworkType')]"
-            },
-            "subnetResourceId": {
-              "value": "[variables('subnetResourceId')]"
-            },
-            "tenantId": {
-              "value": "[parameters('tenantId')]"
-            },
-            "apimAppRegistrationClientId": {
-              "value": "[parameters('apimAppRegistrationClientId')]"
-            },
-            "apimAppRegistrationClientSecret": {
-              "value": "[parameters('apimAppRegistrationClientSecret')]"
+            "identity": {
+                "type": "SystemAssigned"
             }
-          }
+        },
+        {
+            "apiVersion": "2017-05-10",
+            "name": "[concat(parameters('apimName'),'-with-hostname-configurations')]",
+            "type": "Microsoft.Resources/deployments",
+            "condition": "[and(variables('deployCustomHostnames'), not(parameters('apimInitialDeploy')))]",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(variables('deploymentUrlBase'),'apim/apim-service-with-hostnames.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "environmentTag": {
+                        "value": "[parameters('environmentTag')]"
+                    },
+                    "parentBusinessTag": {
+                        "value": "[parameters('parentBusinessTag')]"
+                    },
+                    "portfolioTag": {
+                        "value": "[parameters('portfolioTag')]"
+                    },
+                    "productTag": {
+                        "value": "[parameters('productTag')]"
+                    },
+                    "serviceTag": {
+                        "value": "[parameters('serviceTag')]"
+                    },
+                    "serviceLineTag": {
+                        "value": "[parameters('serviceLineTag')]"
+                    },
+                    "serviceOfferingTag": {
+                        "value": "[parameters('serviceOfferingTag')]"
+                    },
+                    "apimName": {
+                        "value": "[parameters('apimName')]"
+                    },
+                    "publisherEmail": {
+                        "value": "[parameters('publisherEmail')]"
+                    },
+                    "publisherName": {
+                        "value": "[parameters('publisherName')]"
+                    },
+                    "sku": {
+                        "value": "[parameters('sku')]"
+                    },
+                    "skuCount": {
+                        "value": "[parameters('skuCount')]"
+                    },
+                    "portalHostname": {
+                        "value": "[parameters('portalHostname')]"
+                    },
+                    "portalKeyVaultSecretId": {
+                        "value": "[if(variables('deployCustomHostnames'), reference(resourceId(parameters('keyVaultResourceGroup'), 'Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), parameters('portalKeyVaultCertificateName')), '2018-02-14').secretUri, json('null'))]"
+                    },
+                    "gatewayHostname": {
+                        "value": "[parameters('gatewayHostname')]"
+                    },
+                    "gatewayKeyVaultSecretId": {
+                        "value": "[if(variables('deployCustomHostnames'), reference(resourceId(parameters('keyVaultResourceGroup'), 'Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), parameters('gatewayKeyVaultCertificateName')), '2018-02-14').secretUri, json('null'))]"
+                    },
+                    "managementHostname": {
+                        "value": "[parameters('managementHostname')]"
+                    },
+                    "managementKeyVaultSecretId": {
+                        "value": "[if(variables('deployCustomHostnames'), reference(resourceId(parameters('keyVaultResourceGroup'), 'Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), parameters('managementKeyVaultCertificateName')), '2018-02-14').secretUri, json('null'))]"
+                    },
+                    "virtualNetworkType": {
+                        "value": "[parameters('virtualNetworkType')]"
+                    },
+                    "subnetResourceId": {
+                        "value": "[variables('subnetResourceId')]"
+                    },
+                    "tenantId": {
+                        "value": "[parameters('tenantId')]"
+                    },
+                    "apimAppRegistrationClientId": {
+                        "value": "[parameters('apimAppRegistrationClientId')]"
+                    },
+                    "apimAppRegistrationClientSecret": {
+                        "value": "[parameters('apimAppRegistrationClientSecret')]"
+                   }
+                }
+            }
         }
-      }
     ]
-  }
+}
