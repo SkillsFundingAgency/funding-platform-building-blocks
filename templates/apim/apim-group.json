@@ -1,0 +1,40 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+      "apimName": {
+        "type": "string"
+      },
+      "tenantId": {
+        "type": "string",
+        "defaultValue": ""
+      },
+      "aadGroupObjectId": {
+        "type": "string",
+        "defaultValue": ""
+      },
+      "groupDisplayName": {
+        "type": "string"
+      },
+      "groupDescription": {
+        "type": "string"
+      }
+    },
+    "variables": {
+      "isExternal": "[and(greater(length(parameters('tenantId')) ,0), greater(length(parameters('aadGroupObjectId')), 0))]"
+    },
+    "resources": [
+      {
+        "name": "[concat(parameters('apimName'), '/', if(variables('isExternal'), parameters('aadGroupObjectId'), parameters('groupDisplayName')))]",
+        "type": "Microsoft.ApiManagement/service/groups",
+        "apiVersion": "2019-12-01",
+        "properties": {
+          "displayName": "[parameters('groupDisplayName')]",
+          "description": "[parameters('groupDescription')]",
+          "type": "[if(variables('isExternal'), 'external', 'custom')]",
+          "externalId": "[if(variables('isExternal'), concat('aad://', parameters('tenantId'), '/groups/', parameters('aadGroupObjectId')), json('null'))]"
+        }
+      }
+    ],
+    "outputs": {}
+  }
