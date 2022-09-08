@@ -60,6 +60,10 @@
       "type": "string",
       "defaultValue": ""
     },
+    "serverlessMaxCapacity": {
+      "type": "string",
+      "defaultValue": ""
+    },
     "serverlessAutoPauseDelay": {
       "type": "string",
       "defaultValue": "-1"
@@ -109,16 +113,27 @@
   },
   "variables": {
     "deployToElasticPool": "[greater(length(parameters('elasticPoolName')), 0)]",
+    "deployProvisionedVCore": "[equals(parameters('databaseTier'), 'GeneralPurpose')]",
     "databaseSettings": {
+      "vCoreSku": {
+        "sku": {
+          "name": "[parameters('databaseSkuName')]",
+          "tier": "[parameters('databaseTier')]",
+          "capacity": "[parameters('serverlessMaxCapacity')]"
+        },
+        "properties": {
+          "maxSizeBytes": "[parameters('databaseSizeBytes')]",
+          "minCapacity": "[parameters('serverlessMinCapacity')]",
+          "autoPauseDelay": "[parameters('serverlessAutoPauseDelay')]"
+        }
+      },
       "nonElasticPool": {
         "sku": {
           "name": "[parameters('databaseSkuName')]",
           "tier": "[parameters('databaseTier')]"
         },
         "properties": {
-          "maxSizeBytes": "[parameters('databaseSizeBytes')]",
-          "minCapacity": "[parameters('serverlessMinCapacity')]",
-          "autoPauseDelay": "[parameters('serverlessAutoPauseDelay')]"
+          "maxSizeBytes": "[parameters('databaseSizeBytes')]"
         }
       },
       "elasticPool": {
@@ -148,7 +163,7 @@
       "type": "Microsoft.Sql/servers/databases",
       "apiVersion": "2017-10-01-preview",
       "location": "[resourceGroup().location]",
-      "sku": "[if(variables('deployToElasticPool'), variables('databaseSettings').elasticPool.sku, variables('databaseSettings').nonElasticPool.sku)]",
+      "sku": "[if(variables('deployToElasticPool'), variables('databaseSettings').elasticPool.sku, if(variables('deployProvisionedVCore'), variables('databaseSettings').vCoreSku.sku, variables('databaseSettings').nonElasticPool.sku))]",
       "tags": {
           "Environment": "[parameters('environmentTag')]",
           "Parent Business": "[parameters('parentBusinessTag')]",
@@ -158,7 +173,7 @@
           "Service Line": "[parameters('serviceLineTag')]",
           "Service Offering": "[parameters('serviceOfferingTag')]"
       },
-      "properties": "[if(variables('deployToElasticPool'), variables('databaseSettings').elasticPool.properties, variables('databaseSettings').nonElasticPool.properties)]",
+      "properties": "[if(variables('deployToElasticPool'), variables('databaseSettings').elasticPool.properties, if(variables('deployProvisionedVCore'), variables('databaseSettings').vCoreSku.properties, variables('databaseSettings').nonElasticPool.properties))]",
       "resources": [
         {
           "name": "current",
