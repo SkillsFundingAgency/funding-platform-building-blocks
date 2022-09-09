@@ -1,5 +1,5 @@
 {
-  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
     "environmentTag": {
@@ -76,6 +76,13 @@
         "description": "A list of subnet resource ids."
       }
     },
+    "allowedIpAddressesList": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "A list of allowed IPs"
+      }
+    },
     "enableCors": {
       "type": "string",
       "defaultValue": "False",
@@ -128,67 +135,66 @@
         "description": "Allow or disable public access to all blobs and containers in the storage account. Individual containers access levels must also be set to Blob/Contaienr to be accessible anonymously. Defaults to true for backwards compatibility with existing projects."
       }
     },
-        "settingName": {
-            "type": "String",
-            "defaultvalue": "StorageAccDiagSettings",
-            "metadata": {
-                "description": "The name of the diagnostic setting"
-            }
-        },
-        "workspaceId": {
-            "type": "String",
-            "defaultValue": "",
-            "metadata": {
-                "description": "ResourceID of the Log Analytics workspace in which resource logs should be saved."
-            }
-        },
-        "TransactionSetting": {
-            "type": "bool",
-            "defaultvalue": false,
-            "metadata": {
-                "description": "All Metrics diagnostic setting"
-            }
-        },
-        "BlobTransactionSetting": {
-            "type": "bool",
-            "defaultvalue": false,
-            "metadata": {
-                "description": "All Metrics diagnostic setting"
-            }
-        },
-        "BlobStorageReadSetting": {
-            "type": "bool",
-            "defaultvalue": false,
-            "metadata": {
-                "description": "Blob Storage Read diagnostic setting"
-            }
-        },
-        "BlobStorageWriteSetting": {
-            "type": "bool",
-            "defaultvalue": false,
-            "metadata": {
-                "description": "Blob Storage Write diagnostic setting"
-            }
-        },
-        "BlobStorageDeleteSetting": {
-            "type": "bool",
-            "defaultvalue": false,
-            "metadata": {
-                "description": "Blob Storage Delete diagnostic setting"
-            }
-        },
-        "retentionPolicyEnabled": {
-            "type": "bool",
-            "defaultValue": true
-        },
-        "retentionPolicyDays": {
-            "type": "string",
-            "defaultValue": "30"
-        }
+    "settingName": {
+     "type": "String",
+    "defaultvalue": "StorageAccDiagSettings",
+    "metadata": {
+        "description": "The name of the diagnostic setting"
+      }
+    },    
+    "workspaceId": {
+      "type": "String",
+      "defaultValue": "",
+      "metadata": {
+        "description": "ResourceID of the Log Analytics workspace in which resource logs should be saved."
+      }
+    },
+    "TransactionSetting": {
+      "type": "bool",
+      "defaultvalue": false,
+      "metadata": {
+         "description": "All Metrics diagnostic setting"
+       }
+    },
+    "BlobTransactionSetting": {
+      "type": "bool",
+      "defaultvalue": false,
+      "metadata": {
+        "description": "All Metrics diagnostic setting"
+      }
+    },
+    "BlobStorageReadSetting": {
+      "type": "bool",
+      "defaultvalue": false,
+      "metadata": {
+        "description": "Blob Storage Read diagnostic setting"
+      }
+    },
+    "BlobStorageWriteSetting": {
+      "type": "bool",
+      "defaultvalue": false,
+      "metadata": {
+        "description": "Blob Storage Write diagnostic setting"
+      }
+    },
+    "BlobStorageDeleteSetting": {
+      "type": "bool",
+      "defaultvalue": false,
+      "metadata": {
+        "description": "Blob Storage Delete diagnostic setting"
+      }
+    },
+    "retentionPolicyEnabled": {
+      "type": "bool",
+      "defaultValue": true
+    },
+    "retentionPolicyDays": {
+      "type": "string",
+      "defaultValue": "30"
+    }
   },
   "variables": {
-    "networkAclObject": {
-      "bypass": "Logging, Metrics",
+     "virtualNetworkRules": {
       "copy": [
         {
           "name": "virtualNetworkRules",
@@ -198,7 +204,24 @@
             "action": "Allow"
           }
         }
-      ],
+      ]
+    },
+    "ipRules": {
+      "copy": [
+        {
+          "name": "ipRules",
+          "count": "[if(greater(length(parameters('allowedIpAddressesList')), 0), length(parameters('allowedIpAddressesList')), 1)]",
+          "input": {
+            "value": "[if(greater(length(parameters('allowedIpAddressesList')), 0), parameters('allowedIpAddressesList')[copyIndex('ipRules')], json('null'))]",
+            "action": "Allow"
+          }
+        }
+      ]
+    },
+    "networkAclObject": {
+      "bypass": "Logging, Metrics",
+      "virtualNetworkRules": "[if(greater(length(parameters('subnetResourceIdList')), 0), variables('virtualNetworkRules').virtualNetworkRules, json('null'))]",
+      "ipRules": "[if(greater(length(parameters('allowedIpAddressesList')), 0), variables('ipRules').ipRules, json('null'))]",
       "defaultAction": "Deny"
     }
   },
