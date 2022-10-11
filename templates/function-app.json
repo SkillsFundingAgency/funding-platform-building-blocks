@@ -133,7 +133,7 @@
   "variables": {
     "useCustomHostname": "[greater(length(parameters('customHostname')), 0)]",
     "appServicePlanId": "[resourceId(parameters('appServicePlanResourceGroup'), 'Microsoft.Web/serverfarms', parameters('appServicePlanName'))]",
-    "functionAppApiVersion": "2019-08-01",
+    "functionAppApiVersion": "2022-03-01",
     "alwaysOnEnabledConfigOption": {
       "alwaysOn": true,
       "appSettings": "[parameters('functionAppAppSettings')]",
@@ -158,7 +158,7 @@
       "name": "[parameters('functionAppName')]",
       "type": "Microsoft.Web/sites",
       "kind": "functionapp",
-      "apiVersion": "2018-11-01",
+      "apiVersion": "[variables('functionAppApiVersion')]",
       "location": "[resourceGroup().location]",
       "identity": {
         "type": "SystemAssigned"
@@ -185,7 +185,7 @@
       "type": "Microsoft.Web/sites/hostnameBindings",
       "condition": "[variables('UseCustomHostname')]",
       "name": "[concat(parameters('functionAppName'), '/', if(variables('useCustomHostname'), parameters('customHostname'), 'placeholder'))]",
-      "apiVersion": "2018-11-01",
+      "apiVersion": "[variables('functionAppApiVersion')]",
       "location": "[resourceGroup().location]",
       "properties": {
         "sslState": "SniEnabled",
@@ -199,7 +199,7 @@
       "type": "Microsoft.Web/sites/config",
       "condition": "[greater(length(parameters('subnetResourceId')), 0)]",
       "name": "[concat(parameters('functionAppName'), '/virtualNetwork')]",
-      "apiVersion": "2018-11-01",
+      "apiVersion": "[variables('functionAppApiVersion')]",
       "location": "[resourceGroup().location]",
       "properties": {
         "subnetResourceId": "[parameters('subnetResourceId')]",
@@ -212,7 +212,7 @@
     {
       "type": "Microsoft.Web/sites/providers/diagnosticSettings",
       "condition": "[greater(length(parameters('workspaceId')), 0)]",
-      "apiVersion": "2017-05-01-preview",
+      "apiVersion": "[variables('functionAppApiVersion')]",
       "name": "[concat(parameters('functionAppName'),'/microsoft.insights/', parameters('settingName'))]",
       "dependsOn": [
         "[parameters('functionAppName')]"
