@@ -212,7 +212,7 @@
     {
       "type": "Microsoft.Web/sites/providers/diagnosticSettings",
       "condition": "[greater(length(parameters('workspaceId')), 0)]",
-      "apiVersion": "[variables('functionAppApiVersion')]",
+      "apiVersion": "2017-05-01-preview",
       "name": "[concat(parameters('functionAppName'),'/microsoft.insights/', parameters('settingName'))]",
       "dependsOn": [
         "[parameters('functionAppName')]"
