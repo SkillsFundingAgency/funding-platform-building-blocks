@@ -218,7 +218,7 @@
         "serverFarmId": "[variables('appServicePlanId')]",
         "clientAffinityEnabled": false,
         "clientCertEnabled": true,
-        "clientCertMode": "Optional",
+        "clientCertMode": "OptionalInteractiveUser",
         "httpsOnly": true
       }
     },
@@ -242,7 +242,7 @@
       "properties": {
         "clientAffinityEnabled": false,
         "clientCertEnabled": true,
-        "clientCertMode": "Optional",
+        "clientCertMode": "OptionalInteractiveUser",
         "siteConfig": {
           "appSettings": "[parameters('appServiceAppSettings')]",
           "connectionStrings": "[parameters('appServiceConnectionStrings')]"
