@@ -193,7 +193,7 @@
   "variables": {
     "useCustomHostname": "[greater(length(parameters('customHostname')), 0)]",
     "appServicePlanId": "[resourceId(parameters('appServicePlanResourceGroup'), 'Microsoft.Web/serverfarms', parameters('appServicePlanName'))]",
-    "appServiceApiVersion": "2018-11-01"
+    "appServiceApiVersion": "2022-03-01"
   },
   "resources": [
     {
