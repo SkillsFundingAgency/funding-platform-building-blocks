@@ -188,12 +188,20 @@
     "stagingSlotIsAlwaysOn": {
       "type": "bool",
       "defaultValue": true
+    },
+    "clientCertEnabled": {
+      "type": "bool",
+      "defaultValue": false
+    },
+    "clientCertMode": {
+      "type": "string",
+      "defaultValue": "Required"
     }
   },
   "variables": {
     "useCustomHostname": "[greater(length(parameters('customHostname')), 0)]",
     "appServicePlanId": "[resourceId(parameters('appServicePlanResourceGroup'), 'Microsoft.Web/serverfarms', parameters('appServicePlanName'))]",
-    "appServiceApiVersion": "2018-11-01"
+    "appServiceApiVersion": "2022-03-01"
   },
   "resources": [
     {
@@ -217,13 +225,15 @@
       "properties": {
         "serverFarmId": "[variables('appServicePlanId')]",
         "clientAffinityEnabled": false,
+        "clientCertEnabled": "[parameters('clientCertEnabled')]",
+        "clientCertMode": "[parameters('clientCertMode')]",
         "httpsOnly": true
       }
     },
     {
       "name": "[concat(parameters('appServiceName') , '/staging')]",
       "type": "Microsoft.Web/sites/slots",
-      "apiVersion": "2018-11-01",
+      "apiVersion": "[variables('appServiceApiVersion')]",
       "location": "[resourceGroup().location]",
       "identity": {
         "type": "SystemAssigned"
@@ -239,6 +249,8 @@
       },
       "properties": {
         "clientAffinityEnabled": false,
+        "clientCertEnabled": "[parameters('clientCertEnabled')]",
+        "clientCertMode": "[parameters('clientCertMode')]",
         "siteConfig": {
           "appSettings": "[parameters('appServiceAppSettings')]",
           "connectionStrings": "[parameters('appServiceConnectionStrings')]"
@@ -252,7 +264,7 @@
       "type": "Microsoft.Web/sites/hostnameBindings",
       "condition": "[variables('UseCustomHostname')]",
       "name": "[concat(parameters('appServiceName'), '/', if(variables('useCustomHostname'), parameters('customHostname'), 'placeholder'))]",
-      "apiVersion": "2018-11-01",
+      "apiVersion": "[variables('appServiceApiVersion')]",
       "location": "[resourceGroup().location]",
       "properties": {
         "sslState": "SniEnabled",
@@ -268,7 +280,7 @@
       "dependsOn": [
         "[parameters('appServiceName')]"
       ],
-      "apiVersion": "2018-11-01",
+      "apiVersion": "[variables('appServiceApiVersion')]",
       "location": "[resourceGroup().location]",
       "properties": {
         "ipSecurityRestrictions": "[parameters('ipSecurityRestrictions')]",
@@ -287,7 +299,7 @@
       "dependsOn": [
         "[resourceId('Microsoft.Web/sites/slots', parameters('appServiceName') , 'staging')]"
       ],
-      "apiVersion": "2018-11-01",
+      "apiVersion": "[variables('appServiceApiVersion')]",
       "location": "[resourceGroup().location]",
       "properties": {
         "ipSecurityRestrictions": "[parameters('ipSecurityRestrictions')]",
@@ -304,7 +316,7 @@
       "type": "Microsoft.Web/sites/config",
       "condition": "[greater(length(parameters('subnetResourceId')), 0)]",
       "name": "[concat(parameters('appServiceName'), '/virtualNetwork')]",
-      "apiVersion": "2018-11-01",
+      "apiVersion": "[variables('appServiceApiVersion')]",
       "location": "[resourceGroup().location]",
       "properties": {
         "subnetResourceId": "[parameters('subnetResourceId')]",

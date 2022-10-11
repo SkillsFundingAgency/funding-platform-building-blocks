@@ -120,12 +120,20 @@
     "retentionPolicyDays": {
       "type": "string",
       "defaultValue": "30"
+    },
+    "clientCertEnabled": {
+      "type": "bool",
+      "defaultValue": false
+    },
+    "clientCertMode": {
+      "type": "string",
+      "defaultValue": "Required"
     }
   },
   "variables": {
     "useCustomHostname": "[greater(length(parameters('customHostname')), 0)]",
     "appServicePlanId": "[resourceId(parameters('appServicePlanResourceGroup'), 'Microsoft.Web/serverfarms', parameters('appServicePlanName'))]",
-    "functionAppApiVersion": "2019-08-01",
+    "functionAppApiVersion": "2022-03-01",
     "alwaysOnEnabledConfigOption": {
       "alwaysOn": true,
       "appSettings": "[parameters('functionAppAppSettings')]",
@@ -150,7 +158,7 @@
       "name": "[parameters('functionAppName')]",
       "type": "Microsoft.Web/sites",
       "kind": "functionapp",
-      "apiVersion": "2018-11-01",
+      "apiVersion": "[variables('functionAppApiVersion')]",
       "location": "[resourceGroup().location]",
       "identity": {
         "type": "SystemAssigned"
@@ -167,6 +175,8 @@
       "properties": {
         "serverFarmId": "[variables('appServicePlanId')]",
         "clientAffinityEnabled": false,
+        "clientCertEnabled": "[parameters('clientCertEnabled')]",
+        "clientCertMode": "[parameters('clientCertMode')]",
         "siteConfig": "[if(or(equals(reference(resourceId(parameters('appServicePlanResourceGroup'), 'Microsoft.Web/serverFarms', parameters('appServicePlanName')), '2019-08-01').kind, 'elastic'),equals(reference(resourceId(parameters('appServicePlanResourceGroup'),'Microsoft.Web/serverFarms',parameters('appServicePlanName')), '2019-08-01').computeMode,'Dynamic')), variables('alwaysOnDisabledConfigOption'), variables('alwaysOnEnabledConfigOption'))]",
         "httpsOnly": true
       }
@@ -175,7 +185,7 @@
       "type": "Microsoft.Web/sites/hostnameBindings",
       "condition": "[variables('UseCustomHostname')]",
       "name": "[concat(parameters('functionAppName'), '/', if(variables('useCustomHostname'), parameters('customHostname'), 'placeholder'))]",
-      "apiVersion": "2018-11-01",
+      "apiVersion": "[variables('functionAppApiVersion')]",
       "location": "[resourceGroup().location]",
       "properties": {
         "sslState": "SniEnabled",
@@ -189,7 +199,7 @@
       "type": "Microsoft.Web/sites/config",
       "condition": "[greater(length(parameters('subnetResourceId')), 0)]",
       "name": "[concat(parameters('functionAppName'), '/virtualNetwork')]",
-      "apiVersion": "2018-11-01",
+      "apiVersion": "[variables('functionAppApiVersion')]",
       "location": "[resourceGroup().location]",
       "properties": {
         "subnetResourceId": "[parameters('subnetResourceId')]",
