@@ -233,7 +233,7 @@
     {
       "name": "[concat(parameters('appServiceName') , '/staging')]",
       "type": "Microsoft.Web/sites/slots",
-      "apiVersion": "2018-11-01",
+      "apiVersion": "[variables('appServiceApiVersion')]",
       "location": "[resourceGroup().location]",
       "identity": {
         "type": "SystemAssigned"
@@ -264,7 +264,7 @@
       "type": "Microsoft.Web/sites/hostnameBindings",
       "condition": "[variables('UseCustomHostname')]",
       "name": "[concat(parameters('appServiceName'), '/', if(variables('useCustomHostname'), parameters('customHostname'), 'placeholder'))]",
-      "apiVersion": "2018-11-01",
+      "apiVersion": "[variables('appServiceApiVersion')]",
       "location": "[resourceGroup().location]",
       "properties": {
         "sslState": "SniEnabled",
@@ -280,7 +280,7 @@
       "dependsOn": [
         "[parameters('appServiceName')]"
       ],
-      "apiVersion": "2018-11-01",
+      "apiVersion": "[variables('appServiceApiVersion')]",
       "location": "[resourceGroup().location]",
       "properties": {
         "ipSecurityRestrictions": "[parameters('ipSecurityRestrictions')]",
@@ -299,7 +299,7 @@
       "dependsOn": [
         "[resourceId('Microsoft.Web/sites/slots', parameters('appServiceName') , 'staging')]"
       ],
-      "apiVersion": "2018-11-01",
+      "apiVersion": "[variables('appServiceApiVersion')]",
       "location": "[resourceGroup().location]",
       "properties": {
         "ipSecurityRestrictions": "[parameters('ipSecurityRestrictions')]",
@@ -316,7 +316,7 @@
       "type": "Microsoft.Web/sites/config",
       "condition": "[greater(length(parameters('subnetResourceId')), 0)]",
       "name": "[concat(parameters('appServiceName'), '/virtualNetwork')]",
-      "apiVersion": "2018-11-01",
+      "apiVersion": "[variables('appServiceApiVersion')]",
       "location": "[resourceGroup().location]",
       "properties": {
         "subnetResourceId": "[parameters('subnetResourceId')]",
@@ -329,7 +329,7 @@
     {
       "type": "Microsoft.Web/sites/providers/diagnosticSettings",
       "condition": "[greater(length(parameters('workspaceId')), 0)]",
-      "apiVersion": "2017-05-01-preview",
+      "apiVersion": "[variables('appServiceApiVersion')]",
       "name": "[concat(parameters('appServiceName'),'/microsoft.insights/', parameters('settingName'))]",
       "dependsOn": [
         "[parameters('appServiceName')]"
