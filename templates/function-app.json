@@ -128,14 +128,25 @@
     "clientCertMode": {
       "type": "string",
       "defaultValue": "Required"
+    },
+    "netFrameworkVersion": {
+      "type": "string",
+      "defaultValue": "",
+      "allowedValues": [
+        "",
+        "v6.0"
+      ],
+      "metadata": {
+        "description": ".NET version of project, e.g. v6.0, needed for runtime version ~4 onwards",
+        "link": "https://learn.microsoft.com/en-us/answers/questions/835272/azure-functions-pinned-to-unsupported-dotnet-runti.html"
+      }
     }
   },
   "variables": {
     "useCustomHostname": "[greater(length(parameters('customHostname')), 0)]",
     "appServicePlanId": "[resourceId(parameters('appServicePlanResourceGroup'), 'Microsoft.Web/serverfarms', parameters('appServicePlanName'))]",
     "functionAppApiVersion": "2022-03-01",
-    "alwaysOnEnabledConfigOption": {
-      "alwaysOn": true,
+    "baseSiteConfig": {
       "appSettings": "[parameters('functionAppAppSettings')]",
       "connectionStrings": "[parameters('functionAppConnectionStrings')]",
       "ipSecurityRestrictions": "[parameters('ipSecurityRestrictions')]",
@@ -143,15 +154,10 @@
       "http20Enabled": "[parameters('http20Enabled')]",
       "ftpsState": "[parameters('ftpsState')]"
     },
-    "alwaysOnDisabledConfigOption": {
-      "alwaysOn": false,
-      "appSettings": "[parameters('functionAppAppSettings')]",
-      "connectionStrings": "[parameters('functionAppConnectionStrings')]",
-      "ipSecurityRestrictions": "[parameters('ipSecurityRestrictions')]",
-      "use32BitWorkerProcess": "[parameters('use32BitWorkerProcess')]",
-      "http20Enabled": "[parameters('http20Enabled')]",
-      "ftpsState": "[parameters('ftpsState')]"
-    }
+    "siteConfigNetFrameworkVersion": {
+      "netFrameworkVersion": "[parameters('netFrameworkVersion')]"
+    },
+    "siteConfig": "[if(greater(length(parameters('netFrameworkVersion')), 0),  union(variables('baseSiteConfig'), variables('siteConfigNetFrameworkVersion')), variables('baseSiteConfig'))]"
   },
   "resources": [
     {
@@ -177,7 +183,7 @@
         "clientAffinityEnabled": false,
         "clientCertEnabled": "[parameters('clientCertEnabled')]",
         "clientCertMode": "[parameters('clientCertMode')]",
-        "siteConfig": "[if(or(equals(reference(resourceId(parameters('appServicePlanResourceGroup'), 'Microsoft.Web/serverFarms', parameters('appServicePlanName')), '2019-08-01').kind, 'elastic'),equals(reference(resourceId(parameters('appServicePlanResourceGroup'),'Microsoft.Web/serverFarms',parameters('appServicePlanName')), '2019-08-01').computeMode,'Dynamic')), variables('alwaysOnDisabledConfigOption'), variables('alwaysOnEnabledConfigOption'))]",
+        "siteConfig": "[union(createObject('alwaysOn', if(contains(createArray('functionapp','elastic'),reference(resourceId(parameters('appServicePlanResourceGroup'),'Microsoft.Web/serverFarms',parameters('appServicePlanName')), '2019-08-01').kind), 'false', 'true')), variables('siteConfig'))]",
         "httpsOnly": true
       }
     },
