@@ -95,6 +95,19 @@
       "metadata": {
         "description": "The id of the OMS workspace subscription that will collect audit events"
       }
+    },
+    "resourceIdentity": {
+      "type": "string",
+      "allowedValues": [
+        "None",
+        "SystemAssigned",
+        "SystemAssigned,UserAssigned",
+        "UserAssigned"
+      ],
+      "defaultValue": "None",
+      "metadata": {
+        "description": "The identity type. Set this to 'SystemAssigned' in order to automatically create and assign an Azure Active Directory principal for the resource."
+      }
     }
   },
   "variables": {
@@ -116,6 +129,9 @@
           "Service": "[parameters('serviceTag')]",
           "Service Line": "[parameters('serviceLineTag')]",
           "Service Offering": "[parameters('serviceOfferingTag')]"
+      },
+      "identity": {
+         "type": "[parameters('resourceIdentity')]"
       },
       "properties": {
         "administratorLogin": "[parameters('sqlServerAdminUserName')]",
