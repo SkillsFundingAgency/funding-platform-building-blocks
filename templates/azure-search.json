@@ -70,6 +70,17 @@
       "metadata": {
         "description": "Partitions allow for scaling of document count as well as faster indexing by sharding your index over multiple Azure Search units."
       }
+    },
+    "resourceIdentity": {
+      "type": "string",
+      "allowedValues": [
+        "None",
+        "SystemAssigned"
+      ],
+      "defaultValue": "None",
+      "metadata": {
+        "description": "The identity type. Set this to 'SystemAssigned' in order to automatically create and assign an Azure Active Directory principal for the resource."
+      }
     }
   },
   "resources": [
@@ -89,6 +100,9 @@
       },
       "sku": {
         "name": "[toLower(parameters('azureSearchSku'))]"
+      },
+      "identity": {
+         "type": "[parameters('resourceIdentity')]"
       },
       "properties": {
         "replicaCount": "[parameters('azureSearchReplicaCount')]",
