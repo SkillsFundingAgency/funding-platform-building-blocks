@@ -1,0 +1,84 @@
+parameters:
+- name: serviceConnection
+  type: string
+- name: subscriptionId
+  type: string
+- name: resourceGroupName
+  type: string
+- name: location
+  type: string
+- name: templateFilePath
+  type: string
+- name: parametersFilePath
+  type: string
+  default: ''
+- name: armParameterOverrideString
+  type: string
+  default: ''
+- name: processOutputs
+  type: boolean
+  default: true
+- name: tags
+  type: object
+  default: ""
+
+steps:
+- task: AzurePowerShell@5
+  displayName: Create ResourceGroup with tags
+  inputs:
+    azureSubscription: ${{parameters.serviceConnection}}
+    ScriptType: 'InlineScript'
+    azurePowerShellVersion: 'LatestVersion'
+    Inline: |
+      New-AzResourceGroup -Name ${{parameters.resourceGroupName}} -Location "${{parameters.location}}" -Tag ${{parameters.tags}} -Force
+    
+
+- task: AzureResourceManagerTemplateDeployment@3
+  displayName: Create Infrastructure
+  inputs:
+    deploymentScope: 'Resource Group'
+    azureResourceManagerConnection: ${{parameters.serviceConnection}}
+    subscriptionId: ${{parameters.subscriptionId}}
+    action: 'Create Or Update Resource Group'
+    resourceGroupName: ${{parameters.resourceGroupName}}
+    location: ${{parameters.location}}
+    templateLocation: 'Linked artifact'
+    csmFile: ${{parameters.templateFilePath}}
+    csmParametersFile: ${{parameters.parametersFilePath}}
+    overrideParameters: ${{parameters.armParameterOverrideString}}
+    deploymentMode: 'Incremental'
+    deploymentOutputs: armOutput
+
+- ${{ if eq(parameters.processOutputs, true) }}:
+  - pwsh: |
+      $armOutput = '$(armOutput)'
+      if ($armOutput){
+        $armOutputObj = $armOutput | ConvertFrom-Json
+        Write-Host "Arm output json is:"
+        Write-Host $armOutput
+        Write-Host "outputs found, converting"
+        $armOutputObj.PSObject.Properties | ForEach-Object {
+            $type = ($_.value.type).ToLower()
+            $keyname = "armOutput.$($_.name)"
+            $value = $_.value.value
+
+            if ($type -eq "securestring") {
+                Write-Host "##vso[task.setvariable variable=$keyname;issecret=true;isOutput=true]$value"
+                Write-Host "Added Azure DevOps secret variable '$keyname' ('$type')"
+            } elseif ($type -eq "string") {
+                Write-Host "##vso[task.setvariable variable=$keyname;isOutput=true]$value"
+                Write-Host "Added Azure DevOps variable '$keyname' ('$type') with value '$value'"
+            } elseif ($type -eq  "object"){
+              $stringObject = $value | ConvertTo-Json
+              Write-Host "##vso[task.setvariable variable=$keyname;isOutput=true]$stringObject"
+              Write-Host "Added Azure DevOps variable '$keyname' ('$type') with value '$stringObject'"
+            } else {
+                Throw "Type '$type' is not supported for '$keyname'"
+            }
+        }
+      } else {
+        Write-Host "no outputs found, done"
+      }
+
+    name: armOutputs
+    displayName: ARM Outputs Variable Write
