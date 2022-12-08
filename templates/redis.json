@@ -31,11 +31,16 @@
       "metadata": {
         "description": "An object containing redis configuration options. See https://docs.microsoft.com/en-us/azure/templates/microsoft.cache/2019-07-01/redis for more info"
       }
+    },
+    "redisVersion": {
+      "type": "string",
+      "allowedValues": ["4.0, 6.0", "latest"],
+      "defaultValue": "latest"
     }
   },
   "resources": [
     {
-      "apiVersion": "2019-07-01",
+      "apiVersion": "2022-05-01",
       "name": "[parameters('redisCacheName')]",
       "type": "Microsoft.Cache/Redis",
       "location": "[resourceGroup().location]",
@@ -47,7 +52,8 @@
           "family": "[parameters('redisCacheFamily')]",
           "name": "[parameters('redisCacheSKU')]"
         },
-        "redisConfiguration": "[parameters('redisConfiguration')]"
+        "redisConfiguration": "[parameters('redisConfiguration')]",
+        "redisVersion": "[parameters('redisVersion')]"
       }
     }
   ],
