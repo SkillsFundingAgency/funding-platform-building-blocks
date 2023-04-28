@@ -1,5 +1,5 @@
 {
-  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
     "environmentTag": {
@@ -49,6 +49,13 @@
       "type": "securestring",
       "metadata": {
         "description": "The Azure SQL Server Administrator (SA) password"
+      }
+    },
+    "sqlServerminimalTlsVersion": {
+      "type": "string",
+      "defaultValue": "1.0",
+      "metadata": {
+        "description": "Minumum TLS Version"
       }
     },
     "sqlServerActiveDirectoryAdminLogin": {
@@ -119,7 +126,7 @@
     {
       "name": "[parameters('sqlServerName')]",
       "type": "Microsoft.Sql/servers",
-      "apiVersion": "2015-05-01-preview",
+      "apiVersion": "2019-06-01-preview",
       "location": "[parameters('sqlServerLocation')]",
       "tags": {
           "Environment": "[parameters('environmentTag')]",
@@ -135,7 +142,8 @@
       },
       "properties": {
         "administratorLogin": "[parameters('sqlServerAdminUserName')]",
-        "administratorLoginPassword": "[parameters('sqlServerAdminPassword')]"
+        "administratorLoginPassword": "[parameters('sqlServerAdminPassword')]",
+        "minimalTlsVersion": "[parameters('sqlServerminimalTlsVersion')]"
       },
       "resources": [
         {
