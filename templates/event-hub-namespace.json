@@ -145,14 +145,21 @@
         "retentionPolicyDays": {
             "type": "string",
             "defaultValue": "30"
-        }
+        },
+        "minimumTlsVersion": {
+        "type": "string",
+        "defaultValue": "1.0",
+        "metadata": {
+          "description": "Minumum TLS Version"
+      }
+    }
     },
     "variables": {},
     "resources": [
         {
             "name": "[parameters('eventHubNamespaceName')]",
             "type": "Microsoft.EventHub/namespaces",
-            "apiVersion": "2017-04-01",
+            "apiVersion": "2022-01-01-preview",
             "location": "[resourceGroup().location]",
             "tags": {
                 "Environment": "[parameters('environmentTag')]",
@@ -170,7 +177,8 @@
             },
             "properties": {
                 "isAutoInflateEnabled": "[parameters('isAutoInflateEnabled')]",
-                "maximumThroughputUnits": "[parameters('maximumThroughputUnits')]"
+                "maximumThroughputUnits": "[parameters('maximumThroughputUnits')]",
+                "minimumTlsVersion": "[parameters('minimumTlsVersion')]"
                  }
         },
         {
