@@ -152,7 +152,7 @@
         {
             "name": "[parameters('eventHubNamespaceName')]",
             "type": "Microsoft.EventHub/namespaces",
-            "apiVersion": "2021-11-01",
+            "apiVersion": "2022-01-01-preview",
             "location": "[resourceGroup().location]",
             "tags": {
                 "Environment": "[parameters('environmentTag')]",
