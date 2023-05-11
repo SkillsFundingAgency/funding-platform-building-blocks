@@ -1,5 +1,5 @@
 {
-  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
     "environmentTag": {
@@ -49,6 +49,13 @@
       "metadata": {
         "description": "Names of service bus queues to create within the namespace"
       }
+    },
+    "minimumTlsVersion": {
+       "type": "string",
+       "defaultValue": "1.0",
+       "metadata": {
+          "description": "Minumum TLS Version"
+     }
     }
   },
   "variables": {
@@ -56,7 +63,7 @@
   },
   "resources": [
     {
-      "apiVersion": "2017-04-01",
+      "apiVersion": "2022-01-01-preview",
       "name": "[parameters('serviceBusNamespaceName')]",
       "type": "Microsoft.ServiceBus/namespaces",
       "location": "[resourceGroup().location]",
@@ -71,6 +78,9 @@
       },
       "sku": {
         "name": "[parameters('serviceBusSku')]"
+      },
+      "properties": {
+        "minimumTlsVersion": "[parameters('minimumTlsVersion')]"
       },
       "resources": [
         {

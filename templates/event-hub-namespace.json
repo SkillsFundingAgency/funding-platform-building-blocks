@@ -147,11 +147,11 @@
             "defaultValue": "30"
         },
         "minimumTlsVersion": {
-        "type": "string",
-        "defaultValue": "1.0",
-        "metadata": {
-          "description": "Minumum TLS Version"
-      }
+            "type": "string",
+            "defaultValue": "1.0",
+            "metadata": {
+                "description": "Minumum TLS Version"
+        }
     }
     },
     "variables": {},
