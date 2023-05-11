@@ -49,7 +49,13 @@
       "metadata": {
         "description": "Names of service bus queues to create within the namespace"
       }
-    }
+    },
+    "minimumTlsVersion": {
+       "type": "string",
+       "defaultValue": "1.0",
+       "metadata": {
+          "description": "Minumum TLS Version"
+     }
   },
   "variables": {
     "deployQueues": "[greater(length(parameters('serviceBusQueues')), 0)]"
@@ -71,6 +77,9 @@
       },
       "sku": {
         "name": "[parameters('serviceBusSku')]"
+      },
+      "properties": {
+        "minimumTlsVersion": "[parameters('minimumTlsVersion')]"
       },
       "resources": [
         {
