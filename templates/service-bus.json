@@ -56,6 +56,7 @@
        "metadata": {
           "description": "Minumum TLS Version"
      }
+    }
   },
   "variables": {
     "deployQueues": "[greater(length(parameters('serviceBusQueues')), 0)]"
