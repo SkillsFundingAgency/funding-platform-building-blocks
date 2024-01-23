@@ -77,7 +77,8 @@
         "Basic",
         "Standard",
         "Premium",
-        "PremiumV2"
+        "PremiumV2",
+        "PremiumV3"
       ],
       "defaultValue": "Standard"
     },
