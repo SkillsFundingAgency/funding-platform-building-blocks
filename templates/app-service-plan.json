@@ -126,7 +126,7 @@
         "reserved": "[equals(parameters('appServicePlanKind'), 'linux')]"
       }
     },
-    "aspSkuName": "[concat(take(parameters('nonASETier'), 1), parameters('aspSize'), if(equals(parameters('nonASETier'), 'PremiumV3'), 'v3', if(equals(parameters('nonASETier'), 'PremiumV2'), 'v2', ''))]",
+    "aspSkuName": "[concat(take(parameters('nonASETier'), 1), parameters('aspSize'), if(equals(parameters('nonASETier'), 'PremiumV3'), 'v3', if(equals(parameters('nonASETier'), 'PremiumV2'), 'v2', '')))]",
     "defaultAppServicePlanSKUs": {
       "NonASE": {
         "name": "[variables('aspSkuName')]",
