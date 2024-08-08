@@ -105,6 +105,20 @@
       "type": "bool",
       "defaultValue": false
     },
+    "minTlsVersion": {
+      "type": "string",
+      "defaultValue": "1.2",
+      "metadata": {
+        "description": "provide the minimum tls version"
+      }
+    },
+    "minTlsCipherSuite": {
+      "type": "string",
+      "defaultValue": "TLS_RSA_WITH_AES_128_CBC_SHA",
+      "metadata": {
+        "description": "provide the minimum cipherblock suite"
+      }
+    },
     "ftpsState": {
       "type": "string",
       "defaultValue": "Disabled",
@@ -214,7 +228,9 @@
           "ftpsState": "[parameters('ftpsState')]",
           "healthCheckPath": "[parameters('healthCheckPath')]"
         },
-        "httpsOnly": true
+        "httpsOnly": true,
+        "minTlsVersion": "[parameters('minTlsVersion')]",
+        "minTlsCipherSuite": "[parameters('minTlsCipherSuite')]"
       },
       "resources": [
         {
@@ -236,7 +252,7 @@
               "virtualApplications": "[parameters('appServiceVirtualApplications')]",
               "ipSecurityRestrictions": "[parameters('ipSecurityRestrictions')]",
               "use32BitWorkerProcess": "[parameters('use32BitWorkerProcess')]",
-              "http20Enabled": "[parameters('http20Enabled')]", 
+              "http20Enabled": "[parameters('http20Enabled')]",
               "ftpsState": "[parameters('ftpsState')]"
             },
             "httpsOnly": true
@@ -367,7 +383,7 @@
     "managedServiceIdentity": {
       "type": "object",
       "value": "[reference(parameters('appServiceName'), variables('appServiceApiVersion'), 'Full').identity]"
-    },    
+    },
     "stagingManagedServiceIdentityId": {
       "condition": "[parameters('deployStagingSlot')]",
       "type": "string",
