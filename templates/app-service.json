@@ -107,12 +107,14 @@
     },
     "minTlsVersion": {
       "type": "string",
+      "defaultValue": "1.2",
       "metadata": {
         "description": "provide the minimum tls version"
       }
     },
     "minTlsCipherSuite": {
       "type": "string",
+      "defaultValue": "TLS_RSA_WITH_AES_128_CBC_SHA",
       "metadata": {
         "description": "provide the minimum cipherblock suite"
       }
