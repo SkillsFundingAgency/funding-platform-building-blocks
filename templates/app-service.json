@@ -227,8 +227,7 @@
           "http20Enabled": "[parameters('http20Enabled')]",
           "ftpsState": "[parameters('ftpsState')]",
           "healthCheckPath": "[parameters('healthCheckPath')]",
-          "minTlsVersion": "[parameters('minTlsVersion')]",
-          "minTlsCipherSuite": "[parameters('minTlsCipherSuite')]"
+          "minTlsVersion": "[parameters('minTlsVersion')]"
         },
         "httpsOnly": true
       },
