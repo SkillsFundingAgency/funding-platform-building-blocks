@@ -226,7 +226,8 @@
           "use32BitWorkerProcess": "[parameters('use32BitWorkerProcess')]",
           "http20Enabled": "[parameters('http20Enabled')]",
           "ftpsState": "[parameters('ftpsState')]",
-          "healthCheckPath": "[parameters('healthCheckPath')]"
+          "healthCheckPath": "[parameters('healthCheckPath')]",
+          "minTlsVersion": "[parameters('minTlsVersion')]"
         },
         "httpsOnly": true,
         "minTlsVersion": "[parameters('minTlsVersion')]",
