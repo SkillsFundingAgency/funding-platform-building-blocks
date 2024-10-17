@@ -78,7 +78,7 @@
                 "name": "[parameters('emailActionName')]",
                 "emailAddress": "[parameters('emailAddress')]",
                 "status": "[parameters('emailReceiversStatus')]",
-                "useCommonAlertSchema": false
+                "useCommonAlertSchema": true
             }
         ],
         "webhookReciever": "[if(greater(length(parameters('webhookReceiverName')),0), variables('webhookConfiguration'), json('[]'))]",
