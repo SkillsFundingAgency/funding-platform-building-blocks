@@ -107,7 +107,7 @@
     },
     "minTlsVersion": {
       "type": "string",
-      "defaultValue": "1.2",
+      "defaultValue": "1.3",
       "metadata": {
         "description": "provide the minimum tls version"
       }
