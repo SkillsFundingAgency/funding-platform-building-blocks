@@ -212,13 +212,7 @@
     "healthCheckPath": {
       "type": "string",
       "defaultValue": ""
-    },
-    "minTlsCipherSuite": {
-      "type": "string",
-      "defaultValue": "TLS_RSA_WITH_AES_128_CBC_SHA",
-      "metadata": {
-        "description": "provide the minimum cipherblock suite"
-      }
+    }
   },
   "variables": {
     "useCustomHostname": "[greater(length(parameters('customHostname')), 0)]",
@@ -293,8 +287,7 @@
               "ipSecurityRestrictions": "[parameters('ipSecurityRestrictions')]",
               "use32BitWorkerProcess": "[parameters('use32BitWorkerProcess')]",
               "http20Enabled": "[parameters('http20Enabled')]", 
-              "ftpsState": "[parameters('ftpsState')]",
-              "minTlsCipherSuite": "[parameters('minTlsCipherSuite')]"
+              "ftpsState": "[parameters('ftpsState')]"
             },
             "httpsOnly": true
           },
