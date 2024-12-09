@@ -219,6 +219,7 @@
       "metadata": {
         "description": "provide the minimum cipherblock suite"
       }
+    }
   },
   "variables": {
     "useCustomHostname": "[greater(length(parameters('customHostname')), 0)]",
