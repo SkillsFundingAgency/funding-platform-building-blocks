@@ -260,7 +260,8 @@
           "use32BitWorkerProcess": "[parameters('use32BitWorkerProcess')]",
           "http20Enabled": "[parameters('http20Enabled')]",
           "ftpsState": "[parameters('ftpsState')]",
-          "healthCheckPath": "[parameters('healthCheckPath')]"
+          "healthCheckPath": "[parameters('healthCheckPath')]",
+          "minTlsCipherSuite": "[parameters('minTlsCipherSuite')]"
         },
         "httpsOnly": true
       },
@@ -294,7 +295,8 @@
               "ipSecurityRestrictions": "[parameters('ipSecurityRestrictions')]",
               "use32BitWorkerProcess": "[parameters('use32BitWorkerProcess')]",
               "http20Enabled": "[parameters('http20Enabled')]", 
-              "ftpsState": "[parameters('ftpsState')]"
+              "ftpsState": "[parameters('ftpsState')]",
+              "minTlsCipherSuite": "[parameters('minTlsCipherSuite')]"
             },
             "httpsOnly": true
           },
