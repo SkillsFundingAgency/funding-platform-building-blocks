@@ -294,8 +294,7 @@
               "ipSecurityRestrictions": "[parameters('ipSecurityRestrictions')]",
               "use32BitWorkerProcess": "[parameters('use32BitWorkerProcess')]",
               "http20Enabled": "[parameters('http20Enabled')]", 
-              "ftpsState": "[parameters('ftpsState')]",
-              "minTlsCipherSuite": "[parameters('minTlsCipherSuite')]"
+              "ftpsState": "[parameters('ftpsState')]"
             },
             "httpsOnly": true
           },
