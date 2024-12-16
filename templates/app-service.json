@@ -215,7 +215,7 @@
     },
     "minTlsCipherSuite": {
       "type": "string",
-      "defaultValue": "TLS_RSA_WITH_AES_128_CBC_SHA",
+      "defaultValue": "TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256",
       "metadata": {
         "description": "provide the minimum cipherblock suite"
       }
