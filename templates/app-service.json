@@ -267,6 +267,17 @@
       },
       "resources": [
         {
+            "type": "Microsoft.Web/sites/basicPublishingCredentialsPolicies",
+            "apiVersion": "2022-09-01",
+            "name": "[concat(parameters('appServiceName'), '/scm')]",
+            "properties": {
+                "allow": true
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/Sites', parameters('appServiceName'))]"
+            ]
+        },
+        {
           "condition": "[parameters('deployStagingSlot')]",
           "name": "staging",
           "type": "slots",
@@ -294,7 +305,7 @@
               "virtualApplications": "[parameters('appServiceVirtualApplications')]",
               "ipSecurityRestrictions": "[parameters('ipSecurityRestrictions')]",
               "use32BitWorkerProcess": "[parameters('use32BitWorkerProcess')]",
-              "http20Enabled": "[parameters('http20Enabled')]", 
+              "http20Enabled": "[parameters('http20Enabled')]",
               "ftpsState": "[parameters('ftpsState')]",
               "minTlsCipherSuite": "[parameters('minTlsCipherSuite')]"
             },
@@ -418,7 +429,7 @@
     "managedServiceIdentity": {
       "type": "object",
       "value": "[reference(parameters('appServiceName'), variables('appServiceApiVersion'), 'Full').identity]"
-    },    
+    },
     "stagingManagedServiceIdentityId": {
       "condition": "[parameters('deployStagingSlot')]",
       "type": "string",
