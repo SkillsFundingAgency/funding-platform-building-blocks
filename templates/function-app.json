@@ -132,10 +132,6 @@
     "netFrameworkVersion": {
       "type": "string",
       "defaultValue": "",
-      "allowedValues": [
-        "",
-        "v6.0"
-      ],
       "metadata": {
         "description": ".NET version of project, e.g. v6.0, needed for runtime version ~4 onwards",
         "link": "https://learn.microsoft.com/en-us/answers/questions/835272/azure-functions-pinned-to-unsupported-dotnet-runti.html"
