@@ -1,0 +1,23 @@
+name: Lint JSON Files
+
+on: [push, pull_request]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '14'
+
+    - name: Install jsonlint
+      run: npm install -g jsonlint
+
+    - name: Lint JSON files
+      run: |
+        find . -name "*.json" -print0 | xargs -0 jsonlint -q
