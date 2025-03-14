@@ -30,10 +30,6 @@
         },
         "logAnalyticsLocation": {
             "type": "string",
-            "allowedValues": [
-                "North Europe",
-                "West Europe"
-            ],
             "defaultValue": "West Europe"
         },
         "logAnalyticsSku": {

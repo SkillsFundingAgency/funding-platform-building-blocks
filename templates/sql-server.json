@@ -33,11 +33,7 @@
     },
     "sqlServerLocation": {
       "type": "string",
-      "defaultValue": "[resourceGroup().location]",
-      "allowedValues": [
-        "westeurope",
-        "northeurope"
-      ]
+      "defaultValue": "[resourceGroup().location]"
     },
     "sqlServerAdminUserName": {
       "type": "string",
