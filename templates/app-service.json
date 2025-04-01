@@ -212,6 +212,13 @@
     "healthCheckPath": {
       "type": "string",
       "defaultValue": ""
+    },
+    "minTlsCipherSuite": {
+      "type": "string",
+      "defaultValue": "TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256",
+      "metadata": {
+        "description": "provide the minimum cipherblock suite"
+      }
     }
   },
   "variables": {
@@ -253,7 +260,8 @@
           "use32BitWorkerProcess": "[parameters('use32BitWorkerProcess')]",
           "http20Enabled": "[parameters('http20Enabled')]",
           "ftpsState": "[parameters('ftpsState')]",
-          "healthCheckPath": "[parameters('healthCheckPath')]"
+          "healthCheckPath": "[parameters('healthCheckPath')]",
+          "minTlsCipherSuite": "[parameters('minTlsCipherSuite')]"
         },
         "httpsOnly": true
       },
@@ -286,8 +294,9 @@
               "virtualApplications": "[parameters('appServiceVirtualApplications')]",
               "ipSecurityRestrictions": "[parameters('ipSecurityRestrictions')]",
               "use32BitWorkerProcess": "[parameters('use32BitWorkerProcess')]",
-              "http20Enabled": "[parameters('http20Enabled')]", 
-              "ftpsState": "[parameters('ftpsState')]"
+              "http20Enabled": "[parameters('http20Enabled')]",
+              "ftpsState": "[parameters('ftpsState')]",
+              "minTlsCipherSuite": "[parameters('minTlsCipherSuite')]"
             },
             "httpsOnly": true
           },
@@ -409,7 +418,7 @@
     "managedServiceIdentity": {
       "type": "object",
       "value": "[reference(parameters('appServiceName'), variables('appServiceApiVersion'), 'Full').identity]"
-    },    
+    },
     "stagingManagedServiceIdentityId": {
       "condition": "[parameters('deployStagingSlot')]",
       "type": "string",
