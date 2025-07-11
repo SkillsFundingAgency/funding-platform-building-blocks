@@ -51,7 +51,7 @@
     "resources": [
         {
             "type": "Microsoft.Search/searchServices/providers/diagnosticSettings",
-            "apiVersion": "2017-05-01-preview",
+            "apiVersion": "2022-09-01",
             "name": "[concat(parameters('searchService'),'/microsoft.insights/', parameters('settingName'))]",
             "dependsOn": [
             ],
