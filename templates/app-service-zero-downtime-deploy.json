@@ -255,7 +255,8 @@
         "siteConfig": {
           "appSettings": "[parameters('appServiceAppSettings')]",
           "connectionStrings": "[parameters('appServiceConnectionStrings')]"
-        }
+        },
+        "httpsOnly": true
       },
       "dependsOn": [
         "[parameters('appServiceName')]"
