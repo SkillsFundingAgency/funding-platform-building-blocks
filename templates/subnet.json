@@ -68,8 +68,12 @@
         "addressPrefix": "[parameters('subnetAddressPrefix')]",
         "serviceEndpoints": "[if(greater(length(parameters('serviceEndpointList')), 0), variables('serviceEndPoints'), variables('serviceEndPointsEmpty'))]",
         "delegations": "[parameters('delegations')]",
-        "routeTable": "[parameters('routeTable')]",
-        "networkSecurityGroup": "[parameters('networkSecurityGroup')]"
+        "routeTable": {
+          "id": "[resourceId('Microsoft.Network/routeTables', parameters('routeTable'))]"
+        },
+        "networkSecurityGroup": {
+          "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroup'))]"
+        }
       }
     }
   ],
