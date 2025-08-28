@@ -47,18 +47,6 @@
       }
     }
   },
-  "variables": {
-    "copy": [
-      {
-        "name": "serviceEndPoints",
-        "count": "[if(greater(length(parameters('serviceEndpointList')), 0), length(parameters('serviceEndpointList')), 1)]",
-        "input": {
-          "service": "[if(greater(length(parameters('serviceEndpointList')), 0), parameters('serviceEndpointList')[copyIndex('serviceEndPoints')], json('null'))]"
-        }
-      }
-    ],
-    "serviceEndPointsEmpty": []
-  },
   "resources": [
     {
       "name": "[concat(parameters('virtualNetworkName'), '/', parameters('subnetName'))]",
@@ -66,7 +54,7 @@
       "apiVersion": "2018-11-01",
       "properties": {
         "addressPrefix": "[parameters('subnetAddressPrefix')]",
-        "serviceEndpoints": "[if(greater(length(parameters('serviceEndpointList')), 0), variables('serviceEndPoints'), variables('serviceEndPointsEmpty'))]",
+        "serviceEndpoints": "[if(greater(length(parameters('serviceEndpointList')), 0), parameters('serviceEndpointList'), json('[]'))]",
         "delegations": "[parameters('delegations')]",
         "routeTable": {
           "id": "[resourceId('Microsoft.Network/routeTables', parameters('routeTable'))]"
