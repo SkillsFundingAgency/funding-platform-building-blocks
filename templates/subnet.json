@@ -34,16 +34,14 @@
         "description": "An array of delegations. Object referance can be found here: https://docs.microsoft.com/en-us/azure/templates/microsoft.network/2018-11-01/virtualnetworks/subnets#Delegation"
       }
     },
-    "routeTableId": {
+    "routeTable": {
       "type": "string",
-      "defaultValue": "",
       "metadata": {
         "description": "The ID of the route table to associate with the subnet."
       }
     },
-    "networkSecurityGroupId": {
+    "networkSecurityGroup": {
       "type": "string",
-      "defaultValue": "",
       "metadata": {
         "description": "The ID of the network security group to associate with the subnet."
       }
@@ -70,8 +68,8 @@
         "addressPrefix": "[parameters('subnetAddressPrefix')]",
         "serviceEndpoints": "[if(greater(length(parameters('serviceEndpointList')), 0), variables('serviceEndPoints'), variables('serviceEndPointsEmpty'))]",
         "delegations": "[parameters('delegations')]",
-        "routeTableId": "[parameters('routeTableId')]",
-        "networkSecurityGroupId": "[parameters('networkSecurityGroupId')]"
+        "routeTable": "[parameters('routeTable')]",
+        "networkSecurityGroup": "[parameters('networkSecurityGroup')]"
       }
     }
   ],
