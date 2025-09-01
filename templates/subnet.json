@@ -33,19 +33,19 @@
       "metadata": {
         "description": "An array of delegations. Object referance can be found here: https://docs.microsoft.com/en-us/azure/templates/microsoft.network/2018-11-01/virtualnetworks/subnets#Delegation"
       }
-    }
-  },
-  "variables": {
-    "copy": [
-      {
-        "name": "serviceEndPoints",
-        "count": "[if(greater(length(parameters('serviceEndpointList')), 0), length(parameters('serviceEndpointList')), 1)]",
-        "input": {
-          "service": "[if(greater(length(parameters('serviceEndpointList')), 0), parameters('serviceEndpointList')[copyIndex('serviceEndPoints')], json('null'))]"
-        }
+    },
+    "routeTable": {
+      "type": "string",
+      "metadata": {
+        "description": "The ID of the route table to associate with the subnet."
       }
-    ],
-    "serviceEndPointsEmpty": []
+    },
+    "networkSecurityGroup": {
+      "type": "string",
+      "metadata": {
+        "description": "The ID of the network security group to associate with the subnet."
+      }
+    }
   },
   "resources": [
     {
@@ -54,8 +54,14 @@
       "apiVersion": "2018-11-01",
       "properties": {
         "addressPrefix": "[parameters('subnetAddressPrefix')]",
-        "serviceEndpoints": "[if(greater(length(parameters('serviceEndpointList')), 0), variables('serviceEndPoints'), variables('serviceEndPointsEmpty'))]",
-        "delegations": "[parameters('delegations')]"
+        "serviceEndpoints": "[if(greater(length(parameters('serviceEndpointList')), 0), parameters('serviceEndpointList'), json('[]'))]",
+        "delegations": "[parameters('delegations')]",
+        "routeTable": {
+          "id": "[resourceId('Microsoft.Network/routeTables', parameters('routeTable'))]"
+        },
+        "networkSecurityGroup": {
+          "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroup'))]"
+        }
       }
     }
   ],
