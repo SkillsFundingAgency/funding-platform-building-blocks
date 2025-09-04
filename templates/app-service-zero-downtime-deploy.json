@@ -197,6 +197,10 @@
     "clientCertMode": {
       "type": "string",
       "defaultValue": "Required"
+    },
+    "netFrameworkVersion": {
+      "type": "string",
+      "defaultValue": ""
     }
   },
   "variables": {
@@ -228,6 +232,11 @@
         "clientAffinityEnabled": false,
         "clientCertEnabled": "[parameters('clientCertEnabled')]",
         "clientCertMode": "[parameters('clientCertMode')]",
+        "siteConfig": {
+          "appSettings": "[parameters('appServiceAppSettings')]",
+          "connectionStrings": "[parameters('appServiceConnectionStrings')]",
+          "netFrameworkVersion": "[parameters('netFrameworkVersion')]"
+        },
         "httpsOnly": true
       }
     },
@@ -254,7 +263,8 @@
         "clientCertMode": "[parameters('clientCertMode')]",
         "siteConfig": {
           "appSettings": "[parameters('appServiceAppSettings')]",
-          "connectionStrings": "[parameters('appServiceConnectionStrings')]"
+          "connectionStrings": "[parameters('appServiceConnectionStrings')]",
+          "netFrameworkVersion": "[parameters('netFrameworkVersion')]"
         },
         "httpsOnly": true
       },
