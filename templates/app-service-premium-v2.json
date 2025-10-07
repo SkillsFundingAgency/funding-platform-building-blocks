@@ -216,10 +216,9 @@
     },
     "variables": {
       "useCustomHostname": "[greater(length(parameters('customHostname')), 0)]",
-      "appServicePlanId": "[resourceId(parameters('appServicePlanResourceGroup'), 'Microsoft.Web/serverfarms', parameters('appServicePlanName'))]",
       "useAppServiceSlotAppSettings": "[greater(length(parameters('appServiceSlotAppSettings')), 0)]",
       "useAppServiceSlotConnectionStrings": "[greater(length(parameters('appServiceSlotConnectionStrings')), 0)]",
-      "appServiceApiVersion": "2018-11-01"
+      "appServiceApiVersion": "2018-11-01",
       "appServicePlanReference": "[if(not(empty(parameters('appServicePlanId'))), parameters('appServicePlanId'), resourceId(parameters('appServicePlanResourceGroup'), 'Microsoft.Web/serverfarms', parameters('appServicePlanName')))]"
     },
     "resources": [
