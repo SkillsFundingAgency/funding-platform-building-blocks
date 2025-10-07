@@ -151,7 +151,7 @@
       },
       "settingName": {
         "type": "String",
-        "defaultvalue": "AppServiceDiagSettings",
+        "defaultValue": "AppServiceDiagSettings",
         "metadata": {
           "description": "The name of the diagnostic setting"
         }
@@ -241,7 +241,7 @@
             "Service Offering": "[parameters('serviceOfferingTag')]"
         },
         "properties": {
-          "serverFarm": "[variables('appServicePlanReference')]",
+          "serverFarmId": "[variables('appServicePlanReference')]",
           "clientAffinityEnabled": false,
           "siteConfig": {
             "alwaysOn": true,
@@ -276,7 +276,7 @@
               "Service Offering": "[parameters('serviceOfferingTag')]"
             },
             "properties": {
-              "serverFarm": "[variables('appServicePlanReference')]",
+              "serverFarmId": "[variables('appServicePlanReference')]",
               "clientAffinityEnabled": false,
               "siteConfig": {
                 "alwaysOn": false,
@@ -311,7 +311,7 @@
       },
       {
         "type": "Microsoft.Web/sites/hostnameBindings",
-        "condition": "[variables('UseCustomHostname')]",
+        "condition": "[variables('useCustomHostname')]",
         "name": "[concat(parameters('appServiceName'), '/', if(variables('useCustomHostname'), parameters('customHostname'), 'placeholder'))]",
         "apiVersion": "2018-11-01",
         "location": "[resourceGroup().location]",
