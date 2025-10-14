@@ -125,7 +125,8 @@
       "allowedValues": [
         "TLS1_0",
         "TLS1_0",
-        "TLS1_2"
+        "TLS1_2",
+        "TLS1_3"
       ]
     },
     "allowBlobPublicAccess": {
