@@ -136,6 +136,16 @@
         "description": ".NET version of project, e.g. v6.0, needed for runtime version ~4 onwards",
         "link": "https://learn.microsoft.com/en-us/answers/questions/835272/azure-functions-pinned-to-unsupported-dotnet-runti.html"
       }
+    },
+    "minTlsVersion": {
+      "type": "string",
+      "defaultValue": "1.2",
+      "allowedValues": [
+        "1.0",
+        "1.1",
+        "1.2",
+        "1.3"
+      ]
     }
   },
   "variables": {
@@ -148,7 +158,8 @@
       "ipSecurityRestrictions": "[parameters('ipSecurityRestrictions')]",
       "use32BitWorkerProcess": "[parameters('use32BitWorkerProcess')]",
       "http20Enabled": "[parameters('http20Enabled')]",
-      "ftpsState": "[parameters('ftpsState')]"
+      "ftpsState": "[parameters('ftpsState')]",
+      "minTlsVersion": "[parameters('minTlsVersion')]"
     },
     "siteConfigNetFrameworkVersion": {
       "netFrameworkVersion": "[parameters('netFrameworkVersion')]"
