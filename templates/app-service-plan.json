@@ -43,6 +43,7 @@
     "aspSize": {
       "type": "string",
       "allowedValues": [
+        "0",
         "1",
         "2",
         "3"
@@ -74,8 +75,7 @@
         "Standard",
         "Premium",
         "PremiumV2",
-        "PremiumV3",
-        "Premium0V3"
+        "PremiumV3"
       ],
       "defaultValue": "Standard"
     },
