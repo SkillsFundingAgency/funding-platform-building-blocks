@@ -31,6 +31,10 @@
     "appServicePlanName": {
       "type": "string"
     },
+    "functionAppKind": {
+      "type": "string",
+      "defaultValue": "functionapp"
+    },
     "appServicePlanResourceGroup": {
       "type": "string"
     },
@@ -170,7 +174,7 @@
     {
       "name": "[parameters('functionAppName')]",
       "type": "Microsoft.Web/sites",
-      "kind": "functionapp",
+      "kind": "[parameters('functionAppKind')]",
       "apiVersion": "[variables('functionAppApiVersion')]",
       "location": "[resourceGroup().location]",
       "identity": {
@@ -187,6 +191,7 @@
       },
       "properties": {
         "serverFarmId": "[variables('appServicePlanId')]",
+        "reserved": "[equals(parameters('functionAppKind'), 'functionapp,linux')]",
         "clientAffinityEnabled": false,
         "clientCertEnabled": "[parameters('clientCertEnabled')]",
         "clientCertMode": "[parameters('clientCertMode')]",
