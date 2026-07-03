@@ -33,7 +33,7 @@
     },
     "functionAppKind": {
       "type": "string",
-      "defaultValue": "functionapp"
+      "defaultValue": "functionapp,linux"
     },
     "appServicePlanResourceGroup": {
       "type": "string"
