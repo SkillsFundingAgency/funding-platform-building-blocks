@@ -33,7 +33,7 @@
     },
     "functionAppKind": {
       "type": "string",
-      "defaultValue": "functionapp,linux"
+      "defaultValue": "functionapp"
     },
     "appServicePlanResourceGroup": {
       "type": "string"
@@ -141,6 +141,13 @@
         "link": "https://learn.microsoft.com/en-us/answers/questions/835272/azure-functions-pinned-to-unsupported-dotnet-runti.html"
       }
     },
+    "linuxFxVersion": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Linux runtime stack, e.g. DOTNET-ISOLATED|8.0"
+      }
+    },
     "minTlsVersion": {
       "type": "string",
       "defaultValue": "1.2",
@@ -168,7 +175,10 @@
     "siteConfigNetFrameworkVersion": {
       "netFrameworkVersion": "[parameters('netFrameworkVersion')]"
     },
-    "siteConfig": "[if(greater(length(parameters('netFrameworkVersion')), 0),  union(variables('baseSiteConfig'), variables('siteConfigNetFrameworkVersion')), variables('baseSiteConfig'))]"
+    "siteConfigLinuxFxVersion": {
+      "linuxFxVersion": "[parameters('linuxFxVersion')]"
+    },
+    "siteConfig": "[union(variables('baseSiteConfig'),if(greater(length(parameters('netFrameworkVersion')), 0), variables('siteConfigNetFrameworkVersion'), createObject()),if(greater(length(parameters('linuxFxVersion')), 0), variables('siteConfigLinuxFxVersion'), createObject()))]"
   },
   "resources": [
     {
