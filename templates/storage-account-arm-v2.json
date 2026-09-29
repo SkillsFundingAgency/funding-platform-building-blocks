@@ -39,8 +39,8 @@
 
     "storageKind": {
       "type": "string",
-      "defaultValue": "Storage",
-      "allowedValues": [ "Storage", "StorageV2", "BlobStorage" ]
+      "defaultValue": "StorageV2",
+      "allowedValues": [ "StorageV2", "BlobStorage" ]
     },
 
     "subnetResourceIdList": {
