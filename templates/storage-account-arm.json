@@ -62,9 +62,8 @@
     },
     "storageKind": {
       "type": "string",
-      "defaultValue": "Storage",
+      "defaultValue": "StorageV2",
       "allowedValues": [
-        "Storage",
         "StorageV2",
         "BlobStorage"
       ]
