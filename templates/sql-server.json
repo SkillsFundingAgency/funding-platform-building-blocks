@@ -111,11 +111,14 @@
       "metadata": {
         "description": "The identity type. Set this to 'SystemAssigned' in order to automatically create and assign an Azure Active Directory principal for the resource."
       }
+    },
+    "securityAlertPolicyName": {
+        "type": "string",
+        "defaultValue": "[concat(parameters('sqlServerName'), '-DefaultSecurityAlert')]"
     }
   },
   "variables": {
     "auditPolicyName": "[concat(parameters('sqlServerName'), '-DefaultAuditPolicy')]",
-    "securityAlertPolicyName": "[concat(parameters('sqlServerName'), '-DefaultSecurityAlert')]",
     "diagnosticSettingName": "SQLSecurityAuditEvents_3d229c42-c7e7-4c97-9a99-ec0d0d8b86c1"
   },
   "resources": [
@@ -208,7 +211,7 @@
         {
           "apiVersion": "2017-03-01-preview",
           "type": "securityAlertPolicies",
-          "name": "[variables('SecurityAlertPolicyName')]",
+          "name": "[parameters('SecurityAlertPolicyName')]",
           "dependsOn": [
             "[concat('Microsoft.Sql/servers/', parameters('sqlServerName'))]",
             "[concat('Microsoft.Sql/servers/', parameters('sqlServerName'), '/auditingSettings/', variables('AuditPolicyName'))]"
