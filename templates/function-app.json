@@ -163,7 +163,8 @@
       "use32BitWorkerProcess": "[parameters('use32BitWorkerProcess')]",
       "http20Enabled": "[parameters('http20Enabled')]",
       "ftpsState": "[parameters('ftpsState')]",
-      "minTlsVersion": "[parameters('minTlsVersion')]"
+      "minTlsVersion": "[parameters('minTlsVersion')]",
+      "linuxFxVersion": "[parameters('linuxFxVersion')]"
     },
     "siteConfigNetFrameworkVersion": {
       "netFrameworkVersion": "[parameters('netFrameworkVersion')]"
