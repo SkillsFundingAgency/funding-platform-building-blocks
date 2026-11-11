@@ -42,6 +42,10 @@
       "type": "array",
       "defaultValue": []
     },
+    "linuxFxVersion": {
+      "type": "string",
+      "defaultValue": ""
+    },
     "customHostName": {
       "type": "string",
       "defaultValue": ""
